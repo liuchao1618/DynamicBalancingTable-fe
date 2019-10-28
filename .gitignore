@@ -1,18 +1,64 @@
-# Build and Release Folders
-bin-debug/
-bin-release/
-[Oo]bj/
-[Bb]in/
+.DS_Store
+yarn.lock
+node_modules
+npm-debug.log
+.editorconfig
+dist
+.idea
+*.iml
+out
+gen
+CONTRIBUTING.md
 
-# Other files and folders
-.settings/
+package-lock.json
+composer.lock
+composer.json
+.travis.yml
+*.sql
+CHANGELOG.md
+LICENSE.txt
 
-# Executables
-*.swf
-*.air
-*.ipa
-*.apk
+*.log
+.svn
+.buildpath
+.project
+.classpath
+.settings
+target
+logs
+log
+__MACOSX
 
-# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
-# should NOT be excluded as they contain compiler settings and other important
-# information for Eclipse / Flash Builder.
+# phpstrom
+# vim
+# swap
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-v][a-z]
+[._]sw[a-p]
+# session
+Session.vim
+# temporary
+.netrwhist
+*~
+# auto-generated tag files
+tags
+
+# eclipse
+.metadata
+
+# mac
+*.DS_Store
+.AppleDouble
+.LSOverride
+# linux
+# temporary files which can be created if a process still has a handle open of a deleted file
+.fuse_hidden*
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+# .nfs files are created when an open file is removed but is still being accessed
+.nfs*
+
+# odp
+output
+
