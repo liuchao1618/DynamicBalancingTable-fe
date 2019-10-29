@@ -1,34 +1,36 @@
-//导入所需模块
+// 导入所需模块
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-Vue.config.productionTip = false
 
-//ajax
+// ajax
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 
-Vue.use(VueAxios, axios)
-
-//状态管理
+// 状态管理
 import vuex from 'vuex'
-Vue.use(vuex);
 
-//ui 框架
-import Vant from 'vant';
-import 'vant/lib/vant-css/index.css';
+// ui 框架
+import Vant from 'vant'
+import 'vant/lib/index.css'
 
-Vue.use(Vant);
+import './assets/css/common.css'
 
-//懒加载
-import { Lazyload } from 'vant';
-Vue.use(Lazyload);
+// 懒加载
+import { Lazyload } from 'vant'
 
-//瀑布流
-import { Waterfall } from 'vant';
-Vue.use(Waterfall);
+// 瀑布流
+import { List } from 'vant'
 
 import store from './store/store'
+Vue.config.productionTip = false
+
+Vue.use(VueAxios, axios)
+Vue.use(vuex)
+
+Vue.use(Vant)
+Vue.use(Lazyload)
+Vue.use(List)
 
 /* VUE实例 */
 new Vue({
