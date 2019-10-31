@@ -1,5 +1,4 @@
 // actions
-// export const routerIndexFund = ({commit}, data) => {
-//   commit('ROUTERINDEX', data)
-// }
-
+export const setAthletes = ({commit}, data) => {
+  commit('SETATHLETES', data)
+}

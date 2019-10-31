@@ -22,6 +22,8 @@ import { Lazyload } from 'vant'
 // 瀑布流
 import { List } from 'vant'
 
+import 'lib-flexible'
+
 import store from './store/store'
 Vue.config.productionTip = false
 

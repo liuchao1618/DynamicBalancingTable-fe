@@ -1,14 +1,21 @@
 <template>
   <div id="app">
-    <router-view/>
+      <router-view/>
   </div>
 </template>
 
 <script>
 export default {
   name: 'App',
-  mounted(){
-    plus.screen.lockOrientation('landscape-primary')
+  data(){
+    return {
+      flag: false
+    }
+  },
+  created(){
+    document.addEventListener('plusready',function () { 
+        plus.screen.lockOrientation('landscape-primary')
+    },false)
   }
 }
 </script>

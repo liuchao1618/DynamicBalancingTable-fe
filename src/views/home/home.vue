@@ -1,5 +1,6 @@
 <template>
   <div class="box">
+      <!-- 蓝牙加载状态 -->
       <div v-if='status === "fail"' class='loading'>
           <img class='loadingImg' src="./image/title.png" alt="">
           <div v-if='statusContent === 0' class='load-loading'>
@@ -25,10 +26,12 @@
                 </div>
           </div>
       </div>
+      <!-- 页面内容 -->
       <div v-if='status === "success"' class="home">
           <div class="title">
               <img src="./image/title.png"/>
           </div>
+          <!-- tab条 -->
           <div class="tabList">
               <div class="tabLeft">
                   <div class="tab" :class="{'tabActive': tab === 0}" @click="tabBtn(0)">训练</div>
@@ -39,13 +42,16 @@
               <div class="tabRight">
                   <div class="name">教练：张天天</div>
                   <div class="setup">
-                      <img src="./image/setup.png"/>
-                      <!--<div class="setupList">-->
-                          <!--<div></div>-->
-                      <!--</div>-->
+                      <img @click="setup = !setup" src="./image/setup.png"/>
+                      <div class="setupList" v-if='setup'>
+                          <div class='setupItem'>修改密码</div>
+                          <div class='setupItem'>退出登录</div>
+                          <div class='setupItem'>自动登录 <van-switch class='switch' size='24px' v-model="loginSwitch" active-color="#07c160" inactive-color="#4E4F50"></van-switch></div>
+                      </div>
                   </div>
               </div>
           </div>
+          <!-- 训练 -->
           <div v-if='tab === 0' class="menu">
               <div class="menuLeft">
                  <div class="menuItem" v-for='(item,index) in menuList' :key='index'>
@@ -57,6 +63,7 @@
                   <div class='rightItem' v-for='(item,index) in list' :key='index' v-html='item.text' :style='{"background-color": item.color}'></div>
               </div>
           </div>
+          <!-- 记录 -->
           <div v-if='tab === 1' class='list'>
               <div class='item'>
                   <div class='itemTitle'>2019-10-09 00:43:19 PT模式 DEMO模式 LIVE模式</div>
@@ -103,6 +110,7 @@
                   </div>
               </div>
           </div>
+          <!-- 收藏 -->
           <div v-if='tab === 2' class='list'>
               <div class='item'>
                   <div class='itemTitle'>2019-10-09 00:43:19 PT模式 DEMO模式 LIVE模式</div>
@@ -150,16 +158,46 @@
                   </div>
               </div>
           </div>
+          <!-- 我的运动员 -->
+          <div v-if='tab === 3' class='myAthletes'>
+                <van-row class='myHead'>
+                    <van-col span='2' class="headItem">姓名</van-col>
+                    <van-col span='2' class='headItem'>性别</van-col>
+                    <van-col span='3' class='headItem'>出生日期</van-col>
+                    <van-col span='3' class='headItem'>身高(cm)</van-col>
+                    <van-col span='3' class='headItem'>体重(kg)</van-col>
+                    <van-col span='5' class='headItem'>联系方式</van-col>
+                    <van-col span='6' class='headItem'>操作</van-col>
+                </van-row>
+                <van-row class='myTd myHead'>
+                    <van-col span='2' class='headItem'>张晓晓</van-col>
+                    <van-col span='2' class='headItem'>男</van-col>
+                    <van-col span='3' class='headItem'>1998-09-21</van-col>
+                    <van-col span='3' class='headItem'>190</van-col>
+                    <van-col span='3' class='headItem'>78</van-col>
+                    <van-col span='5' class='headItem'>13688932223</van-col>
+                    <van-col span='6' class='headItem'><span class='myTdColor'>编辑</span> <span class='myTdColor'>查看运动记录</span></van-col>
+                </van-row>
+          </div>
       </div>
+      <!-- login组件 -->
+      <login v-if='loginFlag'></login>
   </div>
 </template>
 
 <script>
+import login from './components/login'
 export default {
   name: 'home',
+  components: {
+      login
+  },
   data () {
     return {
-        tab: 2,
+        tab: 3,
+        loginFlag: false,
+        setup: false,
+        loginSwitch: false,
         // status: 'fail',
         status: 'success',
         statusContent: 0,
@@ -230,9 +268,9 @@ export default {
     }
   },
   methods: {
-    tabBtn (index) {
-      this.tab = index
-    }
+        tabBtn (index) {
+            this.tab = index
+        },
   }
 }
 </script>
@@ -305,7 +343,7 @@ export default {
             .tabLeft{
                 display: flex;
                 .tab{
-                    /*padding: 0 50px;*/
+                    padding: 0 50px;
                     font-size:34px;
                     color: #868A9A;
                     text-align: center;
@@ -334,7 +372,29 @@ export default {
                         height: 45px;
                     }
                     .setupList{
-
+                        position: absolute;
+                        bottom: -282px;
+                        left: -200px;
+                        width: 245px;
+                        height: 255px;
+                        z-index: 3;
+                        background-color: #373839;
+                        border: 1px solid #464348;
+                        border-radius: 10px;
+                        .setupItem{
+                            color: #D1D5E6;
+                            font-size: 26px;
+                            height: 85px;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            border-bottom: 1px solid #404350;
+                            line-height: 85px;
+                            text-align: center;
+                            .switch{
+                                margin-left: 16px;
+                            }
+                        }
                     }
                 }
             }
@@ -372,6 +432,7 @@ export default {
                 display: flex;
                 flex-wrap: wrap;
                 width: 1171px;
+                margin-left: 40px;
                 .rightItem{
                     width: 262px;
                     height: 262px;
@@ -399,10 +460,10 @@ export default {
                 .itemCon{
                     display: flex;
                     justify-content: space-between;
-                    width: 1785px;
+                    width: 100%;
                     height: 235px;
                     box-sizing: border-box;
-                    padding: 30px;
+                    padding: 40px;
                     border: 1px solid #626576;
                     border-radius: 5px;
                     .con{
@@ -450,6 +511,7 @@ export default {
                         display: flex;
                         flex-direction: column;
                         justify-content: space-between;
+                        align-items: flex-end;
                         img{
                             width: 35px;
                             height: 35px;
@@ -459,12 +521,37 @@ export default {
                             align-items: center;
                             color: #B1B4C0;
                             font-size: 21px;
+                            // margin-bottom: 40px;
                             img{
                                 width: 24px;
                                 height: 24px;
                             }
                         }
                     }
+                }
+            }
+        }
+        .myAthletes{
+            margin-top: 30px;
+            width: 100%;
+            .myHead{
+                // background-color: #FEFCFF;
+                border: 1px solid #404350;
+                color: #ABAFBD;
+                font-size: 24px;
+                line-height: 50px;
+                .headItem{
+                    height: 75px;
+                    line-height: 75px;
+                    text-align: center;
+                }
+            }
+            .myTd{
+                line-height: 40px;
+                border: 1px solid #404350;
+                border-top: 0;
+                .myTdColor{
+                    color: #D1D5E6;
                 }
             }
         }
