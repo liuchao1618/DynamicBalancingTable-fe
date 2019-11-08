@@ -33,25 +33,32 @@
       <div class="right">
         <h3>参与本次训练的运动员</h3>
         <div class="exercises">
+          <div class="check">
+            <span>已选：</span>
+            <div class="chekbox">
+              <div class="checkName" v-for='(item,ind) in checkName'>
+                <span>{{item.name}}</span>
+                <span @click='del(item)'>×</span>
+              </div>
+            </div>
+          </div>
           <div class="drill">
             <div class="coach">
               <span>教练：</span>
-              <!-- <select name="" id="">
-                <option value="">张天天</option>
-              </select> -->
+              <!-- <select>
+                  <option :value ="item.value" v-for='(item,ind) in option1'>{{item.text}}</option>
+                </select> -->
             </div>
             <div class="search">
-              <span></span>
-              <input type="text" placeholder="请输入运动员姓名">
+              <van-search placeholder="请输入运动员姓名" v-model="iptName" />
             </div>
           </div>
           <div class="exerciseName">
             <div class="info" v-for='(item,index) in nameList'>
-              <input type="checkbox" @click='selectAll($event)'>
-              <span>{{item}}</span>
+              <van-checkbox :disabled='item.disabled' v-model="item.checked" shape="square" @click='selectAll(item)'>{{item.name}}</van-checkbox>
             </div>
           </div>
-          <div class="sub" :class="[flag ? 'active' : '']">提交
+          <div class="sub" :class="[checkName.length>0 ? 'active' : '']">提交
           </div>
         </div>
       </div>
@@ -65,8 +72,16 @@
   export default {
     data() {
       return {
-        flag:false,//提交按钮是否置灰
-        dataList: [{
+        value1:'',
+        option1:[
+        { text: '王乐乐', value: 0 },
+        { text: '赵哈哈', value: 1 },
+        { text: '孙嘻嘻', value: 2 }
+        ],
+        checkName: [],
+        iptName:'',
+        dataList: [
+          {
           num: 30,
           word: 'POWER LEFT'
         }, {
@@ -76,24 +91,105 @@
           num: 30,
           word: 'POWER RIGHT'
         }],
-        nameList: ['周怡君', '林辛豪', '蔡修梅', '王心怡', '何冠良', '李筱婷', '林宜月', '宋浩', '林燕', '郭佳慧', '周怡君', '林辛豪', '蔡修梅', '王心怡']
+        nameList: [
+          {
+          name: '周怡君',
+          checked: false
+        }, {
+          name: '林辛豪',
+          checked: false
+        }, {
+          name: '蔡修梅',
+          checked: false
+        }, {
+          name: '王心怡',
+          checked: false
+        }, {
+          name: '何冠良',
+          checked: false
+        }, {
+          name: '李筱婷',
+          checked: false
+        }, {
+          name: '林宜月3',
+          checked: false
+        }, {
+          name: '林辛豪3',
+          checked: false
+        }, {
+          name: '蔡修梅3',
+          checked: false
+        }, {
+          name: '王心怡3',
+          checked: false
+        }, {
+          name: '何冠良3',
+          checked: false
+        }, {
+          name: '李筱婷3',
+          checked: false
+        }, {
+          name: '林宜月3',
+          checked: false
+        }]
       }
     },
     mounted() {
-      
+
     },
     methods: {
-      selectAll(e){
-        // if(e.target.checked){ 
-        //   this.flag = true
+      del(val){
+        this.checkName.map((item,ind)=>{
+            if (item.name == val.name) {
+              this.checkName.splice(ind,1)
+            }
+          })
+          this.nameList.map((item,i)=>{
+            if(val.name==item.name){
+              item.checked = false
+            }
+          })
+      },
+      selectAll(val) {
+        // if(this.checkName.length >= 5&&val.checked){
+        //   this.nameList.map((item,i)=>{
+        //     if(!item.checked){
+        //       item.disabled = true
+        //     }
+        //   })
         // }else{
-        //   this.flag =false
-        // }
+        if (!val.checked&&this.checkName.length < 5) {
+          this.checkName.unshift(val)
+        } else {
+          this.checkName.map((item,ind)=>{
+            if (item.name == val.name) {
+              this.checkName.splice(ind,1)
+            }
+          })
+        }
+
       }
     }
   }
 </script>
 <style scoped lang="less">
+  /deep/.van-checkbox__label {
+    color: #D1D5E6
+  }
+  /deep/.van-field__left-icon{
+    margin-left: 10px;
+
+  } 
+  /deep/.van-icon .van-icon-search,.van-cell{
+    color:#626576!important;
+  }
+  /deep/.van-search,.van-search__content{
+    padding: 0;
+    background: transparent!important;
+  }
+  /deep/.van-field__control{
+    color: #D1D5E6!important;
+  }
   .box {
     display: flex;
     justify-content: space-between;
@@ -127,12 +223,40 @@
     }
 
     .exercises {
-      padding: 25px;
+      padding: 20px;
       box-sizing: border-box;
+
+      .check {
+        display: flex;
+        height: 38px;
+        align-items: center;
+        color: rgba(171, 175, 189, 1);
+
+        .chekbox {
+          display: flex;
+          flex-wrap: wrap;
+          margin-bottom: 10px;
+        }
+
+        .checkName {
+          margin-right: 20px;
+          padding: 0 10px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          box-sizing: border-box;
+          width: 100px;
+          height: 38px;
+          background: rgba(1, 9, 21, 0.2);
+          border-radius: 4px;
+          border: 1px solid rgba(146, 150, 174, 1);
+        }
+      }
 
       .drill {
         display: flex;
         justify-content: space-between;
+        align-items: center;
 
         .coach {
           span {
@@ -146,7 +270,7 @@
 
         .search {
           width: 204px;
-          height: 38px;
+          height: 35px;
           border-radius: 4px;
           border: 1px solid rgba(98, 101, 118, 1);
 
@@ -164,8 +288,8 @@
       .exerciseName {
         margin: 10px 0;
         display: flex;
-        overflow-y: auto;
-        height: 109px;
+        height: 82px;
+        overflow-y: scroll;
         flex-wrap: wrap;
         background: rgba(33, 36, 41, 0.05);
         border-radius: 4px;
@@ -173,17 +297,12 @@
 
         .info {
           width: 20%;
-          height: 50px;
           display: flex;
-          justify-content: center;
-          align-items: center;
-
-          input[type=checkbox] {
-            width: 21px;
-            height: 21px;
-            border-radius: 3px;
-            border: 1px solid rgba(117, 121, 137, 1);
-          }
+          height: 38px;
+          padding-left:10px;
+          box-sizing:border-box;
+          /* justify-content: center; */
+          /* align-items: center; */
         }
       }
 
