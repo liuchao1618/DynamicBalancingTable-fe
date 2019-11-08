@@ -15,7 +15,7 @@
         </div>
         <div class='item'>
             <div class='itemLeft'>出生日期</div>
-            <div class='itemRight'>{{ athletes.birth ? athletes.birth : '请选择您的出生日期 >' }}</div>
+            <div class='itemRight' @click="dateShow = true">{{ athletes.birth ? athletes.birth : '请选择您的出生日期 >' }}</div>
         </div>
         <div class='item' @click="toDetail(5)">
             <div class='itemLeft'>身高（cm）</div>
@@ -42,127 +42,158 @@
                 </div>
             </div>
         </van-popup>
+        <van-popup v-model="dateShow" position="bottom">
+                <van-datetime-picker
+                type="date"
+                v-model="currentDate"
+                @cancel="handleCancel"
+                @confirm="handleEndDateConfirm" 
+              />
+        </van-popup>
     </div>
 </template>
 
 <script>
-import backHeader from '@/components/backHeader'
-import { mapState } from 'vuex'
-export default {
-    name: 'addAthletes',
-    components: {
-        backHeader
-    },
-    computed:{
-        ...mapState([ 
-            'athletes'
-        ])
-    },
-    data(){
-        return {
-            show: false,
-            sex: 1,
-        }
-    },
-    methods: {
-        toDetail(index){
-            this.$router.push({name: 'athletesDetail', params: {index: index}})
+    import backHeader from '@/components/backHeader'
+    import { mapState } from 'vuex'
+    export default {
+        name: 'addAthletes',
+        components: {
+            backHeader
         },
-        sexBtn(index){
-            this.sex = index
-            this.$store.dispatch('setAthletes', {index: 3, sex: index === 1 ? '男' : '女'})
-            let that = this
-            setTimeout(()=>{
-                that.show = false
-            }, 500)
+        computed: {
+            ...mapState([
+                'athletes'
+            ])
         },
-        sexBtnSwitch(){
+        data() {
+            return {
+                dateShow: false,
+                currentDate: new Date(),
+                show: false,
+                sex: 1,
+            }
+        },
+        methods: {
+            handleCancel() {
+                this.dateShow = false;
+            },
+            //时间
+            handleEndDateConfirm() {
+                this.dateShow = false;
+                this.$store.dispatch('setAthletes', { index: 4, birth: this.currentDate})
+            },
+            toDetail(index) {
+                this.$router.push({ name: 'athletesDetail', params: { index: index } })
+            },
+            sexBtn(index) {
+                this.sex = index
+                this.$store.dispatch('setAthletes', { index: 3, sex: index === 1 ? '男' : '女' })
+                let that = this
+                setTimeout(() => {
+                    that.show = false
+                }, 500)
+            },
+            sexBtnSwitch() {
 
+            }
         }
     }
-}
 </script>
 
 <style lang="less" scoped>
-.addAthletes{
-    width: 100vw;
-    min-height: 100vh;
-    padding: 40px;
-    box-sizing: border-box;
-    background: url("../home/image/bg.png") no-repeat left top;
-    background-size: cover;
-    .item{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        height: 93px;
-        padding: 0 10px;
-        font-size: 24px;
-        border-bottom: 1px solid #4E4F54;
-        .itemLeft{
-            color: #D1D1D6;
-        }
-        .itemRight{
-            color: #868693;
-        }
-    }
-    .itemNo{
-        font-size:19px;
-        color: #99999E;
-        line-height: 46px;
-        text-align: left;
-    }
-    .buttonBox{
-        margin-top: 100px;
-        display: flex;
-        justify-content: center;
-        .button{
-            width: 550px;
-            height: 68px;
-            font-size: 24px;
-            border-radius: 5px;
-        }
-        .mgr{
-            margin-right: 30px;
-            &.van-button--primary{
-                background-color: transparent;
-                border-color: #68696A;
-            }
-        }
-        .van-button--primary{
-            background-color: #2286A9;
-            border-color: #2286A9;
-        }
-    }
-    .sex{
-        width: 576px;
-        height: 222px;
-        border-radius: 12px;
-        background-color: #373839;
-        border: 1px solid #464348;
+    .addAthletes {
+        width: 100vw;
+        min-height: 100vh;
+        padding: 40px;
         box-sizing: border-box;
-        padding: 50px 90px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        .sexItem{
+        background: url("../home/image/bg.png") no-repeat left top;
+        background-size: cover;
+
+        .item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 42px;
-            div{
-                font-size: 28px;
-                color: #BDBDC5;
+            height: 93px;
+            padding: 0 10px;
+            font-size: 24px;
+            border-bottom: 1px solid #4E4F54;
+
+            .itemLeft {
+                color: #D1D1D6;
             }
-            img{
-                width: 42px;
-                height: 42px;
+
+            .itemRight {
+                color: #868693;
             }
         }
-    }
-    .van-popup{
-        border-radius: 12px;
-    }
-}
-</style>
 
+        .itemNo {
+            font-size: 19px;
+            color: #99999E;
+            line-height: 46px;
+            text-align: left;
+        }
+
+        .buttonBox {
+            margin-top: 100px;
+            display: flex;
+            justify-content: center;
+
+            .button {
+                width: 550px;
+                height: 68px;
+                font-size: 24px;
+                border-radius: 5px;
+            }
+
+            .mgr {
+                margin-right: 30px;
+
+                &.van-button--primary {
+                    background-color: transparent;
+                    border-color: #68696A;
+                }
+            }
+
+            .van-button--primary {
+                background-color: #2286A9;
+                border-color: #2286A9;
+            }
+        }
+
+        .sex {
+            width: 576px;
+            height: 222px;
+            border-radius: 12px;
+            background-color: #373839;
+            border: 1px solid #464348;
+            box-sizing: border-box;
+            padding: 50px 90px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            .sexItem {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                height: 42px;
+
+                div {
+                    font-size: 28px;
+                    color: #BDBDC5;
+                }
+
+                img {
+                    width: 42px;
+                    height: 42px;
+                }
+            }
+        }
+
+        .van-popup {
+            border-radius: 12px;
+        }
+    }
+</style>

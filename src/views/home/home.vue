@@ -60,7 +60,7 @@
                  </div>
               </div>
               <div class="menuRight">
-                  <div class='rightItem' v-for='(item,index) in list' :key='index' v-html='item.text' :style='{"background-color": item.color}'></div>
+                  <div class='rightItem' v-for='(item,index) in list' :key='index' v-html='item.text' :style='{"background-color": item.color}' @click='godetail(index)'></div>
               </div>
           </div>
           <!-- 记录 -->
@@ -194,7 +194,7 @@ export default {
   },
   data () {
     return {
-        tab: 3,
+        tab: 0,
         loginFlag: false,
         setup: false,
         loginSwitch: false,
@@ -271,6 +271,10 @@ export default {
         tabBtn (index) {
             this.tab = index
         },
+        godetail(index){
+            this.$router.push({ name: 'SelectTime'});
+            console.log(index)
+        }
   }
 }
 </script>
