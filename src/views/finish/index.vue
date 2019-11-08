@@ -84,11 +84,11 @@
     },
     methods: {
       selectAll(e){
-        if(e.target.checked){ 
-          this.flag = true
-        }else{
-          this.flag =false
-        }
+        // if(e.target.checked){ 
+        //   this.flag = true
+        // }else{
+        //   this.flag =false
+        // }
       }
     }
   }
