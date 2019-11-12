@@ -12,6 +12,7 @@ import downTime from '@/views/downTime'//倒计时
 import power from '@/views/power'//训练（PT模式）开始运动
 import demo from '@/views/demo'//训练（demo模式）开始运动
 import finish from '@/views/finish'//训练finish
+import Train from '@/views/train'//训练设置
 
 export default new Router({
   routes: [
@@ -55,6 +56,11 @@ export default new Router({
       path: '/athletesDetail',
       name: 'athletesDetail',
       component: AthletesDetail
+    },
+    {
+      path: '/train',
+      name: 'train',
+      component: Train
     },
     {
       path: '*',

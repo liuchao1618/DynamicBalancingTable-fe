@@ -21,6 +21,8 @@ import { Lazyload } from 'vant'
 
 // 瀑布流
 import { List } from 'vant'
+// 提示框
+import { Dialog } from 'vant'
 
 import 'lib-flexible'
 

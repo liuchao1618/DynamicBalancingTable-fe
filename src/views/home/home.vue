@@ -153,7 +153,7 @@
                       <div class='conCollect'>
                           <!-- <img src="./image/star.png" alt=""> -->
                           <img src="./image/starS.png" alt="">
-                          <div class='conTrain'>使用本次设置进行训练<img src="./image/right-arrow.png" alt=""></div>
+                          <div @click="clickToTrain()" class='conTrain'>使用本次设置进行训练<img src="./image/right-arrow.png" alt=""></div>
                       </div>
                   </div>
               </div>
@@ -268,13 +268,17 @@ export default {
     }
   },
   methods: {
-        tabBtn (index) {
-            this.tab = index
-        },
-        godetail(index){
-            this.$router.push({ name: 'SelectTime'});
-            console.log(index)
-        }
+    tabBtn (index) {
+      this.tab = index
+    },
+    godetail(index){
+      this.$router.push({ name: 'SelectTime'});
+      console.log(index)
+    },
+    // 点击使用本次设置进行训练
+    clickToTrain () {
+      this.$router.push('/train')
+    }
   }
 }
 </script>
