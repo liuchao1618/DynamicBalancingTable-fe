@@ -23,7 +23,7 @@
           <div></div>
           <div class="cencenBot">
             <span>BOOST</span>
-            <span>{{bottomValue}}</span>
+            <span>{{parseInt((100-leftValue+100-rightValue)/2)}}</span>
           </div>
         </div>
         <div class="cenRight">
@@ -38,7 +38,7 @@
       </div>
     </div>
     <div class="centBottom">
-      <van-slider class="bottomLine" v-model="bottomValue" @change='changebottom' bar-height='23px' />
+      <van-slider class="bottomLine" :value="(100-leftValue+100-rightValue)/2" @change='changebottom' bar-height='23px' />
       <img src="../../assets/image/bottom.png" alt="">
     </div>
     <div class="bottom">

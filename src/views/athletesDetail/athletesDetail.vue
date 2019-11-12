@@ -5,6 +5,9 @@
         <input v-if='index === 2' type="tel" ref='input' class='input' v-model='tel'>
         <input v-if='index === 5' type="tel" maxlength="3" ref='input' class='input' v-model='height'>
         <input v-if='index === 6' type="tel" maxlength="3" ref='input' class='input' v-model='weight'>
+        <input v-if='index === 7' type="text" ref='input' class='input' v-model='oldpass'>
+        <input v-if='index === 8' type="text" ref='input' class='input' v-model='newpass'>
+        <input v-if='index === 9' type="text" ref='input' class='input' v-model='checkpass'>
     </div>
 </template>
 
@@ -23,6 +26,9 @@ export default {
             tel: '',
             height: '',
             weight: '',
+            oldpass: '',
+            newpass: '',
+            checkpass: ''
         }
     },
     created(){
@@ -35,6 +41,12 @@ export default {
             this.title = '身高'
         }else if(this.index === 6){
             this.title = '体重'
+        }else if(this.index === 7){
+            this.title = '旧密码'
+        }else if(this.index === 8){
+            this.title = '新密码'
+        }else if(this.index === 9){
+            this.title = '确认新密码'
         }
     },
     mounted(){

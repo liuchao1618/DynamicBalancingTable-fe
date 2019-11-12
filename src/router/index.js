@@ -12,6 +12,7 @@ import downTime from '@/views/downTime'//倒计时
 import power from '@/views/power'//训练（PT模式）开始运动
 import demo from '@/views/demo'//训练（demo模式）开始运动
 import finish from '@/views/finish'//训练finish
+import editPass from '@/views/editPass'//训练finish
 
 export default new Router({
   routes: [
@@ -29,6 +30,11 @@ export default new Router({
       path: '/SelectTime',
       name: 'SelectTime',
       component: SelectTime
+    },
+    {
+      path: '/editPass',
+      name: 'editPass',
+      component: editPass
     }, {
       path: '/finish',
       name: 'finish',

@@ -12,7 +12,10 @@ const state = {
     sex: '',
     birth: '',
     height: '',
-    weight: ''
+    weight: '',
+    oldpass:'',
+    newpass:'',
+    checkpass:'',
   }
 }
 // 所需要定义的mutations
@@ -45,6 +48,15 @@ const mutations = {
     }
     if(data.index === 6){
       state.athletes.weight = data.weight
+    }
+    if(data.index === 7){
+      state.athletes.oldpass = data.oldpass
+    }
+    if(data.index === 8){
+      state.athletes.newpass = data.newpass
+    }
+    if(data.index === 9){
+      state.athletes.checkpass = data.checkpass
     }
     if(data.index === 0){
       state.athletes = {
