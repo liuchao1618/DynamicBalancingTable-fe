@@ -44,7 +44,7 @@
                   <div class="setup">
                       <img @click="setup = !setup" src="./image/setup.png"/>
                       <div class="setupList" v-if='setup'>
-                          <div class='setupItem'>修改密码</div>
+                          <div class='setupItem' @click='editPWD'>修改密码</div>
                           <div class='setupItem'>退出登录</div>
                           <div class='setupItem'>自动登录 <van-switch class='switch' size='24px' v-model="loginSwitch" active-color="#07c160" inactive-color="#4E4F50"></van-switch></div>
                       </div>
@@ -268,6 +268,7 @@ export default {
     }
   },
   methods: {
+
     tabBtn (index) {
       this.tab = index
     },
@@ -278,7 +279,10 @@ export default {
     // 点击使用本次设置进行训练
     clickToTrain () {
       this.$router.push('/train')
-    }
+    },
+    editPWD(){
+        this.$router.push({ name: 'editPass'});
+    },
   }
 }
 </script>
