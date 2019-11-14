@@ -14,6 +14,7 @@ import demo from '@/views/demo'//训练（demo模式）开始运动
 import finish from '@/views/finish'//训练finish
 import Train from '@/views/train'//训练设置
 import editPass from '@/views/editPass'//训练finish
+import live from '@/views/live'//live模式
 
 
 export default new Router({
@@ -37,6 +38,10 @@ export default new Router({
       path: '/editPass',
       name: 'editPass',
       component: editPass
+    },{
+      path: '/live',
+      name: 'live',
+      component: live
     }, {
       path: '/finish',
       name: 'finish',
