@@ -570,3 +570,10 @@ export default {
     }
 }
 </style>
+
+<style lang="less">
+.van-hairline--top-bottom::after, .van-hairline-unset--top-bottom::after{border-width:0;}
+.van-cell{height: 64px;line-height: 42px;font-size: 22px;}
+.van-button{height: 68px;font-size: 24px;}
+.van-field__control{color: #8D8D94;font-size: 22px;}
+</style>

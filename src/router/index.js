@@ -8,6 +8,7 @@ import HttpError from '@/views/httpError/httpError.vue'
 import AddAthletes from '@/views/addAthletes/addAthletes.vue'
 import AthletesDetail from '@/views/athletesDetail/athletesDetail.vue'
 import SelectTime from '@/views/selectTime'//训练_选择时间
+// import Live from '@/views/live'//LIVE模式
 import downTime from '@/views/downTime'//倒计时
 import power from '@/views/power'//训练（PT模式）开始运动
 import demo from '@/views/demo'//训练（demo模式）开始运动
@@ -33,6 +34,11 @@ export default new Router({
       name: 'SelectTime',
       component: SelectTime
     },
+    // {
+    //   path: '/live',
+    //   name: 'Live',
+    //   component: Live
+    // },
     {
       path: '/editPass',
       name: 'editPass',
