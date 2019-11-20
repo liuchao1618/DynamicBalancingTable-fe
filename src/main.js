@@ -23,6 +23,8 @@ import { Lazyload } from 'vant'
 import { List } from 'vant'
 // 提示框
 import { Dialog } from 'vant'
+// html5+
+import VueHtml5Plus from 'vue-html5plus'
 
 import 'lib-flexible'
 
@@ -35,6 +37,8 @@ Vue.use(vuex)
 Vue.use(Vant)
 Vue.use(Lazyload)
 Vue.use(List)
+Vue.use(VueHtml5Plus)
+
 
 /* VUE实例 */
 new Vue({

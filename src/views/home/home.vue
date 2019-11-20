@@ -198,9 +198,9 @@ export default {
         loginFlag: false,
         setup: false,
         loginSwitch: false,
-        // status: 'fail',
-        status: 'success',
-        statusContent: 0,
+        status: 'fail',
+        // status: 'success',
+        statusContent: 1,
         menuList: [
             {
             img: require('./image/banner1.png'),
@@ -267,8 +267,10 @@ export default {
         ]
     }
   },
+  mounted () {
+      this.startBluetoothDiscovery()
+  },
   methods: {
-
     tabBtn (index) {
       this.tab = index
     },
@@ -281,8 +283,49 @@ export default {
       this.$router.push('/train')
     },
     editPWD(){
-        this.$router.push({ name: 'editPass'});
+        this.$router.push({ name: 'editPass'})
     },
+    // 开始搜索附近的蓝牙设备
+    startBluetoothDiscovery(){
+        document.addEventListener('plusready',function () { 
+            plus.bluetooth.openBluetoothAdapter({
+                success:function(e){
+                    alert('开始搜索附近的蓝牙设备: '+JSON.stringify(e))
+                    console.log('open success: '+JSON.stringify(e))
+                    plus.bluetooth.startBluetoothDevicesDiscovery({
+                        success:function(e){
+                            alert('开始搜索附近的蓝牙设备成功: '+JSON.stringify(e))
+                            console.log('start discovery success: '+JSON.stringify(e))
+                        },
+                        fail:function(e){
+                            alert('开始搜索附近的蓝牙设备失败: '+JSON.stringify(e))
+                            console.log('start discovery failed: '+JSON.stringify(e))
+                        }
+                    });
+                },
+                fail:function(e){
+                    alert('开始搜索附近的蓝牙设备失败啦啦啦啦: '+JSON.stringify(e))
+                    console.log('open failed: '+JSON.stringify(e))
+                }
+            });
+        },false); 
+    },
+    // 获取已搜索到的蓝牙设备
+    getBluetoothDevices(){
+        plus.bluetooth.getBluetoothDevices({
+            success:function(e){
+                var devices = e.devices
+                console.log('get devices success: '+e.length)
+                for(var i in devices){
+                    console.log(i+': '+JSON.stringify(devices[i]))
+                }
+            },
+            fail:function(e){
+                console.log('get devices failed: '+JSON.stringify(e))
+            }
+        })
+    },
+
   }
 }
 </script>

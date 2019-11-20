@@ -4,7 +4,14 @@
             <div class='title'>登录</div>
             <div class='input'>
                 <van-cell-group class='mgb35'>
-                    <van-field type="tel" v-model="tel" placeholder="请输入手机号" />
+                    <van-field ref="field" @focus="telFocus" @blur="telBlur" type="tel" v-model="tel" placeholder="请输入手机号">
+                    </van-field>
+                    <div class="tel_Wrapper" v-if="telFlag">
+                        <div class="tel_box"  v-for="(item, index) of oldTel" :key="item.id">
+                            <p @click="oldTelClick(item.tel)">{{item.tel}}</p>
+                            <p @click="deleteTel(index)">×</p>
+                        </div>
+                    </div>
                 </van-cell-group>
                 <van-cell-group class='mgb60'>
                     <van-field type="password" v-model="pwd" placeholder="请输入密码" />
@@ -22,9 +29,40 @@ export default {
         return {
             tel: '',
             pwd: '',
-            flag: true
+            flag: true,
+            telFlag: false,
+            oldTel: [{
+                tel: 18401744592,
+                id: 0
+            },
+            {
+                tel: 16498503992,
+                id: 1
+            },
+            {
+                tel: 15945400002,
+                id: 2
+            },
+            {
+                tel: 13845400430,
+                id: 3
+            },
+            {
+                tel: 13845467001,
+                id: 4
+            },
+            {
+                tel: 13645467885,
+                id: 5
+            }]
         }
     },
+    // mounted () {
+    //     this.$refs.field.blur(() => {
+    //         this.telFlag = true
+    //         console.log('5555555555')
+    //     })
+    // },
     methods:{
         checkTel(newVal){
             let tips = '';
@@ -68,6 +106,34 @@ export default {
               return false;
             }
         },
+        // 点击输入手机号码获取焦点
+        telFocus () {
+            if (this.oldTel.length > 0) {
+                this.telFlag = true
+            }
+        }, 
+        // 失去焦点
+        telBlur () {
+            let that = this
+            setTimeout(function(){
+                that.telFlag = false
+                console.log('1111111111')
+            }, 10)
+            // console.log('1111111111')
+        },
+        // 点击历史手机号码
+        oldTelClick (val) {
+            if (val) {
+                this.tel = val
+                this.telFlag = false
+            } else {
+                this.telFlag = false
+            }
+        },
+        // 删除历史手机号
+        deleteTel (index) {
+            this.oldTel.splice(index,1)
+        }
     }
 }
 </script>
@@ -112,6 +178,7 @@ export default {
             }
             .mgb35{
                 margin-bottom: 35px;
+                position: relative;
             }
             .mgb60{
                 margin-bottom: 60px;
@@ -120,14 +187,32 @@ export default {
                 margin-bottom: 20px;
             }
             /deep/ .van-button--primary{
-                background-color: #2286A9;
-                border: 1px solid #2286A9;
+                background-color: #324951;
+                border: 1px solid #324951;
             }
             /deep/ .van-button--default{
                 color: #D1D0D1;
                 background-color: #373839;
                 border: 1px solid #373839;
             }
+        }
+        .tel_Wrapper{
+            position: absolute;
+            width:550px;
+            height:134px;
+            background:rgba(69,68,68,1);
+            box-shadow:0px -1px 0px 0px rgba(88,86,93,1);
+            border-radius:5px;
+            z-index: 100;
+            font-size:22px;
+            line-height: 40px;
+            color:rgba(141,141,148,1);
+            overflow: auto;
+        }
+        .tel_box{
+            display: flex;
+            padding: 0 30px;
+            justify-content: space-between;
         }
     }
 }
