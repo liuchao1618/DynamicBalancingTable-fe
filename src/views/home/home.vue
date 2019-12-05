@@ -853,16 +853,16 @@ let vm = {
       tab: 0,
       loginFlag: false,
       setup: false,
-      loginSwitch: false,
-    //   status: 'fail',
-      status: 'success',
+    //   loginSwitch: false,
+      status: 'fail',
+    //   status: 'success',
       statusContent: 0,
       newDevices: [], // 搜索到的蓝牙数据（name,adress）
       deviceList: [], // 蓝牙地址(adress)
       recordList: [],//记录 
-    merberList: [],//我的运动员
-    collectList: [],//收藏
-    menuList: [
+      merberList: [],//我的运动员
+      collectList: [],//收藏
+      menuList: [
         {
             img: require('./image/banner1.png'),
             text: 'FUNTIONAL 1 L1'
@@ -999,7 +999,7 @@ let vm = {
   mounted () {
     this.getExercise(); //所有记录
     this.getmemberMsg(); //我的运动员
-    this.startBluetoothDiscovery()
+    // this.startBluetoothDiscovery()
     this.tab = this.$route.query.index * 1 || 0;
     if (this.login) {
         window.localStorage.setItem('modle', 'PT')
