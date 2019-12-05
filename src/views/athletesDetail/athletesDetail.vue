@@ -32,24 +32,38 @@ export default {
         }
     },
     created(){
-        this.index = this.$route.params.index
+        this.index = this.$route.query.index;
+        console.log()
         if(this.index === 1){
             this.title = '姓名'
+            this.name = this.$route.query.value
         }else if(this.index === 2){
             this.title = '联系方式'
+            this.tel = this.$route.query.value
         }else if(this.index === 5){
             this.title = '身高'
+            this.height = this.$route.query.value
+
         }else if(this.index === 6){
             this.title = '体重'
+            this.weight = ery.value
+
         }else if(this.index === 7){
             this.title = '旧密码'
+            this.oldpass = this.$route.query.value
+
         }else if(this.index === 8){
             this.title = '新密码'
+            this.newpass = this.$route.query.value
+
         }else if(this.index === 9){
             this.title = '确认新密码'
+            this.checkpass = this.$route.query.value
+
         }
     },
     mounted(){
+        
         if(this.index){
             this.$refs.input.focus()
         }
@@ -72,18 +86,44 @@ export default {
                 this.$toast('请填写体重')
                 return
             }
+            if(this.index === 7 && !this.oldpass){
+                this.$toast('请填写旧密码')
+                return
+            }
+            if(this.index === 8 && !this.newpass){
+                this.$toast('请填写新密码')
+                return
+            }
+            if(this.index === 9 && !this.checkpass){
+                this.$toast('请确认新密码')
+                return
+            }
             let data = {index: this.index}
             if(this.index === 1 ){
                 data.name = this.name
             }else if(this.index === 2){
                 data.tel = this.tel
-            }else if(this.index === 3){
+            }else if(this.index === 5){
                 data.height = this.height
-            }else if(this.index === 4){
+            }else if(this.index === 6){
                 data.weight = this.weight 
+            }else if(this.index === 7){
+                data.oldpass = this.oldpass 
+            }else if(this.index === 8){
+                data.newpass = this.newpass 
+            }else if(this.index === 9){
+                data.checkpass = this.checkpass 
             }
+
+
+            if(this.index<7){
+                this.$router.push({name: 'addAthletes'})
+
+            }else{
+            this.$router.push({name: 'editPass'})
+            }
+            console.log(this.index,'indexaaaaaaaaaaaaaaaaaaaaaaaaaa')
             this.$store.dispatch('setAthletes', data)
-            this.$router.push({name: 'addAthletes'})
         },
         checkTel(newVal){
             let reg = /^1[3456789]\d{9}$/;
@@ -116,6 +156,7 @@ export default {
         height: 93px;
         text-indent: 10px;
         font-size: 22px;
+        color:#BDBDC5;
         background-color: transparent;
         border: 0;
         border-bottom: 1px solid #4E4F54;

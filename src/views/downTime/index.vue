@@ -18,7 +18,12 @@
           --this.word
         }else{
           clearInterval(this.timer)
-        this.$router.push({ name: 'power'});
+          let model = window.localStorage.getItem('modle')
+          if(model == 'PT'){
+            this.$router.push({ name: 'power'});
+          }else{
+            this.$router.push({ name: 'demo'});
+          }
         }
           
         }, 1000);

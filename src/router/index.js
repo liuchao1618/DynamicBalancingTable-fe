@@ -15,14 +15,30 @@ import finish from '@/views/finish'//训练finish
 import Train from '@/views/train'//训练设置
 import editPass from '@/views/editPass'//训练finish
 import live from '@/views/live'//live模式
+import sportExerciseLog from '@/views/sportExerciseLog'//查看运动记录
+import text from '@/views/text'//
 
 
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '/home',
       name: 'Home',
       component: Home
+    },
+    {
+      path: '/',
+      component: Home
+    },
+    {
+      path: '/sportExerciseLog',
+      name: 'sportExerciseLog',
+      component: sportExerciseLog
+    },
+    {
+      path: '/text',
+      name: 'text',
+      component: text
     },
     {
       path: '/httpError',
@@ -74,9 +90,9 @@ export default new Router({
       name: 'train',
       component: Train
     },
-    {
-      path: '*',
-      redirect: '/'
-    }
+    // {
+    //   path: '*',
+    //   redirect: '/'
+    // }
   ]
 })

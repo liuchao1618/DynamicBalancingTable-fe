@@ -1,11 +1,11 @@
 <template>
     <div class='addAthletes'>
         <back-header title='运动员信息'></back-header>
-        <div class='item' @click="toDetail(1)">
+        <div class='item' @click="toDetail(1, athletes.name)">
             <div class='itemLeft'>*姓名</div>
             <div class='itemRight'>{{ athletes.name ? athletes.name : '请填写您的姓名 >' }}</div>
         </div>
-        <div class='item' @click="toDetail(2)">
+        <div class='item' @click="toDetail(2, athletes.tel)">
             <div class='itemLeft'>*联系方式</div>
             <div class='itemRight'>{{ athletes.tel ? athletes.tel : '请填写您的手机号 >' }}</div>
         </div>
@@ -17,18 +17,24 @@
             <div class='itemLeft'>出生日期</div>
             <div class='itemRight' @click="dateShow = true">{{ athletes.birth ? athletes.birth : '请选择您的出生日期 >' }}</div>
         </div>
-        <div class='item' @click="toDetail(5)">
+        <div class='item' @click="toDetail(5, athletes.height)">
             <div class='itemLeft'>身高（cm）</div>
-            <div class='itemRight'>{{ athletes.height ? athletes.height : '请填写您的身高 >' }}</div>
+            <van-field  type="tel" 
+                        placeholder="请输入身高">
+                    </van-field>
+            <!-- <div class='itemRight'>{{ athletes.height ? athletes.height : '请填写您的身高 >' }}</div> -->
         </div>
-        <div class='item' @click="toDetail(6)">
+        <div class='item' @click="toDetail(6, athletes.weight)">
             <div class='itemLeft'>体重（kg）</div>
-            <div class='itemRight'>{{ athletes.weight ? athletes.weight : '请填写您的体重 >' }}</div>
+            <input type="text" placeholder="请填写您的体重">
+            <!-- <div class='itemRight'>{{ athletes.weight ? athletes.weight : '请填写您的体重 >' }}</div> -->
         </div>
         <div class='itemNo'>标*项为必填项，填写的手机号将作为运动员的账号使用</div>
         <div class='buttonBox'>
-            <van-button type="primary" class='button mgr'>取消</van-button>
-            <van-button type="primary" class='button'>保存</van-button>
+                <p class='button' @click='cancleBtn'>取消</p>
+                <p class='button active' @click='saveBtn'>保存</p>
+            <!-- <van-button type="primary" class='button mgr' @click='cancleBtn'>取消</van-button>
+            <van-button type="primary" class='button' @click='saveBtn'>保存</van-button> -->
         </div>
         <van-popup v-model="show">
             <div class='sex'>
@@ -56,6 +62,7 @@
 <script>
     import backHeader from '@/components/backHeader'
     import { mapState } from 'vuex'
+    import {editMember,addMember} from '@/api/index'
     export default {
         name: 'addAthletes',
         components: {
@@ -72,9 +79,78 @@
                 currentDate: new Date(),
                 show: false,
                 sex: 1,
+                userCode:0
             }
         },
+        mounted() {
+            console.log(this.athletes,'11111111111111111111111')
+            // ({name:'addAthletes',query:{userCode: item.userCode,name:item.username,sex: item.sex=='女'?0:1,birth:item.birth,height:item.height,weight:item.weight,mobile:item.mobile}})
+            this.athletes.name = this.$route.query.name||this.athletes.name 
+            this.athletes.tel = this.$route.query.mobile|| this.athletes.tel
+            this.athletes.sex = this.$route.query.sex||this.athletes.sex
+            this.athletes.birth = this.$route.query.birth||this.athletes.birth 
+            this.athletes.height = this.$route.query.height|| this.athletes.height
+            this.athletes.weight = this.$route.query.weight||this.athletes.weight
+        },
         methods: {
+            saveBtn(){
+                let data = {
+                    parentUserCode:window.localStorage.getItem('userCode'),
+                    username:this.athletes.name,
+                    mobile:  this.athletes.tel,
+                    sex:     this.athletes.sex=='女'?0:1,
+                    birth:   this.athletes.birth,
+                    height:  this.athletes.height,
+                    weight:  this.athletes.weight,
+                };
+
+                let data1 = {
+                    parentUserCode:window.localStorage.getItem('userCode'),
+                    targetUserCode: window.localStorage.getItem('userCode'),
+                    username:this.athletes.name,
+                    mobile:  this.athletes.tel,
+                    sex:     this.athletes.sex=='女'?0:1,
+                    birth:   this.athletes.birth,
+                    height:  this.athletes.height,
+                    weight:  this.athletes.weight,
+                }
+                console.log(this.$route.query.name)
+                if(this.$route.query.name){
+                    editMember(data1).then((res)=>{
+                    if(res.data.code == 200){
+                        this.athletes.name = '';
+                        this.athletes.tel = '';
+                        this.athletes.sex = '';
+                        this.athletes.birth = '';
+                        this.athletes.height = '';
+                        this.athletes.weight = '';
+                        this.$toast({
+                            message:'修改成功',
+                            position:'bottom'
+                        });
+                        this.$router.push({name:'Home',query:{index:3}})
+                    }
+                })
+                }else{
+                addMember(data).then((res)=>{
+                    if(res.data.code == 200){
+                        this.athletes.name = '';
+                        this.athletes.tel = '';
+                        this.athletes.sex = '';
+                        this.athletes.birth = '';
+                        this.athletes.height = '';
+                        this.athletes.weight = '';
+                        this.$toast({
+                            message:'添加成功',
+                            position:'bottom'
+                        });
+                        this.$router.push({name:'Home',query:{index:3}})
+                    }
+                })
+
+                }
+            },
+            cancleBtn(){},
             handleCancel() {
                 this.dateShow = false;
             },
@@ -83,8 +159,8 @@
                 this.dateShow = false;
                 this.$store.dispatch('setAthletes', { index: 4, birth: this.currentDate})
             },
-            toDetail(index) {
-                this.$router.push({ name: 'athletesDetail', params: { index: index } })
+            toDetail(index,val) {
+                // this.$router.push({ name: 'athletesDetail', query: { index: index ,value:val} })
             },
             sexBtn(index) {
                 this.sex = index
@@ -144,21 +220,15 @@
                 width: 550px;
                 height: 68px;
                 font-size: 24px;
-                border-radius: 5px;
+                border-radius: 5px;color:rgba(209,208,209,1);
+                border:1px solid rgba(104,105,106,1);
+                line-height:68px;
             }
 
-            .mgr {
-                margin-right: 30px;
-
-                &.van-button--primary {
-                    background-color: transparent;
-                    border-color: #68696A;
-                }
-            }
-
-            .van-button--primary {
-                background-color: #2286A9;
-                border-color: #2286A9;
+            .active{
+                border:0;
+                background:rgba(34,134,169,1);
+                margin-left: 30px;
             }
         }
 
