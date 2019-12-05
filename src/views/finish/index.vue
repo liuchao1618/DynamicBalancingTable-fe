@@ -198,7 +198,6 @@
         v.c.forEach((val, i) => {
           newArr.push(parseInt(val / 4))
         })
-        console.log(newArr)
         ctx.lineTo(newArr[0], newArr[1]);
       })
       ctx.stroke();
@@ -209,7 +208,6 @@
         window.localStorage.removeItem('locus')
       },
       checkNames(item) {
-        console.log(item)
         item.checked = true
         this.checkName.push(item)
         this.shows = false
@@ -231,7 +229,6 @@
           if (this.sportName.length > 0) {
             this.shows = true
           }
-          console.log(this.sportName)
           // this.sportName = res.data.data
         })
       },
@@ -262,7 +259,6 @@
                 this.nameList = item.members
               }
             })
-            console.log(this.nameList)
           })
         }
       },
@@ -275,7 +271,6 @@
       },
       submit() {
         this.referFlag = false
-        console.log(this.checkName)
         let data = {
           id: this.currentId * 1,
           members: this.checkName
@@ -290,7 +285,6 @@
         })
       },
       submits() {
-        console.log(this.checkName)
         let data = {
           id: this.currentId * 1,
           members: this.checkName
@@ -348,7 +342,6 @@
               this.checkName.splice(ind, 1)
             }
           })
-          console.log(this.checkName, 'this.checkName')
         }
       }
     }
