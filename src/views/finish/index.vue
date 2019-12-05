@@ -9,24 +9,44 @@
     </div>
     <div class="box">
       <div class="left">
-        <h3>2019-10-09 00:43:19 PT模式</h3>
+        <h3>{{dataTime}} {{model}}模式</h3>
         <div class="exercise">
           <div class="exerciseTime">
             <span>设置运动时间</span>
-            <h2>14分钟</h2>
+            <h2> {{parseInt(fullPlayTime/60)}}分钟</h2>
             <span>实际运动时间</span>
-            <h2>8分钟</h2>
+            <h2>{{parseInt(realPlayTime/60)}}分钟</h2>
           </div>
           <div class="usedevice">
             <span>本次使用设备</span>
-            <h2>设备1</h2>
-            <span>本次使用参数</span>
-            <div class="usedevicebox">
-              <dl v-for='(item,index) in dataList'>
-                <dt>{{item.num}}</dt>
-                <dd>{{item.word}}</dd>
-              </dl>
+            <div style="display:flex;marginBottom:35px;">
+              <h2 style="marginLeft:10px" v-for='(item,i) in devices'>{{item.deviceAlias}}</h2>
             </div>
+            <div v-if='level'>
+              <span>本次使用运动等级</span>
+              <div style="fontSize:20px">{{level}}</div>
+            </div>
+            <div v-else>
+              <span>本次使用参数</span>
+              <div class="usedevicebox">
+                <dl>
+                  <dt>{{leftValue}}</dt>
+                  <dd>POWER LEFT</dd>
+                </dl>
+                <dl>
+                  <dt>{{parseInt(( leftValue*1 + rightValue*1) / 2)}}</dt>
+                  <dd>BOOST</dd>
+                </dl>
+                <dl>
+                  <dt>{{rightValue}}</dt>
+                  <dd>POWER RIGHT</dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+          <div class='conCollect'>
+            <img v-if='favored' @click='Collect()' src="../../assets/image/starS.png" alt="">
+            <img v-else @click='Collect()' src="../../assets/image/star.png" alt="">
           </div>
         </div>
       </div>
@@ -37,7 +57,7 @@
             <span>已选：</span>
             <div class="chekbox">
               <div class="checkName" v-for='(item,ind) in checkName'>
-                <span>{{item.name}}</span>
+                <span>{{item.username}}</span>
                 <span @click='del(item)'>×</span>
               </div>
             </div>
@@ -45,151 +65,356 @@
           <div class="drill">
             <div class="coach">
               <span>教练：</span>
-              <!-- <select>
-                  <option :value ="item.value" v-for='(item,ind) in option1'>{{item.text}}</option>
-                </select> -->
+              <div class="select">
+                <span>{{coachName}}</span>
+                <span @click='tabShow' class="img"><img src="../../assets/image/xiala.png" alt=""></span>
+              </div>
+              <ul class="list" v-if='show'>
+                <li v-for='(item,i) in trainerName' @click='changeName(item.username)'>{{item.username}}</li>
+              </ul>
             </div>
             <div class="search">
-              <van-search placeholder="请输入运动员姓名" v-model="iptName" />
+              <van-search placeholder="请输入运动员姓名" @input='changeIpt' v-model="iptName" />
+              <ul class="lists" v-if='shows'>
+                <li v-for='(item,i) in sportName' @click='checkNames(item)'>{{item.username}}</li>
+              </ul>
             </div>
           </div>
           <div class="exerciseName">
             <div class="info" v-for='(item,index) in nameList'>
-              <van-checkbox :disabled='item.disabled' v-model="item.checked" shape="square" @click='selectAll(item)'>{{item.name}}</van-checkbox>
+              <van-checkbox :disabled='item.disabled' v-model="item.checked" shape="square" @click='selectAll(item)'>
+                {{item.username}}</van-checkbox>
             </div>
           </div>
-          <div class="sub" :class="[checkName.length>0 ? 'active' : '']">提交
+
+          <div v-if='referFlag' class="sub" :class="[checkName.length>0 ? 'active' : '']" @click='submit'>提交
+          </div>
+          <div v-else class="sub" @click='submits'>重新提交
           </div>
         </div>
       </div>
     </div>
-    <div class="bottom">
+    <div class="bottom" @click='goHome'>
       回到训练页
     </div>
   </div>
 </template>
 <script>
+  import { checkMember, delCollect, addCollect, addSport, runnersName } from '@/api/index'
   export default {
     data() {
       return {
-        value1:'',
-        option1:[
-        { text: '王乐乐', value: 0 },
-        { text: '赵哈哈', value: 1 },
-        { text: '孙嘻嘻', value: 2 }
-        ],
+        dataTime: '',
+        show: false,
+        value1: '',
+        coachName: '',
+        trainerName: [],
         checkName: [],
-        iptName:'',
+        sportName: [],
+        iptName: '',
+        shows: false,
+        favored: false,
+        leftValue: 55,
+        level: '',
+        rightValue: 80,
+        currentId: 0,
+        bottomValue: 30,
+        fullPlayTime: '',
+        realPlayTime: '',
+        referFlag:true,
+        model: '',
+        devices: [],
         dataList: [
           {
-          num: 30,
-          word: 'POWER LEFT'
-        }, {
-          num: 25,
-          word: 'BOOST'
-        }, {
-          num: 30,
-          word: 'POWER RIGHT'
-        }],
-        nameList: [
-          {
-          name: '周怡君',
-          checked: false
-        }, {
-          name: '林辛豪',
-          checked: false
-        }, {
-          name: '蔡修梅',
-          checked: false
-        }, {
-          name: '王心怡',
-          checked: false
-        }, {
-          name: '何冠良',
-          checked: false
-        }, {
-          name: '李筱婷',
-          checked: false
-        }, {
-          name: '林宜月3',
-          checked: false
-        }, {
-          name: '林辛豪3',
-          checked: false
-        }, {
-          name: '蔡修梅3',
-          checked: false
-        }, {
-          name: '王心怡3',
-          checked: false
-        }, {
-          name: '何冠良3',
-          checked: false
-        }, {
-          name: '李筱婷3',
-          checked: false
-        }, {
-          name: '林宜月3',
-          checked: false
-        }]
+            num: 30,
+            word: 'POWER LEFT'
+          }, {
+            num: 25,
+            word: 'BOOST'
+          }, {
+            num: 30,
+            word: 'POWER RIGHT'
+          }],
+        nameList: []
       }
     },
     mounted() {
+      this.coachName = window.localStorage.getItem('username')
+      function getDate() {
 
+        var myDate = new Date();
+
+        //获取当前年
+        var year = myDate.getFullYear();
+
+        //获取当前月
+        var month = myDate.getMonth() + 1;
+
+        //获取当前日
+        var date = myDate.getDate();
+        var h = myDate.getHours(); //获取当前小时数(0-23)
+        var m = myDate.getMinutes(); //获取当前分钟数(0-59)
+        var s = myDate.getSeconds();
+
+        //获取当前时间
+
+        return year + '-' + (month) + "-" + (date) + " " + (h) + ':' + (m) + ":" + (s);
+
+      };
+      this.dataTime = getDate()
+      this.leftValue = this.$route.query.left
+      this.rightValue = this.$route.query.right
+      this.fullPlayTime = this.$route.query.fullPlayTime
+      this.realPlayTime = this.$route.query.realPlayTime
+      this.currentId = this.$route.query.id
+      this.level = this.$route.query.level
+      this.model = this.$route.query.model
+      this.devices = JSON.parse(window.localStorage.getItem('devices'))
+      this.getcheckMember()
     },
     methods: {
-      del(val){
-        this.checkName.map((item,ind)=>{
-            if (item.name == val.name) {
-              this.checkName.splice(ind,1)
-            }
-          })
-          this.nameList.map((item,i)=>{
-            if(val.name==item.name){
-              item.checked = false
-            }
-          })
+      goHome() {
+        this.$router.push('Home')
       },
-      selectAll(val) {
-        // if(this.checkName.length >= 5&&val.checked){
-        //   this.nameList.map((item,i)=>{
-        //     if(!item.checked){
-        //       item.disabled = true
-        //     }
-        //   })
-        // }else{
-        if (!val.checked&&this.checkName.length < 5) {
-          this.checkName.unshift(val)
+      checkNames(item) {
+        console.log(item)
+        item.checked = true
+        this.checkName.push(item)
+        this.shows = false
+      },
+      changeIpt() {
+        runnersName().then((res) => {
+          this.sportName = []
+          res.data.data.forEach((item, i) => {
+            item.checked = false
+            if (this.iptName !== '') {
+              if (item.username.indexOf(this.iptName) !== -1) {
+                this.sportName.push(item)
+              }
+
+            } else {
+              this.shows = false
+            }
+          })
+          if (this.sportName.length > 0) {
+            this.shows = true
+          }
+          console.log(this.sportName)
+          // this.sportName = res.data.data
+        })
+      },
+      getcheckMember() {
+        checkMember().then((res) => {
+          this.trainerName = res.data.data
+          res.data.data.forEach((item, i) => {
+            if (item.username == this.coachName) {
+              item.members.forEach((v, i) => {
+                v.checked = false
+              })
+              this.nameList =JSON.parse(JSON.stringify(item.members)) 
+            }
+          })
+        })
+      },
+      changeName(val) {
+        if (val) {
+          this.coachName = val
+          this.show = false
+          checkMember().then((res) => {
+            // this.trainerName = res.data.data
+            res.data.data.forEach((item, i) => {
+              if (val == item.username) {
+                item.members.forEach((v, i) => {
+                  v.checked = false
+                })
+                this.nameList = item.members
+              }
+            })
+            console.log(this.nameList)
+          })
+        }
+      },
+      tabShow() {
+        if (this.show == false) {
+          this.show = true
         } else {
-          this.checkName.map((item,ind)=>{
-            if (item.name == val.name) {
-              this.checkName.splice(ind,1)
+          this.show = false
+        }
+      },
+      submit() {
+        this.referFlag = false
+        console.log(this.checkName)
+        let data = {
+          id: this.currentId * 1,
+          members: this.checkName
+        }
+        addSport(data).then((res) => {
+          if (res.data.code == 200) {
+            this.checkName = []
+            this.nameList.forEach((item, i) => {
+              item.checked = false
+            })
+          }
+        })
+      },
+      submits() {
+        console.log(this.checkName)
+        let data = {
+          id: this.currentId * 1,
+          members: this.checkName
+        }
+        addSport(data).then((res) => {
+          if (res.data.code == 200) {
+            this.checkName = []
+            this.nameList.forEach((item, i) => {
+              item.checked = false
+            })
+          }
+        })
+      },
+      Collect() {
+        if (this.favored) {
+          this.favored = false
+          let data = {
+            userCode: window.localStorage.getItem('userCode'),
+            id: this.currentId * 1
+          }
+          delCollect(data).then((res) => {
+            if (res.data.code == 200) {
+            }
+          })
+        } else {
+          this.favored = true
+          let data = {
+            userCode: window.localStorage.getItem('userCode'),
+            id: this.currentId * 1
+          }
+          addCollect(data).then((res) => {
+            if (res.data.code == 200) {
             }
           })
         }
-
+      },
+      del(val) {
+        this.checkName.map((item, ind) => {
+          if (item.username == val.username) {
+            this.checkName.splice(ind, 1)
+            item.checked = false
+          }
+        })
+        // this.nameList.map((item, i) => {
+        //   if (val.name == item.name) {
+        //   }
+        // })
+      },
+      selectAll(val) {
+        if (!val.checked && this.checkName.length < 5) {
+          this.checkName.unshift(val)
+        } else {
+          this.checkName.map((item, ind) => {
+            if (item.username == val.username) {
+              this.checkName.splice(ind, 1)
+            }
+          })
+          console.log(this.checkName,'this.checkName')
+        }
       }
     }
   }
 </script>
 <style scoped lang="less">
+  .list {
+    position: absolute;
+    top: 35px;
+    left: 49px;
+    width: 139px;
+    height: 100px;
+    background: rgba(41, 43, 49, 1);
+    box-shadow: 0px -1px 0px 0px rgba(88, 86, 93, 1);
+    border-radius: 5px;
+    border: 1px solid rgba(88, 86, 93, 1);
+    border-top: 0;
+    z-index: 999;
+    color: #8D8D94;
+    line-height: 32px;
+    padding: 5px 10px;
+    box-sizing: border-box;
+    overflow: auto;
+  }
+
+  .lists {
+    position: absolute;
+    top: 35px;
+    left: 0px;
+    width: 205px;
+    height: 100px;
+    background: rgba(41, 43, 49, 1);
+    box-shadow: 0px -1px 0px 0px rgba(88, 86, 93, 1);
+    border-radius: 5px;
+    border: 1px solid rgba(88, 86, 93, 1);
+    border-top: 0;
+    z-index: 1000;
+    color: #8D8D94;
+    line-height: 32px;
+    padding: 5px 10px;
+    box-sizing: border-box;
+    overflow: auto;
+  }
+
+  .select {
+    margin-right: 15px;
+    padding: 5px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    width: 138px;
+    height: 35px;
+    color: #D1D5E6;
+    border-radius: 4px;
+    border: 1px solid rgba(98, 101, 118, 1);
+
+    .img {
+      width: 14px;
+
+      img {
+        width: 100%;
+      }
+    }
+  }
+
+  .conCollect {
+    width: 50px;
+  }
+
+  .conCollect img {
+    width: 100%;
+  }
+
   /deep/.van-checkbox__label {
     color: #D1D5E6
   }
-  /deep/.van-field__left-icon{
+
+  /deep/.van-field__left-icon {
     margin-left: 10px;
 
-  } 
-  /deep/.van-icon .van-icon-search,.van-cell{
-    color:#626576!important;
   }
-  /deep/.van-search,.van-search__content{
+
+  /deep/.van-icon .van-icon-search,
+  .van-cell {
+    color: #626576 !important;
+  }
+
+  /deep/.van-search,
+  .van-search__content {
     padding: 0;
-    background: transparent!important;
+    background: transparent !important;
   }
-  /deep/.van-field__control{
-    color: #D1D5E6!important;
+
+  /deep/.van-field__control {
+    color: #D1D5E6 !important;
   }
+
   .box {
     display: flex;
     justify-content: space-between;
@@ -255,12 +480,17 @@
 
       .drill {
         display: flex;
+        height: 35px;
         justify-content: space-between;
         align-items: center;
 
         .coach {
+          position: relative;
+          display: flex;
+          align-items: center;
+
           span {
-            font-size: 18px;
+            /* font-size: 18px; */
             font-family: PingFangSC-Regular, PingFang SC;
             font-weight: 400;
             color: rgba(171, 175, 189, 1);
@@ -269,14 +499,16 @@
         }
 
         .search {
+          position: relative;
           width: 204px;
           height: 35px;
           border-radius: 4px;
           border: 1px solid rgba(98, 101, 118, 1);
+          /* overflow: hidden; */
 
           input {
             border: 0;
-            line-height: 38px;
+            /* line-height: 38px; */
             padding: 0 10px;
             box-sizing: border-box;
             background: transparent;
@@ -299,8 +531,8 @@
           width: 20%;
           display: flex;
           height: 38px;
-          padding-left:10px;
-          box-sizing:border-box;
+          padding-left: 10px;
+          box-sizing: border-box;
           /* justify-content: center; */
           /* align-items: center; */
         }
@@ -338,6 +570,7 @@
 
       .exerciseTime,
       .usedevice {
+        flex: 1;
         display: flex;
         flex-direction: column;
 

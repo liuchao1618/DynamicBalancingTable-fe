@@ -21,19 +21,20 @@ import { Lazyload } from 'vant'
 
 // 瀑布流
 import { List } from 'vant'
-// 提示框
-import { Dialog } from 'vant'
+
 // html5+
 import VueHtml5Plus from 'vue-html5plus'
 
 import 'lib-flexible'
+import { Toast } from 'vant';
+
 
 import store from './store/store'
 Vue.config.productionTip = false
 
 Vue.use(VueAxios, axios)
 Vue.use(vuex)
-
+Vue.use(Toast);
 Vue.use(Vant)
 Vue.use(Lazyload)
 Vue.use(List)

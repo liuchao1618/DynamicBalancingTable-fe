@@ -15,7 +15,7 @@
       <span class="time">{{timeStr}}</span>
     </div>
     <div class="bottom">
-      <span class="back">BACK</span>
+      <span class="back" @click='back'>BACK</span>
       <span class="start" @click='start'>START</span>
       <span></span>
     </div>
@@ -25,42 +25,39 @@
   export default {
     data() {
       return {
-        currentValue: 720,
-        timeStr:'12:0'
+        currentValue: 300,
+        timeStr:'05:00'
       }
     },
     methods: {
+      back(){
+        this.$router.back(-1)
+      },
       onChange(event) {
         //将秒数转换为时分秒格式
-        function formatSeconds(value) {
-
-          var theTime = parseInt(value);// 秒
-          var middle = 0;// 分
-          var hour = 0;// 小时
-
-          if (theTime > 60) {
-            middle = parseInt(theTime / 60);
-            theTime = parseInt(theTime % 60);
-            if (middle > 60) {
-              hour = parseInt(middle / 60);
-              middle = parseInt(middle % 60);
-            }
-          }
-          var result = "" + parseInt(theTime);
-          if (middle > 0) {
-            result = "" + parseInt(middle) + ":" + result;
-          }
-          if (hour > 0) {
-            result = "" + parseInt(hour) + ":" + result;
-          }
-          return result;
-        }
+        function formatSeconds(s) {
+        //计算分钟
+        //算法：将秒数除以60，然后下舍入，既得到分钟数
+        var h;
+        h = Math.floor(s / 60);
+        //计算秒
+        //算法：取得秒%60的余数，既得到秒数
+        s = s % 60;
+        //将变量转换为字符串
+        h += '';
+        s += '';
+        //如果只有一位数，前面增加一个0
+        h = (h.length == 1) ? '0' + h : h;
+        s = (s.length == 1) ? '0' + s : s;
+        return h + ':' + s;
+      }
         this.timeStr = formatSeconds(event)
         this.currentValue = event;
       },
       start() {
-        this.$router.push({ name: 'downTime' });
-
+        this.$router.push({ name: 'downTime'});
+        this.timeStr = this.timeStr.split(':')[0] * 60 + this.timeStr.split(':')[1] * 1;
+        window.localStorage.setItem('setTime',this.timeStr)
       }
     }
   }

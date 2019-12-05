@@ -16,7 +16,10 @@ const state = {
     oldpass:'',
     newpass:'',
     checkpass:'',
-  }
+  },
+  loginflag:false,
+  login:false,
+  loginName:''
 }
 // 所需要定义的mutations
 const mutations = {
@@ -71,6 +74,11 @@ const mutations = {
     if(data.index === -1){
       state.athletes = data.data
     }
+  },
+  SETLOGINFLAG:(state,data)=>{
+    state.loginflag = data.loginflag
+    state.login = data.login
+    state.loginName = data.loginName
   }
 }
 

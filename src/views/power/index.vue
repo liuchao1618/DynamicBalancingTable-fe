@@ -11,23 +11,24 @@
       </div>
       <div class="center">
         <div class="cenLeft">
-          <van-slider class="leftLine" v-model="leftValue" bar-height='32px;' @change='changeleft' vertical />
+          <van-slider :step="5" class="leftLine" v-model="leftValue" bar-height='32px;' @change='changeleft' vertical />
           <img src="../../assets/image/left.png" alt="">
         </div>
         <div class="cenCent">
           <div></div>
           <div class="cencenTop">
             <span>TIMER</span>
-            <span>01:41</span>
+            <span>{{currentTime}}</span>
           </div>
           <div></div>
           <div class="cencenBot">
             <span>BOOST</span>
-            <span>{{parseInt((100-leftValue+100-rightValue)/2)}}</span>
+            <span>{{bottomValue}}</span>
           </div>
         </div>
         <div class="cenRight">
-          <van-slider class="rightValue" v-model="rightValue" bar-height='38px;' @change='changeright' vertical />
+          <van-slider :step="5" class="rightValue" v-model="rightValue" bar-height='38px;' @change='changeright'
+            vertical />
           <img src="../../assets/image/right.png" alt="">
         </div>
       </div>
@@ -38,7 +39,7 @@
       </div>
     </div>
     <div class="centBottom">
-      <van-slider class="bottomLine" :value="(100-leftValue+100-rightValue)/2" @change='changebottom' bar-height='23px' />
+      <van-slider :step="5" class="bottomLine" v-model="bottomValue" @change='changebottom' bar-height='23px' />
       <img src="../../assets/image/bottom.png" alt="">
     </div>
     <div class="bottom">
@@ -52,104 +53,418 @@
   </div>
 </template>
 <script>
+  import { saveRecord } from '@/api/index'
   export default {
     data() {
       return {
-        leftValue: 55,
-        rightValue: 80,
+        value: '',
+        leftValue: 75,
+        rightValue: 65,
         bottomValue: 30,
-        pause:'PAUSE',
-        freeze:'FREEZE',
-        align:'ALIGN'
+        currentTime: '00:00',
+        pause: 'PAUSE',
+        freeze: 'FREEZE',
+        align: 'ALIGN',
+        timer: null,
+        setTime: 0,
+        watchFlag: true
       }
     },
     mounted() {
+      /**
+       * 将秒转换为 分:秒
+       * s int 秒数
+      */
+      function s_to_hs(s) {
+        //计算分钟
+        //算法：将秒数除以60，然后下舍入，既得到分钟数
+        var h;
+        h = Math.floor(s / 60);
+        //计算秒
+        //算法：取得秒%60的余数，既得到秒数
+        s = s % 60;
+        //将变量转换为字符串
+        h += '';
+        s += '';
+        //如果只有一位数，前面增加一个0
+        h = (h.length == 1) ? '0' + h : h;
+        s = (s.length == 1) ? '0' + s : s;
+        return h + ':' + s;
+      }
+      this.setTime = window.localStorage.getItem('setTime');
+      this.timer = setInterval(() => {
+        if (this.setTime > 0) {
+          this.setTime--;
+          this.currentTime = s_to_hs(this.setTime)
+        } else {
+          clearInterval(this.timer)
+          let data = {
+            model: 'PT',
+            devices: [{ deviceId: 1, deviceAlias: '设备1' }],
+            fullPlayTime: window.localStorage.getItem('setTime') * 1,
+            realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime,
+            leftPower: 100 - this.leftValue,
+            rightPower: 100 - this.rightValue,
+            avgPower: parseInt((100 - this.leftValue + 100 - this.rightValue) / 2),
+            userCode: window.localStorage.getItem('userCode')
+          }
+          saveRecord(data).then((res) => {
+            if (res.data.code == 200) {
+              window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
+              this.$router.push({ name: 'finish', query: { left: 100 - this.leftValue, right: 100 - this.rightValue, avg: parseInt((100 - this.leftValue + 100 - this.rightValue) / 2), fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, id: res.data.data.id, model: 'PT' } });
+            }
+          })
+        }
+      }, 1000);
     },
     methods: {
-      stop(){
-        this.$router.push({name:'finish'})
+      stop() {
+        clearInterval(this.timer)
+
+        let data = {
+          model: 'PT',
+          devices: [{ deviceId: 1, deviceAlias: '设备1' }],
+          fullPlayTime: window.localStorage.getItem('setTime') * 1,
+          realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime,
+          leftPower: 100 - this.leftValue,
+          rightPower: 100 - this.rightValue,
+          avgPower: parseInt((100 - this.leftValue + 100 - this.rightValue) / 2),
+          userCode: window.localStorage.getItem('userCode')
+        }
+        saveRecord(data).then((res) => {
+          if (res.data.code == 200) {
+            window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
+            this.$router.push({ name: 'finish', query: { left: 100 - this.leftValue, right: 100 - this.rightValue, avg: parseInt((100 - this.leftValue + 100 - this.rightValue) / 2), fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, id: res.data.data.id, model: 'PT' } });
+          }
+        })
       },
-      changeleft(event){
-        this.bottomValue = parseInt((100-event+100-this.rightValue)/2)
+      changeleft(event) {
+        this.watchFlag = false
+        this.bottomValue = parseInt((100 - event + 100 - this.rightValue) / 2)
       },
-      changeright(event){
-        this.bottomValue = parseInt((100-event+100-this.rightValue)/2)
+      changeright(event) {
+        this.watchFlag = false
+
+        this.bottomValue = parseInt((100 - event + 100 - this.leftValue) / 2)
       },
-      changebottom(event){
-        console.log(event)
+      changebottom(event) {
+        this.watchFlag = true
+        // console.log(this.bottomValue,event)
       },
-      changepause(){
-        if(this.pause == 'RESUME'){
+      changepause() {
+        if (this.pause == 'RESUME') {
           this.pause = 'PAUSE'
-        }else{
-           this.pause = 'RESUME'
+          function s_to_hs(s) {
+            //计算分钟
+            //算法：将秒数除以60，然后下舍入，既得到分钟数
+            var h;
+            h = Math.floor(s / 60);
+            //计算秒
+            //算法：取得秒%60的余数，既得到秒数
+            s = s % 60;
+            //将变量转换为字符串
+            h += '';
+            s += '';
+            //如果只有一位数，前面增加一个0
+            h = (h.length == 1) ? '0' + h : h;
+            s = (s.length == 1) ? '0' + s : s;
+            return h + ':' + s;
+          }
+          // this.setTime = window.localStorage.getItem('setTime');
+          this.timer = setInterval(() => {
+            if (this.setTime > 0) {
+              this.setTime--;
+              this.currentTime = s_to_hs(this.setTime)
+            } else {
+              clearInterval(this.timer)
+              window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
+              this.$router.push({ name: 'finish', query: { left: 100 - this.leftValue, right: 100 - this.rightValue, avg: parseInt((100 - this.leftValue + 100 - this.rightValue) / 2), fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, id: res.data.data.id, model: 'PT' } });
+            }
+          }, 1000);
+        } else {
+          this.pause = 'RESUME'
+          clearInterval(this.timer)
         }
       },
-      changefreeze(){
-        if(this.freeze == 'FREEZE'){
+      changefreeze() {
+        if (this.freeze == 'FREEZE') {
           this.freeze = 'UNFREEZE'
-        }else{
-           this.freeze = 'FREEZE'
+        } else {
+          this.freeze = 'FREEZE'
         }
       },
-      changealign(){
+      changealign() {
         this.freeze = 'UNFREEZE'
       }
-    }
+    },
+    // watch: {
+    //   bottomValue(now, old) {
+    //     if (this.watchFlag) {
+    //     var overflowValue= 0;
+    //     var overflowFlag= false;
+    //     var diff= 0;
+    //       //差值
+    //       diff = now - old
+    //       //生成两个随机值
+    //       function getRandomNum(num, times) {
+    //         let res = [];
+    //         if (times === 1) {
+    //           res.push(num);
+    //           return res;
+    //         };
+    //         let max = num / times * 2;
+    //         let current = 1 + (~~(Math.random() * max - 1));
+    //         res.push(current);
+    //         return res.concat(getRandomNum(num - current, --times));
+    //       };
+    //       let arr = getRandomNum(diff * 2, 2)
+    //       // 标准模式基数产生的差值 0或1 e.g. 20 17 15
+    //       // this.nrB = Math.abs(100-this.leftValue + 100-this.rightValue - 2 * this.bottomValue);
+
+    //       if (diff > 0) {
+    //         this.leftValue = this.leftValue - arr[0]
+    //         if (this.leftValue <= 0) {
+    //           overflowValue = 100 - this.leftValue -100
+    //           overflowFlag = true
+    //           this.leftValue = 0
+    //         }
+    //         this.rightValue = this.rightValue - arr[1] - overflowValue
+    //         if ( this.rightValue <= 0) {
+    //           overflowValue = 100 - this.rightValue -100
+    //           this.rightValue = 0
+    //         }
+    //         if (overflowValue > 0 && !overflowFlag) {
+    //           this.leftValue = Math.min((this.leftValue + overflowValue ), 0);
+    //           // this.leftValue = 0;
+    //         }
+    //       } 
+    //       else if (diff < 0) {
+    //         this.leftValue = this.leftValue - arr[0]
+    //         this.rightValue = this.rightValue - arr[1]
+    //         console.log(this.leftValue)
+    //         if (this.leftValue >= 100) {
+    //           overflowValue = this.leftValue - 100
+    //           overflowFlag = true
+    //           this.leftValue = 100
+    //           console.log(this.leftValue,overflowValue)
+    //         }
+    //         this.rightValue = this.rightValue - arr[1] - overflowValue
+    //         if (this.rightValue >= 100) {
+    //         console.log(this.rightValue,overflowValue,'right')
+    //           overflowValue = (this.rightValue - arr[1]) - 100
+    //           this.rightValue = 100
+    //         }
+    //         if (overflowValue > 0 && !overflowFlag) {
+    //           // this.leftValue = Math.max(this.leftValue - overflowValue, 0);
+    //           // this.leftValue = 100;
+    //         }
+    //       }
+    //     }
+
+    //   }
+    // }
+    // watch: {
+    //         bottomValue(now, old) {
+    //             if (this.watchFlag) {
+    //                 let tempLeftValue = 100 - this.leftValue;
+    //                 let tempRightValue = 100 - this.rightValue;
+    //                 let overflowValue = 0;
+    //                 let overflowFlag = false;
+    //                 //差值
+    //                 const diff = now - old;
+    //                 // 计算补差值
+    //                 const averageDiff = tempLeftValue + tempRightValue - (old << 1);
+    //                 console.log(now,old,averageDiff,'11111111111')
+    //                 //生成两个随机值
+    //                 function getRandomNum(num, times) {
+    //                     let res = [];
+    //                     if (times === 1) {
+    //                         res.push(num);
+    //                         return res;
+    //                     }
+    //                     let max = num / times * 2;
+    //                     let current = 1 + (~~(Math.random() * max - 1));
+    //                     res.push(current);
+    //                     return res.concat(getRandomNum(num - current, --times));
+    //                 }
+
+    //                 let arr = getRandomNum(diff * 2, 2);
+    //                 // 标准模式基数产生的差值 0或1 e.g. 20 17 15
+    //                 // this.nrB = Math.abs(100-this.leftValue + 100-this.rightValue - 2 * this.bottomValue);
+
+    //                 if (diff > 0) {
+    //                     tempLeftValue += arr[0];
+    //                     tempRightValue += arr[1];
+    //                     if (tempLeftValue > 100) {
+    //                         overflowValue = tempLeftValue - 100;
+    //                         tempLeftValue = 100;
+    //                         overflowFlag = true;
+    //                     }
+    //                     if (tempRightValue + overflowValue - averageDiff > 100) {
+    //                         overflowValue = tempRightValue + overflowValue - averageDiff - 100;
+    //                         tempRightValue = 100;
+    //                     }
+    //                     if (overflowValue > 0 && !overflowFlag) {
+    //                         tempLeftValue = Math.min(tempLeftValue + overflowValue, 100);
+    //                     }
+    //                 } else if (diff < 0) {
+    //                     tempLeftValue += arr[0];
+    //                     tempRightValue += arr[1];
+    //                     if (tempLeftValue < 0) {
+    //                         overflowValue = 0 - tempLeftValue;
+    //                         tempLeftValue = 0;
+    //                         overflowValue = true;
+    //                     }
+    //                     if (tempRightValue - overflowValue + averageDiff < 0) {
+    //                         overflowValue = 0 - (tempRightValue - overflowValue + averageDiff);
+    //                         tempRightValue = 0;
+    //                     }
+    //                     if (overflowValue > 0 && !overflowFlag) {
+    //                         tempLeftValue = Math.max(tempLeftValue - overflowValue, 0);
+    //                     }
+    //                 }
+
+    //                 this.leftValue = 100 - tempLeftValue;
+    //                 this.rightValue = 100 - tempRightValue;
+    //             }
+    //         }
+    //     },
+    watch: {
+            bottomValue(now, old) {
+                if (this.watchFlag) {
+                  console.log(this.leftValue,this.rightValue,'left')
+                    let tempLeftValue = 100-this.leftValue;
+                    let tempRightValue = 100-this.rightValue;
+                    let overflowValue = 0;
+                    let overflowFlag = false;
+                    //差值
+                    const diff = now - old;
+                    // 计算补差值
+                    // 计算补差值
+                    // const averageDiff = (tempLeftValue + tempRightValue - (old << 1)) === 0 ? 0 : 1;     
+                  console.log(now, old,'11111111')
+                    //生成两个随机值
+                    function getRandomNum(num, times) {
+                        let res = [];
+                        if (times === 1) {
+                            res.push(num);
+                            return res;
+                        }
+                        let max = num / times * 2;
+                        let current = 1 + (~~(Math.random() * max - 1));
+                        res.push(current);
+                        return res.concat(getRandomNum(num - current, --times));
+                    }
+
+                    let arr = getRandomNum(diff * 2, 2);
+                    console.log(arr)
+                    // 标准模式基数产生的差值 0或1 e.g. 20 17 15
+                    // this.nrB = Math.abs(100-this.leftValue + 100-this.rightValue - 2 * this.bottomValue);
+
+                    tempLeftValue += arr[0];
+                    tempRightValue += arr[1];
+                    if (diff > 0) {
+                        if (tempLeftValue > 100) {
+                            overflowValue = tempLeftValue - 100;
+                            tempLeftValue = 100;
+                            overflowFlag = true;
+                        }
+                        if (tempRightValue + overflowValue > 100) {
+                            overflowValue = tempRightValue + overflowValue - 100;
+                            tempRightValue = 100;
+                        }
+                        if (overflowValue > 0 && !overflowFlag) {
+                            tempLeftValue = Math.min(tempLeftValue + overflowValue, 100);
+                        }
+                    } else if (diff < 0) {
+                        if (tempLeftValue < 0) {
+                            overflowValue = 0 - tempLeftValue;
+                            tempLeftValue = 0;
+                            overflowValue = true;
+                        }
+                        if (tempRightValue - overflowValue < 0) {
+                            overflowValue = 0 - (tempRightValue - overflowValue);
+                            tempRightValue = 0;
+                        }
+                        if (overflowValue > 0 && !overflowFlag) {
+                            tempLeftValue = Math.max(tempLeftValue - overflowValue, 0);
+                        }
+                    }
+
+                    this.leftValue = 100-tempLeftValue;
+                    this.rightValue = 100-tempRightValue;
+                }
+
+            }
+        }
   }
 </script>
 <style scoped lang="less">
-  .mark{
+  .mark {
     position: absolute;
-    left:0;
-    background: rgba(0,0,0,.5);
+    left: 0;
+    background: rgba(0, 0, 0, .5);
     top: 0;
   }
- .bottom .pauses{
+
+  .bottom .pauses {
     background: rgba(210, 222, 29, 1);
   }
-  .bottom .orange{
-    background:rgba(225,149,25,1);
+
+  .bottom .orange {
+    background: rgba(225, 149, 25, 1);
   }
-  .bottom .resumes{
-   background: rgba(0,216,29,1);
-   animation:blink 1s infinite;
-	-webkit-animation:blink 1s infinite; /*Safari and Chrome*/
+
+  .bottom .resumes {
+    background: rgba(0, 216, 29, 1);
+    animation: blink 1s infinite;
+    -webkit-animation: blink 1s infinite;
+    /*Safari and Chrome*/
   }
-  .bottom .freeze{
+
+  .bottom .freeze {
     position: relative;
-    background:rgba(212,196,25,1);
+    background: rgba(212, 196, 25, 1);
   }
-  .none{
+
+  .none {
     pointer-events: none;
   }
-  .bottom .unfreeze{
-   background: rgba(75,68,167,1);
-   animation:blink 1s infinite;
-	-webkit-animation:blink 1s infinite; /*Safari and Chrome*/
+
+  .bottom .unfreeze {
+    background: rgba(75, 68, 167, 1);
+    animation: blink 1s infinite;
+    -webkit-animation: blink 1s infinite;
+    /*Safari and Chrome*/
   }
-  @keyframes blink{
-	0%{
-		opacity: 0;
-	}
-	50%{
-		opacity: 80;
-	}
-	100%{
-		opacity: 0;
-	}
-}
-@-webkit-keyframes blink{
-	0%{
-		opacity: 0;
-	}
-	50%{
-		opacity: 80;
-	}
-	100%{
-		opacity: 0;
-	}
-}
+
+  @keyframes blink {
+    0% {
+      opacity: 0;
+    }
+
+    50% {
+      opacity: 80;
+    }
+
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @-webkit-keyframes blink {
+    0% {
+      opacity: 0;
+    }
+
+    50% {
+      opacity: 80;
+    }
+
+    100% {
+      opacity: 0;
+    }
+  }
 
   .bottom {
     display: flex;
@@ -167,11 +482,13 @@
       justify-content: center;
       /* background: rgba(210, 222, 29, 1); */
     }
-    div:nth-child(3){
-      background:rgba(225,149,25,1);
+
+    div:nth-child(3) {
+      background: rgba(225, 149, 25, 1);
     }
-    div:nth-child(4){
-      background:rgba(212,27,40,1);
+
+    div:nth-child(4) {
+      background: rgba(212, 27, 40, 1);
     }
   }
 
