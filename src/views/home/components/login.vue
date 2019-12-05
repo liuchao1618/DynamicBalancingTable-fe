@@ -33,7 +33,7 @@
         name: 'login',
         data() {
             return {
-                tel: '18310265252',
+                tel: '154545454152',
                 pwd: '123456',
                 flag: true,
                 telFlag: false,
@@ -77,7 +77,8 @@
                 })
             },
             cancel() {
-
+                console.log(11)
+                this.$store.dispatch('setLoginflag', { loginflag: false, login: false })
             },
             login() {
                 let data = {
@@ -92,7 +93,7 @@
                             mobile: this.tel
                         }
                         window.localStorage.setItem('modle', 'PT')
-                        this.getData()
+                        // this.getData()
                         addPhoneList(data1)
                         loginMsg().then((res) => {
                             window.localStorage.setItem('userCode', res.data.data.userCode)

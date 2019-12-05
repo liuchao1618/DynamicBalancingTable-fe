@@ -6,7 +6,6 @@ Vue.use(Router)
 import Home from '@/views/home/home.vue'
 import HttpError from '@/views/httpError/httpError.vue'
 import AddAthletes from '@/views/addAthletes/addAthletes.vue'
-import AthletesDetail from '@/views/athletesDetail/athletesDetail.vue'
 import SelectTime from '@/views/selectTime'//训练_选择时间
 import downTime from '@/views/downTime'//倒计时
 import power from '@/views/power'//训练（PT模式）开始运动
@@ -16,7 +15,6 @@ import Train from '@/views/train'//训练设置
 import editPass from '@/views/editPass'//训练finish
 import live from '@/views/live'//live模式
 import sportExerciseLog from '@/views/sportExerciseLog'//查看运动记录
-import text from '@/views/text'//
 
 
 export default new Router({
@@ -34,11 +32,6 @@ export default new Router({
       path: '/sportExerciseLog',
       name: 'sportExerciseLog',
       component: sportExerciseLog
-    },
-    {
-      path: '/text',
-      name: 'text',
-      component: text
     },
     {
       path: '/httpError',
@@ -79,11 +72,6 @@ export default new Router({
       path: '/addAthletes',
       name: 'addAthletes',
       component: AddAthletes
-    },
-    {
-      path: '/athletesDetail',
-      name: 'athletesDetail',
-      component: AthletesDetail
     },
     {
       path: '/train',
