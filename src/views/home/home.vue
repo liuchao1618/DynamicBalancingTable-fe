@@ -18,7 +18,7 @@
               <div class='img'>
                   <img src="./image/none.png" alt="">未发现可用设备
               </div>
-              <div class='load-button'>重新搜索</div>
+              <div @click="discoveryNewDevice" class='load-button'>重新搜索</div>
           </div>
           <div v-if='statusContent === 3' class='load-loading'>
                <div class='img'>
@@ -230,7 +230,7 @@ function BluetoothTool() {
 		 * 监听蓝牙状态回调
 		 * @param {String} state
 		 */
-		listenBTStatusCallback: function(state) {},
+		listenBTStatusCallback: function(stateContent) {},
 		/**
 		 * 搜索到新的蓝牙设备回调
 		 * @param {Device} newDevice
@@ -239,7 +239,7 @@ function BluetoothTool() {
 		/**
 		 * 蓝牙搜索完成回调
 		 */
-		discoveryFinishedCallback: function() {},
+		discoveryFinishedCallback: function(stateContent) {},
 		/**
 		 * 接收到数据回调
 		 * @param {Array} dataByteArr
@@ -249,7 +249,7 @@ function BluetoothTool() {
 		 * 蓝牙连接中断回调
 		 * @param {Exception} e
 		 */
-		connExceptionCallback: function(e) {}
+		connExceptionCallback: function(stateContent) {}
 	}
 
 	let bluetoothToolInstance = {
@@ -404,9 +404,8 @@ function BluetoothTool() {
 	 * 发现设备
 	 */
 	function discoveryNewDevice(discoveryAddress) {
-        alert('开始发现设备')
-        alert(discoveryAddress)
-        alert('wwwwwwwwwwwwwwwwwwwwwwwwwwww')
+        alert('要找到地址链接啦')
+        alert(JSON.stringify(discoveryAddress))
 		if(btFindReceiver != null) {
 			try {
 				activity.unregisterReceiver(btFindReceiver); 
@@ -430,22 +429,20 @@ function BluetoothTool() {
 				let action = intent.getAction();
 
 				if(BluetoothDevice.ACTION_FOUND == action) { // 找到设备
-					let device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    let device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     
-                    let newDevice = {
-						"name": plus.android.invoke(device, "getName"),
-						"address": plus.android.invoke(device, "getAddress")
-                    }
                     let address = String(plus.android.invoke(device, "getAddress"))
-                    if (discoveryAddress === address) {
-                        connDevice(address)
+                    if (discoveryAddress.indexOf(address) > -1 ) {
                         cancelDiscovery();
+                        connDevice(address)
                     }
-					options.discoveryDeviceCallback && options.discoveryDeviceCallback(newDevice);
 				}
 				if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED == action) { // 搜索完成
-					cancelDiscovery();
-					options.discoveryFinishedCallback && options.discoveryFinishedCallback();
+                    cancelDiscovery();
+                    if (!state.readThreadState) {
+                        state.statusContent = 2;
+                    }
+					options.discoveryFinishedCallback && options.discoveryFinishedCallback(state.statusContent);
 				}
 			}
 		});
@@ -490,20 +487,23 @@ function BluetoothTool() {
 							case BluetoothAdapter.STATE_ON:
                                 state.bluetoothEnable = true;
                                 content = 1;
-								stateStr = "STATE_ON";
+                                stateStr = "STATE_ON";
+                                alert('蓝牙已经打开，怎么打开的？')
 								break;
 							case BluetoothAdapter.STATE_TURNING_OFF:
-								stateStr = "STATE_TURNING_OFF";
+                                stateStr = "STATE_TURNING_OFF";
+								state.bluetoothEnable = false;
 								break;
 							case BluetoothAdapter.STATE_OFF:
                                 stateStr = "STATE_OFF";
+                                alert('蓝牙已关闭，请手动打开')
                                 content = 0;
 								state.bluetoothEnable = false;
 								break;
 						}
 						state.bluetoothState = stateStr;
 						state.statusContent = content;
-						options.listenBTStatusCallback && options.listenBTStatusCallback(content);
+						options.listenBTStatusCallback && options.listenBTStatusCallback(state.statusContent);
 						break;
 				}
 			}
@@ -519,6 +519,8 @@ function BluetoothTool() {
 	 * @return {Boolean}
 	 */
 	function connDevice(address) {
+        alert('开始连接了')
+        // alert(address)
 		let InputStream = plus.android.importClass("java.io.InputStream");
 		let OutputStream = plus.android.importClass("java.io.OutputStream");
 		let BluetoothSocket = plus.android.importClass("android.bluetooth.BluetoothSocket");
@@ -529,7 +531,7 @@ function BluetoothTool() {
 		state.readThreadState = false;
 
 		try {
-            alert('address能用吗')
+            // alert('address能用吗')
             let device = invoke(btAdapter, "getRemoteDevice", address);
 			btSocket = invoke(device, "createRfcommSocketToServiceRecord", MY_UUID);
 		} catch(e) {
@@ -599,7 +601,8 @@ function BluetoothTool() {
 		if(btFindReceiver != null) {
 			activity.unregisterReceiver(btFindReceiver);
 			btFindReceiver = null;
-		}
+        }
+        alert('取消搜索了')
 		state.discoveryDeviceState = false;
 	}
 
@@ -642,8 +645,9 @@ function BluetoothTool() {
 						try {
 							btOutStream.write([0b00]);
 						} catch(e) {
-							state.readThreadState = false;
-							options.connExceptionCallback && options.connExceptionCallback(e);
+                            state.readThreadState = false;
+                            state.setTimeCount = 2
+							options.connExceptionCallback && options.connExceptionCallback(state.setTimeCount);
 						}
 					}
 					let dataArr = [];
@@ -656,6 +660,8 @@ function BluetoothTool() {
 						}
 					}
 					if(dataArr.length > 0) {
+                        alert('接收数据')
+                        alert(dataArr)
 						options.readDataCallback && options.readDataCallback(dataArr);
 					}
 				}
@@ -670,6 +676,7 @@ function BluetoothTool() {
 	 * @return {Boolean}
 	 */
 	function sendData(dataStr) {
+        alert(dataStr)
 		if(!btOutStream) {
 			shortToast("创建输出流失败！");
 			return;
@@ -678,12 +685,15 @@ function BluetoothTool() {
 		try {
 			btOutStream.write(bytes);
 		} catch(e) {
+            alert('发送失败')
 			return false;
-		}
+        }
+        alert('发送成功')
 		return true;
 	}
 };
 let bluetoothTool = null;
+
 import login from './components/login'
 import {deviceInfo} from '../../api/api'
 
@@ -701,8 +711,9 @@ let vm = {
       status: 'fail',
     //   status: 'success',
       statusContent: 0,
-      newDevices: [], // 搜索到的蓝牙数据（name,adress）
       deviceList: [], // 蓝牙地址(adress)
+      dataList: [], // 接收到的数据
+      contrastData: [], // 做对比的数据
       menuList: [
         {
           img: require('./image/banner1.png'),
@@ -770,19 +781,35 @@ let vm = {
     }
   },
   created(){
+    this.getDeviceInfo()
     let that = this
-    that.getDeviceInfo()
     document.addEventListener("plusready", () => {
         bluetoothTool = BluetoothTool();
         bluetoothTool.init({
-            discoveryDeviceCallback: function(newDevice) {
-                that.newDevices.push(newDevice)
-            },
-            turnOnBluetoothCallback: function (stateContent) {
+            turnOnBluetoothCallback: function (stateContent) { // 打开蓝牙回调
                 that.statusContent = stateContent
             },
-            connDeviceCallback: function (stateContent) {
+            connDeviceCallback: function (stateContent) { // 连接设备回调
                 that.statusContent = stateContent
+                that.watchReceiveData()
+                alert('刚刚连接成功')
+            },
+            readDataCallback: function (dataArr) { // 读取数据回调
+                that.dataList = dataArr
+                alert('刚传完数据')
+            },
+            discoveryFinishedCallback: function (stateContent) { // 搜索发现回调
+                that.statusContent = stateContent
+            },
+            connExceptionCallback: function (stateContent) { // 设备中断连接回调
+                that.statusContent = stateContent
+            },
+            listenBTStatusCallback: function (stateContent) { // 监听蓝牙状态回调
+                that.statusContent = stateContent
+                if (bluetoothTool.state.bluetoothEnable) {
+                    alert('监听蓝牙是不是第二次打开')
+                    that.discoveryNewDevice() // 发现设备
+                }
             }
         })
     }, false)
@@ -791,10 +818,12 @@ let vm = {
     let that = this
     document.addEventListener("plusready", () => {
         bluetoothTool.turnOnBluetooth()
-        alert(that.statusContent)
-        that.discoveryNewDevice() // 发现设备
-        // that.connDevice('FO:18:98:17:43:5B') // 连接设备
+        if (bluetoothTool.state.bluetoothEnable) {
+            that.discoveryNewDevice() // 发现设备
+        }
+        // bluetoothTool.sendData('哈哈哈哈哈')
     }, false)
+    
   },
   methods: {
     tabBtn (index) {
@@ -815,7 +844,11 @@ let vm = {
     getDeviceInfo () {
         deviceInfo().then((res) => {
             if (res.data.code == 200) {
-                this.deviceList = res.data.data
+                let list = res.data.data
+                for (let i = 0; i < list.length; i++) {
+                    this.deviceList.push(list[i].unionCode)
+                    console.log(this.deviceList, '11111')
+                }
             }
         })
         .catch((err) => {
@@ -824,14 +857,27 @@ let vm = {
     },
     // 发现设备
     discoveryNewDevice() {
-        this.newDevice = []
-        // alert(JSON.stringify(this.deviceList))
-        bluetoothTool.discoveryNewDevice('00:15:A6:00:1E:36')
+        this.statusContent = 1
+        bluetoothTool.discoveryNewDevice(this.deviceList)
     },
-    // 连接设备
-    connDevice (address) {
-        bluetoothTool.connDevice(address);
-    },
+    // 实时判断是否在实时接收数据
+    watchReceiveData () {
+        let that = this
+        let timer = setInterval(() => {
+            alert(bluetoothTool.state.readThreadState)
+            if (!bluetoothTool.state.readThreadState) {
+                clearInterval(timer)
+                return false
+            }
+            if (that.dataList.length == 0) {
+                alert('未接收到数据')
+            } else {
+                alert('接收数据正常')
+                that.dataList = []
+            }
+            return false
+        }, 10000)
+    }
   }
 }
 export default vm
