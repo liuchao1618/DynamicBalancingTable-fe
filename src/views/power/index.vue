@@ -11,7 +11,8 @@
       </div>
       <div class="center">
         <div class="cenLeft">
-          <van-slider :step="5" class="leftLine" v-model="leftValue" bar-height='32px;' @change='changeleft' vertical />
+          <van-slider :step="5" class="leftLine" v-model="leftValue" bar-height='32px;' vertical
+          @change='changeleft' />
           <img src="../../assets/image/left.png" alt="">
         </div>
         <div class="cenCent">
@@ -27,8 +28,8 @@
           </div>
         </div>
         <div class="cenRight">
-          <van-slider :step="5" class="rightValue" v-model="rightValue" bar-height='38px;' @change='changeright'
-            vertical />
+          <van-slider :step="5" class="rightValue" v-model="rightValue" bar-height='38px;' vertical
+          @change='changeright' />
           <img src="../../assets/image/right.png" alt="">
         </div>
       </div>
@@ -39,7 +40,7 @@
       </div>
     </div>
     <div class="centBottom">
-      <van-slider :step="5" class="bottomLine" v-model="bottomValue" @change='changebottom' bar-height='23px' />
+      <van-slider :step="5" class="bottomLine" v-model="bottomValue" bar-height='23px' @change="changeBottom" />
       <img src="../../assets/image/bottom.png" alt="">
     </div>
     <div class="bottom">
@@ -54,6 +55,7 @@
 </template>
 <script>
   import { saveRecord } from '@/api/index'
+
   export default {
     data() {
       return {
@@ -74,7 +76,7 @@
       /**
        * 将秒转换为 分:秒
        * s int 秒数
-      */
+       */
       function s_to_hs(s) {
         //计算分钟
         //算法：将秒数除以60，然后下舍入，既得到分钟数
@@ -91,6 +93,7 @@
         s = (s.length == 1) ? '0' + s : s;
         return h + ':' + s;
       }
+
       this.setTime = window.localStorage.getItem('setTime');
       this.timer = setInterval(() => {
         if (this.setTime > 0) {
@@ -105,19 +108,37 @@
             realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime,
             leftPower: 100 - this.leftValue,
             rightPower: 100 - this.rightValue,
-            avgPower: parseInt((100 - this.leftValue + 100 - this.rightValue) / 2),
+            avgPower: this.calculateAvg(this.leftPower, this.rightPower),
             userCode: window.localStorage.getItem('userCode')
           }
           saveRecord(data).then((res) => {
             if (res.data.code == 200) {
-              window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
-              this.$router.push({ name: 'finish', query: { left: 100 - this.leftValue, right: 100 - this.rightValue, avg: parseInt((100 - this.leftValue + 100 - this.rightValue) / 2), fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, id: res.data.data.id, model: 'PT' } });
+              window.localStorage.setItem('devices', JSON.stringify([{
+                "deviceId": "1",
+                "deviceAlias": "设备1"
+              }]));
+              this.$router.push({
+                name: 'finish',
+                query: {
+                  left: 100 - this.leftValue,
+                  right: 100 - this.rightValue,
+                  avg: this.calculateAvg(this.left, this.right),
+                  fullPlayTime: window.localStorage.getItem('setTime') * 1,
+                  realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime,
+                  id: res.data.data.id,
+                  model: 'PT'
+                }
+              });
             }
           })
         }
       }, 1000);
     },
     methods: {
+      l(...obj) {
+        console.log(obj);
+      },
+
       stop() {
         clearInterval(this.timer)
 
@@ -133,11 +154,26 @@
         }
         saveRecord(data).then((res) => {
           if (res.data.code == 200) {
-            window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
-            this.$router.push({ name: 'finish', query: { left: 100 - this.leftValue, right: 100 - this.rightValue, avg: parseInt((100 - this.leftValue + 100 - this.rightValue) / 2), fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, id: res.data.data.id, model: 'PT' } });
+            window.localStorage.setItem('devices', JSON.stringify([{
+              "deviceId": "1",
+              "deviceAlias": "设备1"
+            }]));
+            this.$router.push({
+              name: 'finish',
+              query: {
+                left: 100 - this.leftValue,
+                right: 100 - this.rightValue,
+                avg: parseInt((100 - this.leftValue + 100 - this.rightValue) / 2),
+                fullPlayTime: window.localStorage.getItem('setTime') * 1,
+                realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime,
+                id: res.data.data.id,
+                model: 'PT'
+              }
+            });
           }
         })
       },
+
       changeleft(event) {
         this.watchFlag = false
         this.bottomValue = parseInt((100 - event + 100 - this.rightValue) / 2)
@@ -147,13 +183,15 @@
 
         this.bottomValue = parseInt((100 - event + 100 - this.leftValue) / 2)
       },
-      changebottom(event) {
-        this.watchFlag = true
-        // console.log(this.bottomValue,event)
+
+      changeBottom() {
+        this.watchFlag = true;
       },
+
       changepause() {
         if (this.pause == 'RESUME') {
           this.pause = 'PAUSE'
+
           function s_to_hs(s) {
             //计算分钟
             //算法：将秒数除以60，然后下舍入，既得到分钟数
@@ -170,6 +208,7 @@
             s = (s.length == 1) ? '0' + s : s;
             return h + ':' + s;
           }
+
           // this.setTime = window.localStorage.getItem('setTime');
           this.timer = setInterval(() => {
             if (this.setTime > 0) {
@@ -177,8 +216,22 @@
               this.currentTime = s_to_hs(this.setTime)
             } else {
               clearInterval(this.timer)
-              window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
-              this.$router.push({ name: 'finish', query: { left: 100 - this.leftValue, right: 100 - this.rightValue, avg: parseInt((100 - this.leftValue + 100 - this.rightValue) / 2), fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, id: res.data.data.id, model: 'PT' } });
+              window.localStorage.setItem('devices', JSON.stringify([{
+                "deviceId": "1",
+                "deviceAlias": "设备1"
+              }]));
+              this.$router.push({
+                name: 'finish',
+                query: {
+                  left: 100 - this.leftValue,
+                  right: 100 - this.rightValue,
+                  avg: parseInt((100 - this.leftValue + 100 - this.rightValue) / 2),
+                  fullPlayTime: window.localStorage.getItem('setTime') * 1,
+                  realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime,
+                  id: res.data.data.id,
+                  model: 'PT'
+                }
+              });
             }
           }, 1000);
         } else {
@@ -186,6 +239,7 @@
           clearInterval(this.timer)
         }
       },
+
       changefreeze() {
         if (this.freeze == 'FREEZE') {
           this.freeze = 'UNFREEZE'
@@ -193,210 +247,75 @@
           this.freeze = 'FREEZE'
         }
       },
+
       changealign() {
         this.freeze = 'UNFREEZE'
+      },
+
+      calculateBottomValue(now, old) {
+
+        let tempLeftValue = 100 - this.leftValue;
+        let tempRightValue = 100 - this.rightValue;
+        let overflowValue = 0;
+        let overflowFlag = false;
+
+        //差值
+        const diff = now - old;
+        // 计算补差值
+        let averageDiff = (tempLeftValue + tempRightValue - (old << 1));
+        let arr = this.getRandomNum(Math.abs(diff) << 1, 2);
+
+        if (diff > 0) {
+          if ((tempLeftValue += arr[0]) >= 100) {
+            overflowValue = tempLeftValue - 100;
+            tempLeftValue = 100;
+            overflowFlag = true;
+          }
+          if ((tempRightValue = tempRightValue + arr[1] + overflowValue - averageDiff) >= 100) {
+            overflowValue = tempRightValue - 100;
+            tempRightValue = 100;
+          }
+          if (overflowValue !== 0 && !overflowFlag) {
+            tempLeftValue = Math.min(tempLeftValue + overflowValue, 100);
+          }
+        } else if (diff < 0) {
+          if ((tempLeftValue -= arr[0]) <= 0) {
+            overflowValue = Math.abs(0 - tempLeftValue);
+            tempLeftValue = 0;
+            overflowFlag = true;
+          }
+          if ((tempRightValue = tempRightValue - arr[1] - overflowValue - averageDiff) <= 0) {
+            overflowValue = Math.abs(0 - tempRightValue);
+            tempRightValue = 0;
+          }
+          if (overflowValue !== 0 && !overflowFlag) {
+            tempLeftValue = Math.max(tempLeftValue - overflowValue, 0);
+          }
+        }
+        this.leftValue = 100 - tempLeftValue;
+        this.rightValue = 100 - tempRightValue;
+      },
+
+      getRandomNum(num, times) {
+        let res = [];
+        if (times === 1) {
+          res.push(num);
+          return res;
+        }
+        let max = num / times * 2;
+        let current = 1 + (~~(Math.random() * max - 1));
+        res.push(current);
+        return res.concat(this.getRandomNum(num - current, --times));
       }
     },
-    // watch: {
-    //   bottomValue(now, old) {
-    //     if (this.watchFlag) {
-    //     var overflowValue= 0;
-    //     var overflowFlag= false;
-    //     var diff= 0;
-    //       //差值
-    //       diff = now - old
-    //       //生成两个随机值
-    //       function getRandomNum(num, times) {
-    //         let res = [];
-    //         if (times === 1) {
-    //           res.push(num);
-    //           return res;
-    //         };
-    //         let max = num / times * 2;
-    //         let current = 1 + (~~(Math.random() * max - 1));
-    //         res.push(current);
-    //         return res.concat(getRandomNum(num - current, --times));
-    //       };
-    //       let arr = getRandomNum(diff * 2, 2)
-    //       // 标准模式基数产生的差值 0或1 e.g. 20 17 15
-    //       // this.nrB = Math.abs(100-this.leftValue + 100-this.rightValue - 2 * this.bottomValue);
 
-    //       if (diff > 0) {
-    //         this.leftValue = this.leftValue - arr[0]
-    //         if (this.leftValue <= 0) {
-    //           overflowValue = 100 - this.leftValue -100
-    //           overflowFlag = true
-    //           this.leftValue = 0
-    //         }
-    //         this.rightValue = this.rightValue - arr[1] - overflowValue
-    //         if ( this.rightValue <= 0) {
-    //           overflowValue = 100 - this.rightValue -100
-    //           this.rightValue = 0
-    //         }
-    //         if (overflowValue > 0 && !overflowFlag) {
-    //           this.leftValue = Math.min((this.leftValue + overflowValue ), 0);
-    //           // this.leftValue = 0;
-    //         }
-    //       } 
-    //       else if (diff < 0) {
-    //         this.leftValue = this.leftValue - arr[0]
-    //         this.rightValue = this.rightValue - arr[1]
-    //         console.log(this.leftValue)
-    //         if (this.leftValue >= 100) {
-    //           overflowValue = this.leftValue - 100
-    //           overflowFlag = true
-    //           this.leftValue = 100
-    //           console.log(this.leftValue,overflowValue)
-    //         }
-    //         this.rightValue = this.rightValue - arr[1] - overflowValue
-    //         if (this.rightValue >= 100) {
-    //         console.log(this.rightValue,overflowValue,'right')
-    //           overflowValue = (this.rightValue - arr[1]) - 100
-    //           this.rightValue = 100
-    //         }
-    //         if (overflowValue > 0 && !overflowFlag) {
-    //           // this.leftValue = Math.max(this.leftValue - overflowValue, 0);
-    //           // this.leftValue = 100;
-    //         }
-    //       }
-    //     }
-
-    //   }
-    // }
-    // watch: {
-    //         bottomValue(now, old) {
-    //             if (this.watchFlag) {
-    //                 let tempLeftValue = 100 - this.leftValue;
-    //                 let tempRightValue = 100 - this.rightValue;
-    //                 let overflowValue = 0;
-    //                 let overflowFlag = false;
-    //                 //差值
-    //                 const diff = now - old;
-    //                 // 计算补差值
-    //                 const averageDiff = tempLeftValue + tempRightValue - (old << 1);
-    //                 console.log(now,old,averageDiff,'11111111111')
-    //                 //生成两个随机值
-    //                 function getRandomNum(num, times) {
-    //                     let res = [];
-    //                     if (times === 1) {
-    //                         res.push(num);
-    //                         return res;
-    //                     }
-    //                     let max = num / times * 2;
-    //                     let current = 1 + (~~(Math.random() * max - 1));
-    //                     res.push(current);
-    //                     return res.concat(getRandomNum(num - current, --times));
-    //                 }
-
-    //                 let arr = getRandomNum(diff * 2, 2);
-    //                 // 标准模式基数产生的差值 0或1 e.g. 20 17 15
-    //                 // this.nrB = Math.abs(100-this.leftValue + 100-this.rightValue - 2 * this.bottomValue);
-
-    //                 if (diff > 0) {
-    //                     tempLeftValue += arr[0];
-    //                     tempRightValue += arr[1];
-    //                     if (tempLeftValue > 100) {
-    //                         overflowValue = tempLeftValue - 100;
-    //                         tempLeftValue = 100;
-    //                         overflowFlag = true;
-    //                     }
-    //                     if (tempRightValue + overflowValue - averageDiff > 100) {
-    //                         overflowValue = tempRightValue + overflowValue - averageDiff - 100;
-    //                         tempRightValue = 100;
-    //                     }
-    //                     if (overflowValue > 0 && !overflowFlag) {
-    //                         tempLeftValue = Math.min(tempLeftValue + overflowValue, 100);
-    //                     }
-    //                 } else if (diff < 0) {
-    //                     tempLeftValue += arr[0];
-    //                     tempRightValue += arr[1];
-    //                     if (tempLeftValue < 0) {
-    //                         overflowValue = 0 - tempLeftValue;
-    //                         tempLeftValue = 0;
-    //                         overflowValue = true;
-    //                     }
-    //                     if (tempRightValue - overflowValue + averageDiff < 0) {
-    //                         overflowValue = 0 - (tempRightValue - overflowValue + averageDiff);
-    //                         tempRightValue = 0;
-    //                     }
-    //                     if (overflowValue > 0 && !overflowFlag) {
-    //                         tempLeftValue = Math.max(tempLeftValue - overflowValue, 0);
-    //                     }
-    //                 }
-
-    //                 this.leftValue = 100 - tempLeftValue;
-    //                 this.rightValue = 100 - tempRightValue;
-    //             }
-    //         }
-    //     },
     watch: {
-            bottomValue(now, old) {
-                if (this.watchFlag) {
-                  console.log(this.leftValue,this.rightValue,'left')
-                    let tempLeftValue = 100-this.leftValue;
-                    let tempRightValue = 100-this.rightValue;
-                    let overflowValue = 0;
-                    let overflowFlag = false;
-                    //差值
-                    const diff = now - old;
-                    // 计算补差值
-                    // 计算补差值
-                    // const averageDiff = (tempLeftValue + tempRightValue - (old << 1)) === 0 ? 0 : 1;     
-                  console.log(now, old,'11111111')
-                    //生成两个随机值
-                    function getRandomNum(num, times) {
-                        let res = [];
-                        if (times === 1) {
-                            res.push(num);
-                            return res;
-                        }
-                        let max = num / times * 2;
-                        let current = 1 + (~~(Math.random() * max - 1));
-                        res.push(current);
-                        return res.concat(getRandomNum(num - current, --times));
-                    }
-
-                    let arr = getRandomNum(diff * 2, 2);
-                    console.log(arr)
-                    // 标准模式基数产生的差值 0或1 e.g. 20 17 15
-                    // this.nrB = Math.abs(100-this.leftValue + 100-this.rightValue - 2 * this.bottomValue);
-
-                    tempLeftValue += arr[0];
-                    tempRightValue += arr[1];
-                    if (diff > 0) {
-                        if (tempLeftValue > 100) {
-                            overflowValue = tempLeftValue - 100;
-                            tempLeftValue = 100;
-                            overflowFlag = true;
-                        }
-                        if (tempRightValue + overflowValue > 100) {
-                            overflowValue = tempRightValue + overflowValue - 100;
-                            tempRightValue = 100;
-                        }
-                        if (overflowValue > 0 && !overflowFlag) {
-                            tempLeftValue = Math.min(tempLeftValue + overflowValue, 100);
-                        }
-                    } else if (diff < 0) {
-                        if (tempLeftValue < 0) {
-                            overflowValue = 0 - tempLeftValue;
-                            tempLeftValue = 0;
-                            overflowValue = true;
-                        }
-                        if (tempRightValue - overflowValue < 0) {
-                            overflowValue = 0 - (tempRightValue - overflowValue);
-                            tempRightValue = 0;
-                        }
-                        if (overflowValue > 0 && !overflowFlag) {
-                            tempLeftValue = Math.max(tempLeftValue - overflowValue, 0);
-                        }
-                    }
-
-                    this.leftValue = 100-tempLeftValue;
-                    this.rightValue = 100-tempRightValue;
-                }
-
-            }
+      bottomValue(now, old) {
+        if (this.watchFlag) {
+          this.calculateBottomValue(now, old);
         }
+      }
+    }
   }
 </script>
 <style scoped lang="less">
@@ -510,7 +429,7 @@
       padding-right: 15px;
       background: linear-gradient(180deg, rgba(196, 209, 210, 1) 0%, rgba(255, 255, 255, 1) 100%);
 
-      /deep/.van-slider__button-wrapper {
+      /deep/ .van-slider__button-wrapper {
         width: 40px;
         height: 40px;
 
@@ -521,7 +440,7 @@
       }
     }
 
-    /deep/.van-slider--vertical .van-slider__button-wrapper {
+    /deep/ .van-slider--vertical .van-slider__button-wrapper {
       left: -24px;
       width: 40px;
       height: 40px;
@@ -644,7 +563,7 @@
     }
   }
 
-  /deep/.van-slider--vertical .van-slider__button-wrapper {
+  /deep/ .van-slider--vertical .van-slider__button-wrapper {
     left: -24px;
     width: 40px;
     height: 40px;
@@ -673,7 +592,7 @@
     background: linear-gradient(180deg, rgba(13, 184, 46, 1) 0%, rgba(45, 199, 75, 1) 33%, rgba(125, 212, 142, 1) 63%, rgba(177, 225, 186, 1) 83%, rgba(231, 237, 232, 1) 100%);
   }
 
-  /deep/.center .van-slider__bar {
+  /deep/ .center .van-slider__bar {
     background: linear-gradient(90deg, rgba(196, 209, 210, 1) 0%, rgba(255, 255, 255, 1) 100%);
   }
 

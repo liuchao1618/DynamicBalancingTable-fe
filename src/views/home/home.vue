@@ -110,8 +110,7 @@
                             <div class='con' style='width:200px'>
                                 <div class='name'>参与本次训练运动员</div>
                                 <div style="display: flex;flex-wrap: wrap;">
-                                    <div style="color:rgba(209,213,230,1);fontSize:20px;"
-                                        v-for='(v,i) in item.memberList'>{{v}}、</div>
+                                    <div style="color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
                                 </div>
 
                             </div>
@@ -142,8 +141,7 @@
                             <div class='con' style='width:200px'>
                                 <div class='name'>参与本次训练运动员</div>
                                 <div style="display: flex;flex-wrap: wrap;">
-                                    <div style="color:rgba(209,213,230,1);fontSize:20px;"
-                                        v-for='(v,i) in item.memberList'>{{v}}、</div>
+                                    <div style="color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
                                 </div>
 
                             </div>
@@ -173,8 +171,7 @@
                             <div class='con' style='width:200px'>
                                 <div class='name'>参与本次训练运动员</div>
                                 <div style="display: flex;flex-wrap: wrap;">
-                                    <div style="color:rgba(209,213,230,1);fontSize:20px;"
-                                        v-for='(v,i) in item.memberList'>{{v}}、</div>
+                                    <div style="color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
                                 </div>
 
                             </div>
@@ -224,8 +221,7 @@
                             <div class='con' style='width:200px'>
                                 <div class='name'>参与本次训练运动员</div>
                                 <div style="display: flex;flex-wrap: wrap;">
-                                    <div style="color:rgba(209,213,230,1);fontSize:20px;"
-                                        v-for='(v,i) in item.memberList'>{{v}}、</div>
+                                    <div style="color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
                                 </div>
 
                             </div>
@@ -257,8 +253,7 @@
                             <div class='con' style='width:200px'>
                                 <div class='name'>参与本次训练运动员</div>
                                 <div style="display: flex;flex-wrap: wrap;">
-                                    <div style="color:rgba(209,213,230,1);fontSize:20px;"
-                                        v-for='(v,i) in item.memberList'>{{v}}、</div>
+                                    <div style="color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
                                 </div>
 
                             </div>
@@ -288,8 +283,7 @@
                             <div class='con' style='width:200px'>
                                 <div class='name'>参与本次训练运动员</div>
                                 <div style="display: flex;flex-wrap: wrap;">
-                                    <div style="color:rgba(209,213,230,1);fontSize:20px;"
-                                        v-for='(v,i) in item.memberList'>{{v}}、</div>
+                                    <div style="color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
                                 </div>
 
                             </div>
@@ -486,7 +480,6 @@
             } else {
                 window.localStorage.setItem('modle', 'DEMO')
             }
-            console.log(this.recordList)
         },
         updated() {
             this.recordList.forEach((item, index) => {
@@ -499,17 +492,18 @@
                 ctx.stroke();
                 ctx.strokeStyle = '#D1D5E6'
             })
-            this.collectList.forEach((item, index) => {
-                console.log(item)
-                var c = document.getElementById("'a'+index");
-                var ctx = c.getContext("2d");
-                var arr = item.expands
-                arr.forEach((v, i) => {
-                    ctx.lineTo(v[0], v[1]);
-                })
-                ctx.stroke();
-                ctx.strokeStyle = '#D1D5E6'
-            })
+            // console.log(this.collectList,'this.collectList')
+            // this.collectList.forEach((item, index) => {
+            //     console.log(item,'收藏')
+            //     var c = document.getElementById("'a'+index");
+            //     var ctx = c.getContext("2d");
+            //     var arr = item.expands
+            //     arr.forEach((v, i) => {
+            //         ctx.lineTo(v[0], v[1]);
+            //     })
+            //     ctx.stroke();
+            //     ctx.strokeStyle = '#D1D5E6'
+            // })
         },
         computed: mapState([
             // 映射 this.loginflag 为 store.state.loginflag
@@ -588,6 +582,7 @@
                     this.collectList = [];
                     console.log(document.getElementById('0'), 0)
                     res.data.data.forEach((item, index) => {
+                        item.memberList = item.memberList.join('、')
                         item.expands = []
                         if (JSON.parse(item.expand) != null) {
                             var expand = JSON.parse(item.expand)
@@ -727,8 +722,17 @@
                 })
             },
 
-        }
-    }
+        },
+        watch: {
+            tab(now,old) {
+                if(now == 1){
+                    this.getExercise()
+                }else if(now == 3){
+                    this.getmemberMsg()
+                }
+            }
+        },
+     }
 </script>
 
 

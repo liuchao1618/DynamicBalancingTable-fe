@@ -92,7 +92,7 @@
                             mobile: this.tel
                         }
                         window.localStorage.setItem('modle', 'PT')
-                        this.getData()
+                        // this.getData()
                         addPhoneList(data1)
                         loginMsg().then((res) => {
                             window.localStorage.setItem('userCode', res.data.data.userCode)
