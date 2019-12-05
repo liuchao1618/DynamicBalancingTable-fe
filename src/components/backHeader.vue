@@ -1,7 +1,8 @@
 <template>
     <div class='backHeader'>
         <div class='left' @click="back">
-            <img src="../assets/image/components/back.png" alt=""> {{ title }}
+            <!-- <img src="../assets/image/components/back.png" alt=""> -->
+             {{ title }}
         </div>
         <div v-if='save' @click="saveBtn" class='right'>保存</div>
     </div>

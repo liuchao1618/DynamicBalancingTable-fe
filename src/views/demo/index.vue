@@ -7,46 +7,113 @@
       <div @click='changefreeze' :class="[freeze=='FREEZE' ? 'freeze' : 'unfreeze']">{{freeze}}</div>
       <div class="cenCent">
         <span>TIMER</span>
-        <span>01:41</span>
+        <span>{{currentTime}}</span>
       </div>
       <div class="orange" @click='changealign'>{{align}}</div>
     </div>
     <div class="bottom">
       <div @click='changepause' :class="[pause=='PAUSE' ? 'pauses' : 'resumes']">{{pause}}</div>
 
-      <div>STOP</div>
+      <div @click='stop'>STOP</div>
     </div>
   </div>
 </template>
 <script>
+  import { saveRecord } from '@/api/index'
   export default {
     data() {
       return {
-        leftValue: 55,
-        rightValue: 80,
-        bottomValue: 30,
+        currentTime: '00:00',
         pause: 'PAUSE',
         freeze: 'FREEZE',
-        align: 'ALIGN'
+        align: 'ALIGN',
+        setTime: 0
       }
     },
     mounted() {
+      /**
+       * 将秒转换为 分:秒
+       * s int 秒数
+      */
+      function s_to_hs(s) {
+        //计算分钟
+        //算法：将秒数除以60，然后下舍入，既得到分钟数
+        var h;
+        h = Math.floor(s / 60);
+        //计算秒
+        //算法：取得秒%60的余数，既得到秒数
+        s = s % 60;
+        //将变量转换为字符串
+        h += '';
+        s += '';
+        //如果只有一位数，前面增加一个0
+        h = (h.length == 1) ? '0' + h : h;
+        s = (s.length == 1) ? '0' + s : s;
+        return h + ':' + s;
+      }
+      this.setTime = window.localStorage.getItem('setTime');
+      this.timer = setInterval(() => {
+        if (this.setTime > 0) {
+          this.setTime--;
+          this.currentTime = s_to_hs(this.setTime)
+        } else {
+          clearInterval(this.timer)
+          window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
+          this.$router.push({ name: 'finish', query: { fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, level: level, id: res.data.data.id, model: 'PT' } });
+        }
+      }, 1000);
     },
     methods: {
-      changeleft(event) {
-        this.bottomValue = parseInt((100 - event + 100 - this.rightValue) / 2)
-      },
-      changeright(event) {
-        this.bottomValue = parseInt((100 - event + 100 - this.rightValue) / 2)
-      },
-      changebottom(event) {
-        console.log(event)
+      stop() {
+        let level = window.localStorage.getItem('level').split('<br/>').join('-')
+        let data = {
+          userCode: window.localStorage.getItem('userCode'),
+          model: 'DEMO',
+          devices: [{ deviceId: 1, deviceAlias: '设备1' }],
+          fullPlayTime: window.localStorage.getItem('setTime') * 1,
+          realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime,
+          level: level
+        }
+        saveRecord(data).then((res) => {
+          if (res.data.code == 200) {
+            window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
+            this.$router.push({ name: 'finish', query: { fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, level: level, id: res.data.data.id, model: 'PT' } });
+          }
+        })
       },
       changepause() {
         if (this.pause == 'RESUME') {
+          function s_to_hs(s) {
+            //计算分钟
+            //算法：将秒数除以60，然后下舍入，既得到分钟数
+            var h;
+            h = Math.floor(s / 60);
+            //计算秒
+            //算法：取得秒%60的余数，既得到秒数
+            s = s % 60;
+            //将变量转换为字符串
+            h += '';
+            s += '';
+            //如果只有一位数，前面增加一个0
+            h = (h.length == 1) ? '0' + h : h;
+            s = (s.length == 1) ? '0' + s : s;
+            return h + ':' + s;
+          }
+          this.setTime = window.localStorage.getItem('setTime');
+          this.timer = setInterval(() => {
+            if (this.setTime > 0) {
+              this.setTime--;
+              this.currentTime = s_to_hs(this.setTime)
+            } else {
+              clearInterval(this.timer)
+              window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
+              this.$router.push({ name: 'finish', query: { fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, level: level, id: res.data.data.id, model: 'PT' } });
+            }
+          }, 1000);
           this.pause = 'PAUSE'
         } else {
           this.pause = 'RESUME'
+          clearInterval(this.timer)
         }
       },
       changefreeze() {
