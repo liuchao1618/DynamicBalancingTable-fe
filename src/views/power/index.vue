@@ -311,9 +311,11 @@
 
     watch: {
       bottomValue(now, old) {
+        setTimeout(() => {
         if (this.watchFlag) {
           this.calculateBottomValue(now, old);
         }
+        }, 300);
       }
     }
   }

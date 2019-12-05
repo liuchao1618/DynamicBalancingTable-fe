@@ -1,61 +1,65 @@
 <template>
     <div class='addAthletes'>
-        <back-header title='修改密码'></back-header>
-        <div class='item' @click="toDetail(7)">
+            <div class='backHeader'>
+                    <div class='left' @click="back">
+                        <img src="../../assets/image/components/back.png" alt="">
+                        修改密码
+                    </div>
+                </div>
+        <div class='item'>
             <div class='itemLeft'>*旧密码</div>
-            <div class='itemRight'>{{ athletes.oldpass ? athletes.oldpass : '请填写旧密码 >' }}</div>
+            <van-field class="itemRight" v-model='form.oldpass' placeholder="请填写旧密码 >" />
         </div>
-        <div class='item' @click="toDetail(8)">
+        <div class='item'>
             <div class='itemLeft'>*新密码</div>
-            <div class='itemRight'>{{ athletes.newpass ? athletes.newpass : '请输入6—12位数字字母组合新密码 >' }}</div>
+            <van-field class="itemRight" v-model='form.newpass' placeholder="请输入6—12位数字字母组合新密码 >" />
         </div>
-        <div class='item' @click="toDetail(9)">
+        <div class='item'>
             <div class='itemLeft'>确认新密码</div>
-            <div class='itemRight'>{{ athletes.checkpass ? athletes.checkpass : '请确认6—12位数字字母组合新密码 >' }}</div>
+            <van-field class="itemRight" v-model='form.checkpass' placeholder="请确认6—12位数字字母组合新密码 >" />
         </div>
         <div class='buttonBox'>
-            <p class='button'>取消</p>
+            <p class='button' @click='cancle'>取消</p>
             <p class='button active' @click='save'>保存</p>
         </div>
     </div>
 </template>
 
 <script>
-    import backHeader from '@/components/backHeader'
     import { mapState } from 'vuex'
     import { editPass } from '@/api/index'
     export default {
         name: 'addAthletes',
-        components: {
-            backHeader
-        },
-        computed: {
-            ...mapState([
-                'athletes'
-            ])
-        },
         data() {
             return {
-                dateShow: false,
-                currentDate: new Date(),
-                show: false,
-                sex: 1,
+                form:{
+                    oldpass:'',
+                    newpass:'',
+                    checkpass:''
+                },
             }
         },
         methods: {
+            cancle(){
+                this.$router.push({ name: 'Home', query: { index: 0 } })
+
+            },
+            back(){
+                this.$router.push({ name: 'Home', query: { index: 0 } })
+            },
             save() {
-                if (this.athletes.oldpass == '123456') {
+                if (this.form.oldpass == '123456') {
 
                 }
-                if (this.athletes.newpass != this.athletes.checkpass) {
+                if (this.form.newpass != this.form.checkpass) {
                     this.$toast({
                         message: '两次输入密码不一致！',
                         position: 'bottom'
                     });
                 } else {
                     let data = {
-                        oldPassword: this.athletes.oldpass,
-                        newPassword: this.athletes.newpass
+                        oldPassword: this.form.oldpass,
+                        newPassword: this.form.newpass
                     }
                     editPass(data).then(res => {
                         if (res.data.code == 200) {
@@ -64,18 +68,41 @@
                                 position: 'bottom'
                             });
                         }
+                        else{
+                            this.$toast({
+                                message: res.data.msg,
+                                position: 'bottom'
+                            });
+                        }
                     })
                 }
-                console.log(this.athletes, 'athletes')
-            },
-            toDetail(index) {
-                this.$router.push({ name: 'athletesDetail', query: { index: index } })
+                console.log(this.form, 'form')
             }
         }
     }
 </script>
 
 <style lang="less" scoped>
+    .backHeader {
+        color: #EAEAF0;
+        font-size: 30px;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 40px;
+
+        .left {
+            img {
+                width: 28px;
+                height: 28px;
+                vertical-align: middle;
+                margin-right: 20px;
+            }
+        }
+
+        .right {
+            padding: 5px;
+        }
+    }
     .addAthletes {
         width: 100vw;
         min-height: 100vh;
@@ -99,6 +126,17 @@
 
             .itemRight {
                 color: #868693;
+                float: right;
+                width: 480px;
+                font-size: 24px;
+                text-align: right;
+                padding-right: 20px;
+                background: transparent;
+
+                /deep/.van-field__control {
+                    text-align: right;
+                    color: #868693
+                }
             }
         }
 
@@ -129,40 +167,6 @@
                 background: rgba(34, 134, 169, 1);
                 margin-left: 30px;
             }
-        }
-
-        .sex {
-            width: 576px;
-            height: 222px;
-            border-radius: 12px;
-            background-color: #373839;
-            border: 1px solid #464348;
-            box-sizing: border-box;
-            padding: 50px 90px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-
-            .sexItem {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                height: 42px;
-
-                div {
-                    font-size: 28px;
-                    color: #BDBDC5;
-                }
-
-                img {
-                    width: 42px;
-                    height: 42px;
-                }
-            }
-        }
-
-        .van-popup {
-            border-radius: 12px;
         }
     }
 </style>

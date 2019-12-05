@@ -53,7 +53,17 @@
           locus:this.dataArr
         }
         saveRecord(data).then(res=>{
-          console.log(res)
+          window.localStorage.setItem('locus',JSON.stringify(this.dataArr))
+          this.$router.push({
+              name: 'finish',
+              query: {
+                model: 'LIVE',
+                id: res.data.data.id,
+                devices: [{ deviceId: 1, deviceAlias: '设备1' }],
+                realPlayTime: this.setTime,
+                userCode: window.localStorage.getItem('userCode')
+              }
+            });
         })
       },
       start(){

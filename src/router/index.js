@@ -6,7 +6,6 @@ Vue.use(Router)
 import Home from '@/views/home/home.vue'
 import HttpError from '@/views/httpError/httpError.vue'
 import AddAthletes from '@/views/addAthletes/addAthletes.vue'
-import AthletesDetail from '@/views/athletesDetail/athletesDetail.vue'
 import SelectTime from '@/views/selectTime'//训练_选择时间
 import downTime from '@/views/downTime'//倒计时
 import power from '@/views/power'//训练（PT模式）开始运动
@@ -79,11 +78,6 @@ export default new Router({
       path: '/addAthletes',
       name: 'addAthletes',
       component: AddAthletes
-    },
-    {
-      path: '/athletesDetail',
-      name: 'athletesDetail',
-      component: AthletesDetail
     },
     {
       path: '/train',

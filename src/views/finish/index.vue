@@ -10,12 +10,29 @@
     <div class="box">
       <div class="left">
         <h3>{{dataTime}} {{model}}模式</h3>
-        <div class="exercise">
+        <div class="livebox" v-if='locus'>
+          <div class="liveL">
+            <div class="exerciseTime">
+              <span>实际运动时间</span>
+              <h2>{{parseInt(realPlayTime/60)}}分钟</h2>
+            </div>
+          <div class="log" >
+            <span>操控点轨迹记录</span>
+            <canvas id='mycanvas' ref='myCanvas' width="402.5" height="86.9"
+              style="border:1px solid rgba(117,121,137,1);"></canvas>
+          </div>
+          </div>
+          <div class='conCollect'>
+              <img v-if='favored' @click='Collect()' src="../../assets/image/starS.png" alt="">
+              <img v-else @click='Collect()' src="../../assets/image/star.png" alt="">
+            </div>
+        </div>
+        <div class="exercise" v-else>
           <div class="exerciseTime">
             <span>设置运动时间</span>
-            <h2> {{parseInt(fullPlayTime/60)}}分钟</h2>
-            <span>实际运动时间</span>
-            <h2>{{parseInt(realPlayTime/60)}}分钟</h2>
+              <h2> {{parseInt(fullPlayTime/60)}}分钟</h2>
+              <span>实际运动时间</span>
+              <h2>{{parseInt(realPlayTime/60)}}分钟</h2>
           </div>
           <div class="usedevice">
             <span>本次使用设备</span>
@@ -87,10 +104,10 @@
             </div>
           </div>
 
-          <div v-if='referFlag' class="sub" :class="[checkName.length>0 ? 'active' : '']" @click='submit'>提交
+          <div class="sub" :class="[checkName.length>0 ? 'active' : '']" @click='submit'>提交
           </div>
-          <div v-else class="sub" @click='submits'>重新提交
-          </div>
+          <!-- <div v-else class="sub" @click='submits'>重新提交
+          </div> -->
         </div>
       </div>
     </div>
@@ -121,7 +138,7 @@
         bottomValue: 30,
         fullPlayTime: '',
         realPlayTime: '',
-        referFlag:true,
+        referFlag: true,
         model: '',
         devices: [],
         dataList: [
@@ -135,7 +152,8 @@
             num: 30,
             word: 'POWER RIGHT'
           }],
-        nameList: []
+        nameList: [],
+        locus: []
       }
     },
     mounted() {
@@ -169,12 +187,26 @@
       this.currentId = this.$route.query.id
       this.level = this.$route.query.level
       this.model = this.$route.query.model
+      this.locus = JSON.parse(window.localStorage.getItem('locus'))
       this.devices = JSON.parse(window.localStorage.getItem('devices'))
       this.getcheckMember()
+      var c = document.getElementById('mycanvas');
+      var ctx = c.getContext("2d");
+      ctx.strokeStyle = '#D1D5E6'
+      this.locus.forEach((v, i) => {
+        var newArr = []
+        v.c.forEach((val, i) => {
+          newArr.push(parseInt(val / 4))
+        })
+        console.log(newArr)
+        ctx.lineTo(newArr[0], newArr[1]);
+      })
+      ctx.stroke();
     },
     methods: {
       goHome() {
         this.$router.push('Home')
+        window.localStorage.removeItem('locus')
       },
       checkNames(item) {
         console.log(item)
@@ -211,7 +243,7 @@
               item.members.forEach((v, i) => {
                 v.checked = false
               })
-              this.nameList =JSON.parse(JSON.stringify(item.members)) 
+              this.nameList = JSON.parse(JSON.stringify(item.members))
             }
           })
         })
@@ -316,7 +348,7 @@
               this.checkName.splice(ind, 1)
             }
           })
-          console.log(this.checkName,'this.checkName')
+          console.log(this.checkName, 'this.checkName')
         }
       }
     }
@@ -439,14 +471,38 @@
     }
 
     .exercise,
-    .exercises {
+    .exercises,.livebox {
       height: 250px;
       background: rgba(254, 252, 255, 0.03);
       border-radius: 5px;
       border: 1px solid rgba(98, 101, 118, 1);
       color: rgba(209, 213, 230, 1);
     }
-
+    .livebox{
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+      box-sizing: border-box;
+      span {
+          font-size: 17px;
+          font-family: PingFangSC-Regular, PingFang SC;
+          font-weight: 400;
+          color: rgba(151, 154, 169, 1);
+          line-height: 24px;
+        }
+        h2 {
+          margin-top: 5px;
+          font-size: 26px;
+          font-family: PingFangSC-Regular, PingFang SC;
+          font-weight: 400;
+          color: rgba(209, 213, 230, 1);
+        }
+        #mycanvas{
+          margin-top: 5px;
+        }.log{
+          margin-top: 10px;
+        }
+    }
     .exercises {
       padding: 20px;
       box-sizing: border-box;
