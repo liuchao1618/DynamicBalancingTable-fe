@@ -466,7 +466,6 @@ function BluetoothTool() {
 	 * @param requestCode
 	 */
 	function turnOnBluetooth() {
-        alert('打开设备')
 		if(btAdapter == null) {
 			shortToast("没有蓝牙");
 			return;
@@ -557,8 +556,6 @@ function BluetoothTool() {
 	 * 发现设备
 	 */
 	function discoveryNewDevice(discoveryAddress) {
-        alert('要找到地址链接啦')
-        alert(JSON.stringify(discoveryAddress))
 		if(btFindReceiver != null) {
 			try {
 				activity.unregisterReceiver(btFindReceiver); 
@@ -594,6 +591,7 @@ function BluetoothTool() {
                     cancelDiscovery();
                     if (!state.readThreadState) {
                         state.statusContent = 2;
+                        shortToast('未发现可用设备')
                     }
 					options.discoveryFinishedCallback && options.discoveryFinishedCallback(state.statusContent);
 				}
@@ -641,7 +639,7 @@ function BluetoothTool() {
                                 state.bluetoothEnable = true;
                                 content = 1;
                                 stateStr = "STATE_ON";
-                                alert('蓝牙已经打开，怎么打开的？')
+                                shortToast('蓝牙已开启')
 								break;
 							case BluetoothAdapter.STATE_TURNING_OFF:
                                 stateStr = "STATE_TURNING_OFF";
@@ -649,7 +647,7 @@ function BluetoothTool() {
 								break;
 							case BluetoothAdapter.STATE_OFF:
                                 stateStr = "STATE_OFF";
-                                alert('蓝牙已关闭，请手动打开')
+                                shortToast('设备已断开连接')
                                 content = 0;
 								state.bluetoothEnable = false;
 								break;
@@ -672,7 +670,7 @@ function BluetoothTool() {
 	 * @return {Boolean}
 	 */
 	function connDevice(address) {
-        alert('开始连接了')
+        shortToast('开始连接设备')
         // alert(address)
 		let InputStream = plus.android.importClass("java.io.InputStream");
 		let OutputStream = plus.android.importClass("java.io.OutputStream");
@@ -684,7 +682,6 @@ function BluetoothTool() {
 		state.readThreadState = false;
 
 		try {
-            // alert('address能用吗')
             let device = invoke(btAdapter, "getRemoteDevice", address);
 			btSocket = invoke(device, "createRfcommSocketToServiceRecord", MY_UUID);
 		} catch(e) {
@@ -755,7 +752,6 @@ function BluetoothTool() {
 			activity.unregisterReceiver(btFindReceiver);
 			btFindReceiver = null;
         }
-        alert('取消搜索了')
 		state.discoveryDeviceState = false;
 	}
 
@@ -838,10 +834,10 @@ function BluetoothTool() {
 		try {
 			btOutStream.write(bytes);
 		} catch(e) {
-            alert('发送失败')
+            shortToast('发送失败')
 			return false;
         }
-        alert('发送成功')
+        shortToast('发送成功')
 		return true;
 	}
 };
@@ -864,13 +860,13 @@ let vm = {
       loginFlag: false,
       setup: false,
     //   loginSwitch: false,
-      status: 'fail',
-    //   status: 'success',
+    //   status: 'fail',
+      status: 'success',
       statusContent: 0,
       deviceList: [], // 蓝牙地址(adress)
       dataList: [], // 接收到的数据
       contrastData: [], // 做对比的数据
-      sendData: '88',
+      sendData: '86',
       recordList: [],//记录 
       merberList: [],//我的运动员
       collectList: [],//收藏
@@ -1028,7 +1024,6 @@ let vm = {
   mounted () {
     this.getExercise(); //所有记录
     this.getmemberMsg(); //我的运动员
-    // this.startBluetoothDiscovery()
     this.tab = this.$route.query.index * 1 || 0;
     if (this.login) {
         window.localStorage.setItem('modle', 'PT')
@@ -1284,360 +1279,7 @@ let vm = {
   }
 }
 export default vm
-
-    // import login from './components/login'
-    // import { Dialog } from 'vant'
-    // import { mapState } from 'vuex'
-    // import { memberExercise, memberMessage, addCollect, delCollect, delMember, trainDetail, exitLogin } from '@/api/index'
-    // export default {
-    //     name: 'home',
-    //     components: {
-    //         login
-    //     },
-    //     data() {
-    //         return {
-    //             Str: '',
-    //             tab: 0,
-    //             setup: false,
-    //             loginSwitch: false,
-    //             status: 'fail',
-    //             status: 'success',
-    //             statusContent: 1,
-    //             recordList: [],//记录 
-    //             merberList: [],//我的运动员
-    //             collectList: [],//收藏
-    //             menuList: [
-    //                 {
-    //                     img: require('./image/banner1.png'),
-    //                     text: 'FUNTIONAL 1 L1'
-    //                 },
-    //                 {
-    //                     img: require('./image/banner2.png'),
-    //                     text: 'FUNTIONAL 2 L1'
-    //                 },
-    //                 {
-    //                     img: require('./image/banner3.png'),
-    //                     text: 'FUNTIONAL 3 L1'
-    //                 }
-    //             ],
-    //             list: [
-    //                 {
-    //                     color: '#55D295',
-    //                     text: 'FUNTIONAL 1<br/>L2'
-    //                 },
-    //                 {
-    //                     color: '#72C840',
-    //                     text: 'FUNTIONAL 1<br/>L3'
-    //                 },
-    //                 {
-    //                     color: '#7853EA',
-    //                     text: 'FUNTIONAL 1<br/>L4'
-    //                 },
-    //                 {
-    //                     color: '#D3C143',
-    //                     text: 'FUNTIONAL 1<br/>L5'
-    //                 },
-    //                 {
-    //                     color: '#EB9D3A',
-    //                     text: 'FUNTIONAL 2<br/>L2'
-    //                 },
-    //                 {
-    //                     color: '#38947E',
-    //                     text: 'FUNTIONAL 2<br/>L3'
-    //                 },
-    //                 {
-    //                     color: '#489696',
-    //                     text: 'FUNTIONAL 2<br/>L4'
-    //                 },
-    //                 {
-    //                     color: '#3387D6',
-    //                     text: 'FUNTIONAL 2<br/>L5'
-    //                 },
-    //                 {
-    //                     color: '#58CFDC',
-    //                     text: 'FUNTIONAL 3<br/>L2'
-    //                 },
-    //                 {
-    //                     color: '#4CD697',
-    //                     text: 'FUNTIONAL 3<br/>L3'
-    //                 },
-    //                 {
-    //                     color: '#D7C641',
-    //                     text: 'LIVE'
-    //                 },
-    //                 {
-    //                     color: '#5DB035',
-    //                     text: 'DEMO TEST'
-    //                 }
-    //             ],
-    //             touristList: [
-    //                 {
-    //                     color: '#55D295',
-    //                     text: 'FUNTIONAL 1<br/>L2'
-    //                 },
-    //                 {
-    //                     color: '#72C840',
-    //                     text: 'FUNTIONAL 1<br/>L3'
-    //                 },
-    //                 {
-    //                     color: '#7853EA',
-    //                     text: 'FUNTIONAL 1<br/>L4'
-    //                 },
-    //                 {
-    //                     color: '#D3C143',
-    //                     text: 'FUNTIONAL 1<br/>L5'
-    //                 },
-    //                 {
-    //                     color: '#EB9D3A',
-    //                     text: 'FUNTIONAL 2<br/>L2'
-    //                 },
-    //                 {
-    //                     color: '#38947E',
-    //                     text: 'FUNTIONAL 2<br/>L3'
-    //                 },
-    //                 {
-    //                     color: '#489696',
-    //                     text: 'FUNTIONAL 2<br/>L4'
-    //                 },
-    //                 {
-    //                     color: '#3387D6',
-    //                     text: 'FUNTIONAL 2<br/>L5'
-    //                 },
-    //                 {
-    //                     color: '#58CFDC',
-    //                     text: 'FUNTIONAL 3<br/>L2'
-    //                 },
-    //                 {
-    //                     color: '#4CD697',
-    //                     text: 'FUNTIONAL 3<br/>L3'
-    //                 },
-    //                 {
-    //                     color: '#D7C641',
-    //                     text: 'FUNTIONAL 3<br/>L4'
-    //                 },
-    //                 {
-    //                     color: '#5DB035',
-    //                     text: 'PT'
-    //                 }
-    //             ]
-    //         }
-    //     },
-    //     mounted() {
-    //         this.getExercise(); //所有记录
-    //         this.getmemberMsg(); //我的运动员
-    //         this.startBluetoothDiscovery()
-    //         this.tab = this.$route.query.index * 1 || 0;
-    //         if (this.login) {
-    //             window.localStorage.setItem('modle', 'PT')
-    //         } else {
-    //             window.localStorage.setItem('modle', 'DEMO')
-    //         }
-    //         console.log(this.recordList)
-    //     },
-    //     updated() {
-    //         this.recordList.forEach((item, index) => {
-    //             var c = document.getElementById(index);
-    //             var ctx = c.getContext("2d");
-    //             var arr = item.expands
-    //             arr.forEach((v, i) => {
-    //                 ctx.lineTo(v[0], v[1]);
-    //             })
-    //             ctx.stroke();
-    //             ctx.strokeStyle = '#D1D5E6'
-    //         })
-    //         this.collectList.forEach((item, index) => {
-    //             console.log(item)
-    //             var c = document.getElementById("'a'+index");
-    //             var ctx = c.getContext("2d");
-    //             var arr = item.expands
-    //             arr.forEach((v, i) => {
-    //                 ctx.lineTo(v[0], v[1]);
-    //             })
-    //             ctx.stroke();
-    //             ctx.strokeStyle = '#D1D5E6'
-    //         })
-    //     },
-    //     computed: mapState([
-    //         // 映射 this.loginflag 为 store.state.loginflag
-    //         'loginflag',
-    //         'login',
-    //         'loginName'
-    //     ]),
-    //     methods: {
-    //         exitLogin() {
-    //             Dialog.confirm({
-    //                 message: '您确定要退出登录吗？'
-    //             }).then(() => {
-    //                 // on confirm
-    //                 exitLogin().then((res) => {
-    //                     this.$store.dispatch('setLoginflag', { login: false })
-    //                 })
-    //                 // localStorage.clear()
-    //             }).catch(() => {
-    //                 // on cancel
-    //             });
-    //         },
-    //         detail(item) {
-    //             this.$router.push({ name: 'sportExerciseLog' })
-    //         },
-    //         edit(item) {
-    //             this.$router.push({ name: 'addAthletes', query: { name: item.username, sex: item.sex, birth: item.birth, height: item.height, weight: item.weight, mobile: item.mobile } })
-    //             window.localStorage.setItem('userCode', item.userCode)
-    //         },
-    //         del(item) {
-    //             let data = {
-    //                 deleteCodes: [item.userCode]
-    //             }
-    //             delMember(data).then((res) => {
-    //                 if (res.data.code == 200) {
-    //                     this.$toast({
-    //                         message: '删除成功',
-    //                         position: 'bottom'
-    //                     });
-    //                     this.getmemberMsg()
-    //                 }
-    //             })
-    //         },
-    //         addSport() {
-    //             this.$router.push({ name: 'addAthletes' })
-    //         },
-    //         AddCollect(item) {
-    //             item.favored = true
-    //             let data = {
-    //                 userCode: window.localStorage.getItem('userCode'),
-    //                 id: item.id * 1
-    //             }
-    //             addCollect(data).then((res) => {
-    //                 if (res.data.code == 200) {
-    //                     this.getExercise()
-    //                 }
-    //             })
-    //         },
-    //         DelCollect(item) {
-    //             item.favored = false
-    //             let data = {
-    //                 userCode: window.localStorage.getItem('userCode'),
-    //                 id: item.id * 1
-    //             }
-    //             delCollect(data).then((res) => {
-    //                 if (res.data.code == 200) {
-    //                     this.getExercise()
-    //                 }
-    //             })
-    //         },
-    //         getExercise() {
-    //             let data = {
-    //                 userCode: window.localStorage.getItem('userCode')
-    //             }
-    //             memberExercise(data).then((res) => {
-    //                 this.recordList = res.data.data;
-    //                 this.collectList = [];
-    //                 console.log(document.getElementById('0'), 0)
-    //                 res.data.data.forEach((item, index) => {
-    //                     item.expands = []
-    //                     if (JSON.parse(item.expand) != null) {
-    //                         var expand = JSON.parse(item.expand)
-    //                         expand.forEach((v, ind) => {
-    //                             var newArr = []
-    //                             v.c.forEach((val,i)=>{
-    //                                 newArr.push(parseInt(val/4))
-    //                             })
-    //                                 item.expands.push(newArr)
-    //                         })
-    //                     }
-    //                     if (item.favored) {
-    //                         this.collectList.push(item)
-    //                     }
-    //                 })
-    //             })
-    //         },
-    //         getmemberMsg() {
-    //             let data = {
-    //                 level: 2,
-    //                 userCode: window.localStorage.getItem('userCode')
-    //             }
-    //             memberMessage(data).then((res) => {
-    //                 res.data.data.forEach((item, i) => {
-    //                     if (item.sex == 0) {
-    //                         item.sex = '女'
-    //                     } else {
-    //                         item.sex = '男'
-    //                     }
-    //                 })
-    //                 this.merberList = res.data.data
-
-    //             })
-    //         },
-
-    //         tabBtn(index) {
-    //             this.tab = index
-    //         },
-    //         leftgoDetail(item, index) {
-    //             let modle = window.localStorage.getItem('modle')
-    //             if (modle == 'DEMO') {
-    //                 window.localStorage.setItem('level', item)
-    //             }
-    //             this.$router.push({ name: 'SelectTime' });
-    //         },
-    //         godetail(index, text) {
-    //             if (index == 10 && text == 'LIVE') {
-    //                 this.$router.push({ name: 'live' });
-    //             }
-    //             else if (index == 11 && text == 'DEMO TEST') {
-    //                 window.localStorage.setItem('modle', 'DEMO')
-    //                 this.list.forEach((item, i) => {
-    //                     if (i == 10) {
-    //                         item.text = 'FUNTIONAL 3 <br/>L4'
-    //                     } else if (i == 11) {
-    //                         item.text = 'PT'
-    //                     }
-    //                 })
-    //             }
-    //             else if (index == 11 && text == 'PT') {
-    //                 window.localStorage.setItem('modle', 'PT')
-    //                 this.list.forEach((item, i) => {
-    //                     if (i == 10) {
-    //                         item.text = 'LIVE'
-    //                     } else if (i == 11) {
-    //                         item.text = 'DEMO TEST'
-    //                     }
-    //                 })
-    //             }
-    //             else {
-    //                 this.$router.push({ name: 'SelectTime' });
-    //             }
-    //             window.localStorage.setItem('level', text)
-    //         },
-    //         godetails(index, text) {
-    //             if (index == 11 && text == 'PT') {
-
-    //                 this.$store.dispatch('setLoginflag', { loginflag: true })
-    //                 // this.$store.dispatch('setLoginflag', { login: false })
-    //             }
-    //             else {
-    //                 this.$router.push({ name: 'SelectTime' });
-    //             }
-    //             window.localStorage.setItem('level', text)
-    //         },
-    //         // 点击使用本次设置进行训练
-    //         clickToTrain(item) {
-    //             Dialog.confirm({
-    //                 message: '确定使用本次设置进行训练？'
-    //             }).then(() => {
-    //                 window.localStorage.setItem('setTrainTime', item.fullPlayTime)
-    //                 this.$router.push({ name: 'train', query: { model: item.model, fullPlayTime: item.fullPlayTime, realPlayTime: item.realPlayTime, leftPower: item.leftPower, rightPower: item.rightPower, avgPower: item.avgPower, level: item.level } })
-    //             }).catch(() => {
-    //             });
-    //         },
-    //         editPWD() {
-    //             this.$router.push({ name: 'editPass' })
-    //         },
-
-    //     }
-    // }
 </script>
-
-
 
 <style scoped lang="less">
     .addSport {
@@ -1645,21 +1287,17 @@ export default vm
         align-items: center;
         color: #D1D5E6;
         margin-bottom: 18px;
-
         .img {
             width: 35px;
-
             img {
                 width: 100%;
             }
         }
-
         span {
             margin-right: 10px;
             font-size: 25px;
         }
     }
-
     .box {
         width: 100vw;
         min-height: 100vh;
@@ -1667,19 +1305,15 @@ export default vm
         box-sizing: border-box;
         background: url("./image/bg.png") no-repeat left top;
         background-size: cover;
-
         .loading {
             padding-top: 197px;
-
             .loadingImg {
                 width: 380px;
                 height: 100px;
                 margin-bottom: 243px;
             }
-
             .load-loading {
                 text-align: center;
-
                 .img {
                     height: 50px;
                     color: #EAEEF8;
@@ -1701,12 +1335,10 @@ export default vm
                         margin-right: 45px;
                     }
                 }
-
                 .text {
                     color: #9CA0B1;
                     font-size: 24px;
                 }
-
                 .load-button {
                     margin: 0 auto;
                     border: 1px solid #9CA0B1;
@@ -1719,26 +1351,21 @@ export default vm
                 }
             }
         }
-
         .home {
             .title {
                 width: 100%;
                 text-align: center;
-
                 img {
                     width: 280px;
                     height: 64px;
                 }
             }
-
             .tabList {
                 width: 100%;
                 display: flex;
                 justify-content: space-between;
-
                 .tabLeft {
                     display: flex;
-
                     .tab {
                         padding: 0 50px;
                         font-size: 34px;
@@ -1747,17 +1374,14 @@ export default vm
                         line-height: 50px;
                         height: 70px;
                     }
-
                     .tabActive {
                         color: #fff;
                         background: url("./image/tab.png") no-repeat left bottom;
                         background-size: contain;
                     }
                 }
-
                 .tabRight {
                     display: flex;
-
                     .name {
                         margin-right: 22px;
                         color: #B7BCCA;
@@ -1765,15 +1389,12 @@ export default vm
                         font-size: 28px;
                         line-height: 45px;
                     }
-
                     .setup {
                         position: relative;
-
                         img {
                             width: 45px;
                             height: 45px;
                         }
-
                         .setupList {
                             position: absolute;
                             bottom: -282px;
@@ -1784,7 +1405,6 @@ export default vm
                             background-color: #373839;
                             border: 1px solid #464348;
                             border-radius: 10px;
-
                             .setupItem {
                                 color: #D1D5E6;
                                 font-size: 26px;
@@ -1795,7 +1415,6 @@ export default vm
                                 border-bottom: 1px solid #404350;
                                 line-height: 85px;
                                 text-align: center;
-
                                 .switch {
                                     margin-left: 16px;
                                 }
@@ -1804,18 +1423,15 @@ export default vm
                     }
                 }
             }
-
             .menu {
                 display: flex;
                 padding-top: 40px;
-
                 .menuLeft {
                     .menuItem {
                         width: 450px;
                         height: 250px;
                         margin-bottom: 30px;
                         position: relative;
-
                         img {
                             position: absolute;
                             width: 100%;
@@ -1824,7 +1440,6 @@ export default vm
                             top: 0;
                             z-index: 1;
                         }
-
                         .menuText {
                             position: absolute;
                             left: 30px;
@@ -1836,14 +1451,12 @@ export default vm
                         }
                     }
                 }
-
                 .menuRight {
                     display: flex;
                     flex-wrap: wrap;
                     width: 100%;
                     flex: 1;
                     margin-left: 40px;
-
                     .rightItem {
                         width: 22%;
                         height: 250px;
@@ -1860,21 +1473,17 @@ export default vm
                     }
                 }
             }
-
             .list {
                 padding: 30px 0;
                 width: 100%;
-
                 .item {
                     margin-bottom: 10px;
-
                     .itemTitle {
                         color: #B8BBC6;
                         font-size: 18px;
                         margin-bottom: 10px;
                         text-align: left;
                     }
-
                     .itemCon {
                         display: flex;
                         justify-content: space-between;
@@ -1884,7 +1493,6 @@ export default vm
                         padding: 40px;
                         border: 1px solid #626576;
                         border-radius: 5px;
-
                         .con {
                             .name {
                                 color: #979AA9;
@@ -1892,14 +1500,12 @@ export default vm
                                 text-align: left;
                                 margin-bottom: 10px;
                             }
-
                             .time {
                                 color: #D1D5E6;
                                 font-size: 26px;
                                 text-align: left;
                                 margin-bottom: 32px;
                             }
-
                             .detail {
                                 display: flex;
                                 box-sizing: border-box;
@@ -1910,45 +1516,38 @@ export default vm
                                 border-radius: 2px;
                                 justify-content: space-around;
                                 align-items: center;
-
                                 .detailItem {
                                     .detailUp {
                                         color: #D1D5E6;
                                         font-size: 24px;
                                         margin-bottom: 5px;
                                     }
-
                                     .detailDown {
                                         color: #B7BAC8;
                                         font-size: 10px;
                                     }
                                 }
                             }
-
                             .img {
                                 width: 264px;
                                 border: 1px solid #626576;
                                 border-radius: 5px;
                             }
                         }
-
                         .conCollect {
                             display: flex;
                             flex-direction: column;
                             justify-content: space-between;
                             align-items: flex-end;
-
                             img {
                                 width: 35px;
                                 height: 35px;
                             }
-
                             .conTrain {
                                 display: flex;
                                 align-items: center;
                                 color: #B1B4C0;
                                 font-size: 21px;
-
                                 // margin-bottom: 40px;
                                 img {
                                     width: 24px;
@@ -1959,30 +1558,25 @@ export default vm
                     }
                 }
             }
-
             .myAthletes {
                 padding: 30px 0;
                 width: 100%;
-
                 .myHead {
                     // background-color: #FEFCFF;
                     border: 1px solid #404350;
                     color: #ABAFBD;
                     font-size: 24px;
                     line-height: 50px;
-
                     .headItem {
                         height: 75px;
                         line-height: 75px;
                         text-align: center;
                     }
                 }
-
                 .myTd {
                     line-height: 40px;
                     border: 1px solid #404350;
                     border-top: 0;
-
                     .myTdColor {
                         color: #D1D5E6;
                     }
