@@ -860,6 +860,8 @@
         },
         data() {
             return {
+                leftValue:0,
+                rightValue:0,
                 tab: 0,
                 loginFlag: false,
                 setup: false,
@@ -1054,7 +1056,9 @@
             }, false)
         },
         mounted() {
-            alert(this.$route)
+            this.loginflag = localStorage.getItem('loginflag')
+            this.login = localStorage.getItem('login')
+            console.log('  this.loginflag',  this.loginflag,'this.login',this.login)
             this.getExercise(); //所有记录
             this.getmemberMsg(); //我的运动员
             // this.startBluetoothDiscovery()
@@ -1204,10 +1208,56 @@
                 let modle = window.localStorage.getItem('modle')
                 if (modle == 'DEMO') {
                     window.localStorage.setItem('level', item)
+                }else if(modle == 'PT'){
                 }
+                    if(index == 0){
+                    this.leftValue = 10
+                    this.rightValue = 15
+                }else if(index == 1){
+                    this.leftValue = 40
+                    this.rightValue = 45
+                }else if(index == 2){
+                    this.leftValue = 80
+                    this.rightValue = 85
+                }
+                window.localStorage.setItem('leftValue',this.leftValue)
+                window.localStorage.setItem('rightValue',this.rightValue)
                 this.$router.push({ name: 'SelectTime' });
             },
             godetail(index, text) {
+                if(index == 0){
+                    this.leftValue = 15
+                    this.rightValue = 20
+                }else if(index == 1){
+                    this.leftValue = 25
+                    this.rightValue = 30
+                }else if(index == 2){
+                    this.leftValue = 30
+                    this.rightValue = 35
+                }else if(index == 3){
+                    this.leftValue = 35
+                    this.rightValue = 40
+                }else if(index == 4){
+                    this.leftValue = 50
+                    this.rightValue = 55
+                }else if(index == 5){
+                    this.leftValue = 55
+                    this.rightValue = 60
+                }else if(index == 6){
+                    this.leftValue = 60
+                    this.rightValue = 65
+                }else if(index == 7){
+                    this.leftValue = 70
+                    this.rightValue = 75
+                }else if(index == 8){
+                    this.leftValue = 85
+                    this.rightValue = 90
+                }else if(index == 9){
+                    this.leftValue = 90
+                    this.rightValue = 95
+                }
+                window.localStorage.setItem('leftValue',this.leftValue)
+                window.localStorage.setItem('rightValue',this.rightValue)
                 if (index == 10 && text == 'LIVE') {
                     this.$router.push({ name: 'live' });
                 }
@@ -1237,6 +1287,39 @@
                 window.localStorage.setItem('level', text)
             },
             godetails(index, text) {
+                if(index == 0){
+                    this.leftValue = 15
+                    this.rightValue = 20
+                }else if(index == 1){
+                    this.leftValue = 25
+                    this.rightValue = 30
+                }else if(index == 2){
+                    this.leftValue = 30
+                    this.rightValue = 35
+                }else if(index == 3){
+                    this.leftValue = 35
+                    this.rightValue = 40
+                }else if(index == 4){
+                    this.leftValue = 50
+                    this.rightValue = 55
+                }else if(index == 5){
+                    this.leftValue = 55
+                    this.rightValue = 60
+                }else if(index == 6){
+                    this.leftValue = 60
+                    this.rightValue = 65
+                }else if(index == 7){
+                    this.leftValue = 70
+                    this.rightValue = 75
+                }else if(index == 8){
+                    this.leftValue = 85
+                    this.rightValue = 90
+                }else if(index == 9){
+                    this.leftValue = 90
+                    this.rightValue = 95
+                }
+                window.localStorage.setItem('leftValue',this.leftValue)
+                window.localStorage.setItem('rightValue',this.rightValue)
                 if (index == 11 && text == 'PT') {
                     this.$store.dispatch('setLoginflag', { loginflag: true })
                     // this.$store.dispatch('setLoginflag', { login: false })

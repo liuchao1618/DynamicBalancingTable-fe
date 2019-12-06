@@ -8,7 +8,7 @@ Vue.use(vuex)
 const state = {
   loginflag:false,
   login:false,
-  loginName:''
+  loginName:'',
 }
 // 所需要定义的mutations
 const mutations = {
@@ -16,6 +16,8 @@ const mutations = {
     state.loginflag = data.loginflag
     state.login = data.login
     state.loginName = data.loginName
+    window.localStorage.setItem('login',data.login)
+    window.localStorage.setItem('loginflag',data.loginflag)
   }
 }
 
