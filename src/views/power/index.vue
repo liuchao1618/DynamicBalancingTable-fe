@@ -60,19 +60,23 @@
     data() {
       return {
         value: '',
-        leftValue: 75,
-        rightValue: 65,
-        bottomValue: 30,
+        leftValue: 0,
+        rightValue: 0,
+        bottomValue: 0,
         currentTime: '00:00',
         pause: 'PAUSE',
         freeze: 'FREEZE',
         align: 'ALIGN',
         timer: null,
         setTime: 0,
-        watchFlag: true
+        watchFlag: false
       }
     },
     mounted() {
+      this.leftValue = 100 - localStorage.getItem('leftValue')
+      this.rightValue = 100 - localStorage.getItem('rightValue')
+      this.bottomValue = parseInt((localStorage.getItem('leftValue')*1 + localStorage.getItem('rightValue')*1)/2)
+      console.log( localStorage.getItem('leftValue'), localStorage.getItem('rightValue'),'left') 
       /**
        * 将秒转换为 分:秒
        * s int 秒数
@@ -177,11 +181,14 @@
       changeleft(event) {
         this.watchFlag = false
         this.bottomValue = parseInt((100 - event + 100 - this.rightValue) / 2)
+        window.localStorage.setItem('leftValue',100-this.leftValue)
+        window.localStorage.setItem('bottomValue',this.bottomValue)
       },
       changeright(event) {
         this.watchFlag = false
-
         this.bottomValue = parseInt((100 - event + 100 - this.leftValue) / 2)
+        window.localStorage.setItem('rightValue',100-this.rightValue)
+        window.localStorage.setItem('bottomValue',this.bottomValue)
       },
 
       changeBottom() {
@@ -314,8 +321,11 @@
         setTimeout(() => {
         if (this.watchFlag) {
           this.calculateBottomValue(now, old);
+          window.localStorage.setItem('leftValue',100-this.leftValue)
+          window.localStorage.setItem('rightValue',100-this.rightValue)
+        window.localStorage.setItem('bottomValue',this.bottomValue)
         }
-        }, 300);
+        }, 500);
       }
     }
   }
