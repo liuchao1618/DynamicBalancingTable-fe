@@ -300,7 +300,7 @@ function BluetoothTool() {
                               state.bluetoothEnable = true;
                               content = 1;
                               stateStr = "STATE_ON";
-                              alert('蓝牙已经打开，怎么打开的？')
+                              alert('蓝牙已开启')
                               break;
                           case BluetoothAdapter.STATE_TURNING_OFF:
                               stateStr = "STATE_TURNING_OFF";
