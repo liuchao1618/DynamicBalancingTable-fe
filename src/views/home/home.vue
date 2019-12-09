@@ -1073,11 +1073,14 @@
             }, false)
         },
         mounted() {
+<<<<<<< HEAD
             // 在其他页面监听蓝牙与设备的连接状态
             let urlContent = this.$route.query.urlContent
             if (urlContent) {
                 this.statusContent = urlContent
             }
+=======
+>>>>>>> master
             // this.loginflag = localStorage.getItem('loginflag')
             // this.login = localStorage.getItem('login')
             // console.log('  this.loginflag',  this.loginflag,'this.login',this.login)
