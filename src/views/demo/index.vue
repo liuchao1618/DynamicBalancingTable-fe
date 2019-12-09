@@ -65,6 +65,8 @@
     },
     methods: {
       stop() {
+        this.$store.dispatch('setLoginflag', { modle:'null' })
+
         let level = window.localStorage.getItem('level').split('<br/>').join('-')
         let data = {
           userCode: window.localStorage.getItem('userCode'),

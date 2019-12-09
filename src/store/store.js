@@ -9,15 +9,47 @@ const state = {
   loginflag:false,
   login:false,
   loginName:'',
+  modle:'null',
+  type:'',
+  left:0,
+  right:0,
+  text:''
 }
 // 所需要定义的mutations
 const mutations = {
   SETLOGINFLAG:(state,data)=>{
+    state.text = data.text
+    if(data.index == 1){
     state.loginflag = data.loginflag
     state.login = data.login
-    state.loginName = data.loginName
+
+    }if(data.index == 2){
+    state.loginflag = data.loginflag
+
+    }
+    if(data.index == 3){
+      state.login = data.login
+  
+      }
+    if(data.loginName){
+      state.loginName = data.loginName
+    }
+    if(data.modle){
+      state.modle = data.modle
+    }
+    if(data.type){
+      state.type = data.type
+    }
+    if(data.left){
+      state.left = data.left
+    }
+    if(data.right){
+    state.right = data.right
+
+    }
     window.localStorage.setItem('login',data.login)
     window.localStorage.setItem('loginflag',data.loginflag)
+    console.log(state,data)
   }
 }
 

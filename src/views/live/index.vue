@@ -40,6 +40,8 @@
     },
     methods: {
       stop() {
+        this.$store.dispatch('setLoginflag', { modle:'null' })
+
         clearInterval(this.timers)
         clearInterval(this.timer)
         // locus:[{
