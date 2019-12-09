@@ -863,7 +863,7 @@
                 leftValue:0,
                 rightValue:0,
                 tab: 0,
-                loginFlag: false,
+                // loginFlag: false,
                 setup: false,
                 //   loginSwitch: false,
                 status: 'fail',
@@ -872,7 +872,7 @@
                 deviceList: [], // 蓝牙地址(adress)
                 dataList: [], // 接收到的数据
                 contrastData: [], // 做对比的数据
-                sendData: '88',
+                sendDataNum: '10100000',
                 recordList: [],//记录 
                 merberList: [],//我的运动员
                 collectList: [],//收藏
@@ -1034,7 +1034,7 @@
                     },
                     readDataCallback: function (dataArr) { // 读取数据回调
                         that.dataList = dataArr
-                        bluetoothTool.sendData(that.sendData)
+                        bluetoothTool.sendData(that.sendDataNum)
                         alert('刚传完数据')
                     },
                     discoveryFinishedCallback: function (stateContent) { // 搜索发现回调
@@ -1061,7 +1061,6 @@
             console.log('  this.loginflag',  this.loginflag,'this.login',this.login)
             this.getExercise(); //所有记录
             this.getmemberMsg(); //我的运动员
-            // this.startBluetoothDiscovery()
             this.tab = this.$route.query.index * 1 || 0;
             if (this.login) {
                 window.localStorage.setItem('modle', 'PT')
@@ -1074,9 +1073,7 @@
                 if (bluetoothTool.state.bluetoothEnable) {
                     that.discoveryNewDevice() // 发现设备
                 }
-                // bluetoothTool.sendData('哈哈哈哈哈')
             }, false)
-
         },
         computed: mapState([
             // 映射 this.loginflag 为 store.state.loginflag
@@ -1093,7 +1090,16 @@
                 }else if(now == 3){
                     this.getmemberMsg();
                 }
-            }
+            },
+            // 监听status
+            status (newVal,oldVal) {
+                alert('watch,status')
+                alert(newVal)
+                this.status = newVal
+            },
+            statusContent (newVal,oldVal) {
+                this.statusContent = newVal
+            },
         },
         methods: {
             exitLogin() {
@@ -1353,9 +1359,9 @@
                         }
                     }
                 })
-                    .catch((err) => {
-                        console.log(err)
-                    })
+                .catch((err) => {
+                    console.log(err)
+                })
             },
             // 发现设备
             discoveryNewDevice() {

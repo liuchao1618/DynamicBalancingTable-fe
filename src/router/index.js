@@ -28,13 +28,14 @@ import sportExerciseLog from '@/views/sportExerciseLog'//查看运动记录
 
 export default new Router({
   routes: [
-    {
-      path: '/home',
-      name: 'Home',
-      component: Home
-    },
+    // {
+    //   path: '/home',
+    //   name: 'Home',
+    //   component: Home
+    // },
     {
       path: '/',
+      name: 'Home',
       component: Home
     },
     {
