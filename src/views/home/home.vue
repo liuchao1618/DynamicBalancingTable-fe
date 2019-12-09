@@ -873,8 +873,8 @@
                 // loginFlag: false,
                 setup: false,
                 //   loginSwitch: false,
-                status: 'fail',
-                // status: 'success',
+                // status: 'fail',
+                status: 'success',
                 statusContent: 0,
                 deviceList: [], // 蓝牙地址(adress)
                 dataList: [], // 接收到的数据
