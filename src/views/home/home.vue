@@ -863,7 +863,7 @@
                 leftValue:0,
                 rightValue:0,
                 tab: 0,
-                loginFlag: false,
+                // loginFlag: false,
                 setup: false,
                 //   loginSwitch: false,
                 status: 'fail',
@@ -1056,9 +1056,9 @@
             }, false)
         },
         mounted() {
-            this.loginflag = localStorage.getItem('loginflag')
-            this.login = localStorage.getItem('login')
-            console.log('  this.loginflag',  this.loginflag,'this.login',this.login)
+            // this.loginflag = localStorage.getItem('loginflag')
+            // this.login = localStorage.getItem('login')
+            // console.log('  this.loginflag',  this.loginflag,'this.login',this.login)
             this.getExercise(); //所有记录
             this.getmemberMsg(); //我的运动员
             // this.startBluetoothDiscovery()
