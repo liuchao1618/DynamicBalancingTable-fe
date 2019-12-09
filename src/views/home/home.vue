@@ -549,10 +549,14 @@
          * 发现设备
          */
         function discoveryNewDevice(discoveryAddress) {
+            state.statusContent = 1
+            options.discoveryFinishedCallback && options.discoveryFinishedCallback(state.statusContent);
             alert(JSON.stringify(discoveryAddress))
             if (discoveryAddress.length == 0) {
                 shortToast('未提供可配对设备地址')
                 cancelDiscovery(); // 取消发现
+                state.statusContent = 2
+                options.discoveryFinishedCallback && options.discoveryFinishedCallback(state.statusContent);
                 return
             }
             if (btFindReceiver != null) {
@@ -669,7 +673,7 @@
          * @return {Boolean}
          */
         function connDevice(address) {
-            // alert('开始连接了')
+            alert('开始连接了')
             // alert(address)
             let InputStream = plus.android.importClass("java.io.InputStream");
             let OutputStream = plus.android.importClass("java.io.OutputStream");
@@ -791,15 +795,13 @@
                     if (state.readThreadState) {
                         let t = new Date().getTime();
                         //心跳检测
-                        if (setTimeCount % 20 == 0) {
+                        if (setTimeCount % 10 == 0) {
                             try {
-                                btOutStream.write([0b00]);
+                                // btOutStream.write([0b00]);
                             } catch (e) {
                                 state.readThreadState = false;
-                                alert('模拟java多线程读取数据')
-                                if (state.readThreadState) {
-                                    state.statusContent = 2
-                                }
+                                shortToast('设备已断开连接')
+                                state.statusContent = 2
                                 options.connExceptionCallback && options.connExceptionCallback(state.statusContent);
                             }
                         }
@@ -808,19 +810,18 @@
                             let data = invoke(btInStream, "read");
                             dataArr.push(data);
                             let ct = new Date().getTime();
-                            if (ct - t > 20) {
+                            if (ct - t > 100) {
                                 break;
                             }
                         }
                         if (dataArr.length > 0) {
-                            alert('接收数据')
-                            alert(dataArr)
+                            // alert('接收数据')
+                            // alert(dataArr)
                             options.readDataCallback && options.readDataCallback(dataArr);
                         }
                     }
                 }, 40);
             }
-
         }
 
         /**
@@ -834,12 +835,17 @@
                 shortToast("创建输出流失败！");
                 return;
             }
-            let bytes = invoke(dataStr, 'getBytes', 'gbk');
+            // let bytes = invoke(dataStr, 'getBytes', 'gbk');
+            alert('发送数据')
             try {
-                btOutStream.write(bytes);
+               for (let i = 0; i < dataStr.length; i++) {
+                btOutStream.write(dataStr[i])
+            }
             } catch (e) {
                 alert('发送失败')
                 return false;
+            } finally {
+
             }
             alert('发送成功')
             return true;
@@ -852,6 +858,7 @@
     import { mapState } from 'vuex'
     import { memberExercise, memberMessage, addCollect, delCollect, delMember, trainDetail, exitLogin } from '@/api/index'
     import { deviceInfo } from '../../api/api'
+    import {t80, dataNum} from '../../utils/sendData.js'
 
     let vm = {
         name: 'home',
@@ -872,7 +879,8 @@
                 deviceList: [], // 蓝牙地址(adress)
                 dataList: [], // 接收到的数据
                 contrastData: [], // 做对比的数据
-                sendDataNum: '10100000',
+                // sendDataNum: 0b10100000,
+                sendDataNum: [0b10100110, 0b10101000, 0b01100000, 0b10100110, 0b10101000,  0b00001010, 0b11100010, 0b11111111],
                 recordList: [],//记录 
                 merberList: [],//我的运动员
                 collectList: [],//收藏
@@ -1021,44 +1029,58 @@
                 bluetoothTool = BluetoothTool();
                 bluetoothTool.init({
                     turnOnBluetoothCallback: function (stateContent) { // 打开蓝牙回调
+                        alert('打开蓝牙回调')
                         that.statusContent = Number(stateContent)
                     },
                     connDeviceCallback: function (stateContent) { // 连接设备回调
+                        alert('连接设备回调')
                         that.statusContent = Number(stateContent)
                         that.status = "success"
-                        that.$forceUpdate()
-                        alert('连接成功回调')
-                        alert(that.statusContent)
-                        alert( that.status)
+                        // that.sendDataTime()
+                        // bluetoothTool.sendData(that.sendDataNum)
                         // that.watchReceiveData()
                     },
                     readDataCallback: function (dataArr) { // 读取数据回调
+                        alert('读取数据回调')
+                        alert(dataArr)
                         that.dataList = dataArr
-                        bluetoothTool.sendData(that.sendDataNum)
-                        alert('刚传完数据')
                     },
                     discoveryFinishedCallback: function (stateContent) { // 搜索发现回调
+                        alert('搜索发现回调')
                         that.statusContent = Number(stateContent)
                     },
                     connExceptionCallback: function (stateContent) { // 设备中断连接回调
+                        alert('设备中断连接回调')
                         that.statusContent = Number(stateContent)
+                        that.status = "fail"
+                        that.$router.push({name: 'Home', query: {urlContent: Number(stateContent)}})
                     },
                     listenBTStatusCallback: function (stateContent) { // 监听蓝牙状态回调
+                        alert('监听蓝牙状态回调')
                         that.statusContent = Number(stateContent)
+                        // alert('listenBTStatusCallback')
                         if (bluetoothTool.state.bluetoothEnable) {
+                            alert('that.statusContent  true')
                             that.discoveryNewDevice() // 发现设备
                         } else {
+                            that.statusContent = Number(stateContent)
                             that.status = "fail"
-                            that.$router.push({name: 'Home'})
+                            that.$router.push({name: 'Home', query: {urlContent: Number(stateContent)}})
+                            this.$forceUpdate()
                         }
                     }
                 })
             }, false)
         },
         mounted() {
-            this.loginflag = localStorage.getItem('loginflag')
-            this.login = localStorage.getItem('login')
-            console.log('  this.loginflag',  this.loginflag,'this.login',this.login)
+            // 在其他页面监听蓝牙与设备的连接状态
+            let urlContent = this.$route.query.urlContent
+            if (urlContent) {
+                this.statusContent = urlContent
+            }
+            // this.loginflag = localStorage.getItem('loginflag')
+            // this.login = localStorage.getItem('login')
+            // console.log('  this.loginflag',  this.loginflag,'this.login',this.login)
             this.getExercise(); //所有记录
             this.getmemberMsg(); //我的运动员
             this.tab = this.$route.query.index * 1 || 0;
@@ -1091,15 +1113,21 @@
                     this.getmemberMsg();
                 }
             },
+            $route (to, from) {
+                if (to != from) {
+                alert('路由切换了') 
+                    this.$router.go(0)
+                }
+            },
             // 监听status
-            status (newVal,oldVal) {
-                alert('watch,status')
-                alert(newVal)
-                this.status = newVal
-            },
-            statusContent (newVal,oldVal) {
-                this.statusContent = newVal
-            },
+            // status (newVal,oldVal) {
+            //     alert('watch,status')
+            //     alert(newVal)
+            //     this.status = newVal
+            // },
+            // statusContent (newVal,oldVal) {
+            //     this.statusContent = newVal
+            // },
         },
         methods: {
             exitLogin() {
@@ -1367,6 +1395,17 @@
             discoveryNewDevice() {
                 this.statusContent = 1
                 bluetoothTool.discoveryNewDevice(this.deviceList)
+            },
+            // 每隔1秒发送数据
+            sendDataTime () {
+                let that = this
+                // let timer = setInterval(() => {
+                //     if (!bluetoothTool.state.readThreadState) {
+                //         clearInterval(timer)
+                //         return false
+                //     }
+                //     bluetoothTool.sendData(that.sendDataNum)
+                // }, 1000)
             },
             // 实时判断是否在实时接收数据
             watchReceiveData() {
