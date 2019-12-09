@@ -8,28 +8,28 @@
         </div>
         <div class='item'>
             <div class='itemLeft'>*姓名</div>
-            <van-field class="itemRight" v-model='form.username' placeholder="请输入您的姓名 >" />
+            <van-field class="itemRight" v-model='form.username' placeholder="请输入您的姓名" />
         </div>
         <div class='item'>
             <div class='itemLeft'>*联系方式</div>
-            <van-field class="itemRight" type="tel" v-model='form.tel' placeholder="请填写您的手机号 >">
+            <van-field class="itemRight" type="tel" v-model='form.tel' placeholder="请填写您的手机号">
             </van-field>
         </div>
         <div class='item' @click="show = true">
             <div class='itemLeft'>性别</div>
-            <div class='itemRight'>{{ form.sex ? form.sex : '请选择性别 >' }}</div>
+            <div class='itemRight'>{{ form.sex ? form.sex : '请选择性别' }}</div>
         </div>
         <div class='item'>
             <div class='itemLeft'>出生日期</div>
-            <div class='itemRight' @click="dateShow = true">{{ form.birth ? form.birth : '请选择您的出生日期 >' }}</div>
+            <div class='itemRight' @click="dateShow = true">{{ form.birth ? form.birth : '请选择您的出生日期' }}</div>
         </div>
         <div class='item'>
             <div class='itemLeft'>身高（cm）</div>
-            <van-field class="itemRight" v-model='form.height' placeholder="请输入您的身高 >" />
+            <van-field class="itemRight" v-model='form.height' placeholder="请输入您的身高" />
         </div>
         <div class='item'>
             <div class='itemLeft'>体重（kg）</div>
-            <van-field class="itemRight" v-model='form.weight' placeholder="请输入您的身高 >" />
+            <van-field class="itemRight" v-model='form.weight' placeholder="请输入您的身高" />
         </div>
         <div class='itemNo'>标*项为必填项，填写的手机号将作为运动员的账号使用</div>
         <div class='buttonBox'>

@@ -47,7 +47,7 @@
                             <div class='setupItem' @click='editPWD'>修改密码</div>
                             <div class='setupItem' @click='exitLogin'>退出登录</div>
                             <div class='setupItem'>自动登录 <van-switch class='switch' size='24px' v-model="loginSwitch"
-                                    active-color="#07c160" inactive-color="#4E4F50"></van-switch>
+                                    active-color="#299AC1" inactive-color="#4E4F50"></van-switch>
                             </div>
                         </div>
                     </div>
@@ -164,7 +164,7 @@
                             </div>
                             <div class='con'>
                                 <div class='name'>操控点轨迹记录</div>
-                                <canvas :id="i" ref='myCanvas' width="402.5" height="86.9"
+                                <canvas :id="i" ref='myCanvas' width="253" height="72"
                                     style="border:1px solid rgba(117,121,137,1);"></canvas>
                                 <!-- <div class='time'><img class='img' src="./image/line.png" alt=""></div> -->
                             </div>
@@ -277,7 +277,7 @@
                             </div>
                             <div class='con'>
                                 <div class='name'>操控点轨迹记录</div>
-                                <canvas :id="'a'+i" ref='myCanvas' width="402.5" height="86.9"
+                                <canvas :id="'a'+i" ref='myCanvas' width="253" height="72"
                                     style="border:1px solid rgba(117,121,137,1);"></canvas>
                             </div>
                             <div class='con' style='width:200px'>
@@ -328,7 +328,7 @@
         </div>
         <!-- login组件 -->
         <login v-if='loginflag'></login>
-
+        <button @click='gogo' style="width:200px;height:50px;">测试页面</button>
     </div>
 </template>
 
@@ -859,7 +859,7 @@
                 tab: 0,
                 // loginFlag: false,
                 setup: false,
-                //   loginSwitch: false,
+                  loginSwitch: false,
                 //   status: 'fail',
                 status: 'success',
                 statusContent: 0,
@@ -1051,11 +1051,13 @@
             this.getmemberMsg(); //我的运动员
             // this.startBluetoothDiscovery()
             this.tab = this.$route.query.index * 1 || 0;
-            if (this.login) {
-                window.localStorage.setItem('modle', 'PT')
-            } else {
-                window.localStorage.setItem('modle', 'DEMO')
-            }
+            // if (this.login) {
+            //     this.$store.dispatch('setLoginflag', { modle:'PT' })
+            //     // window.localStorage.setItem('modle', 'PT')
+            // } else {
+            //     this.$store.dispatch('setLoginflag', { modle:'DEMO' })
+            //     // window.localStorage.setItem('modle', 'DEMO')
+            // }
             let that = this
             document.addEventListener("plusready", () => {
                 bluetoothTool.turnOnBluetooth()
@@ -1084,13 +1086,18 @@
             }
         },
         methods: {
+            gogo(){
+                this.$router.push('text')
+            },
             exitLogin() {
                 Dialog.confirm({
                     message: '您确定要退出登录吗？'
                 }).then(() => {
                     // on confirm
                     exitLogin().then((res) => {
-                        this.$store.dispatch('setLoginflag', { login: false })
+                        this.tab = 0
+                        this.setup = false
+                        this.$store.dispatch('setLoginflag', { login: false,index:3 })
                     })
                     // localStorage.clear()
                 }).catch(() => {
@@ -1193,7 +1200,8 @@
                 this.tab = index
             },
             leftgoDetail(item, index) {
-                let modle = window.localStorage.getItem('modle')
+                console.log(this.$store.state.modle)
+                let modle = this.$store.state.modle
                 if (modle == 'DEMO') {
                     window.localStorage.setItem('level', item)
                 }else if(modle == 'PT'){
@@ -1244,13 +1252,18 @@
                     this.leftValue = 90
                     this.rightValue = 95
                 }
-                window.localStorage.setItem('leftValue',this.leftValue)
-                window.localStorage.setItem('rightValue',this.rightValue)
+                this.$store.dispatch('setLoginflag', { left: this.leftValue,right:this.rightValue })
+
+                // window.localStorage.setItem('leftValue',this.leftValue)
+                // window.localStorage.setItem('rightValue',this.rightValue)
                 if (index == 10 && text == 'LIVE') {
+                this.$store.dispatch('setLoginflag', { modle:'LIVE' })
                     this.$router.push({ name: 'live' });
                 }
                 else if (index == 11 && text == 'DEMO TEST') {
-                    window.localStorage.setItem('modle', 'DEMO')
+                    // window.localStorage.setItem('modle', 'DEMO')
+                this.$store.dispatch('setLoginflag', { modle:'DEMO' })
+
                     this.list.forEach((item, i) => {
                         if (i == 10) {
                             item.text = 'FUNTIONAL 3 <br/>L4'
@@ -1260,7 +1273,10 @@
                     })
                 }
                 else if (index == 11 && text == 'PT') {
-                    window.localStorage.setItem('modle', 'PT')
+                    // this.$store.dispatch('setLoginflag', { loginflag: true,index:2 })
+
+                    
+                    // window.localStorage.setItem('modle', 'PT')
                     this.list.forEach((item, i) => {
                         if (i == 10) {
                             item.text = 'LIVE'
@@ -1306,10 +1322,13 @@
                     this.leftValue = 90
                     this.rightValue = 95
                 }
-                window.localStorage.setItem('leftValue',this.leftValue)
-                window.localStorage.setItem('rightValue',this.rightValue)
+                this.$store.dispatch('setLoginflag', { left: this.leftValue,right:this.rightValue })
+                console.log('left', this.leftValue,'right',this.rightValue)
+                // window.localStorage.setItem('leftValue',this.leftValue)
+                // window.localStorage.setItem('rightValue',this.rightValue)
                 if (index == 11 && text == 'PT') {
-                    this.$store.dispatch('setLoginflag', { loginflag: true })
+                this.$store.dispatch('setLoginflag', { modle:'PT' })
+                    this.$store.dispatch('setLoginflag', { loginflag: true,index:2 })
                     // this.$store.dispatch('setLoginflag', { login: false })
                 }
                 else {
@@ -1623,6 +1642,7 @@
                         border-radius: 5px;
 
                         .con {
+                            /* width: 235px; */
                             .name {
                                 color: #979AA9;
                                 font-size: 17px;

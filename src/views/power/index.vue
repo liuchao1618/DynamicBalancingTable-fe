@@ -73,10 +73,11 @@
       }
     },
     mounted() {
-      this.leftValue = 100 - localStorage.getItem('leftValue')
-      this.rightValue = 100 - localStorage.getItem('rightValue')
-      this.bottomValue = parseInt((localStorage.getItem('leftValue')*1 + localStorage.getItem('rightValue')*1)/2)
-      console.log( localStorage.getItem('leftValue'), localStorage.getItem('rightValue'),'left') 
+      var left = this.$store.state.left
+      var right = this.$store.state.right
+      this.leftValue = 100 - left
+      this.rightValue = 100 - right
+      this.bottomValue = parseInt((left*1 + right*1)/2)
       /**
        * 将秒转换为 分:秒
        * s int 秒数
@@ -144,6 +145,8 @@
       },
 
       stop() {
+        this.$store.dispatch('setLoginflag', { modle:'null' })
+
         clearInterval(this.timer)
 
         let data = {
@@ -181,14 +184,12 @@
       changeleft(event) {
         this.watchFlag = false
         this.bottomValue = parseInt((100 - event + 100 - this.rightValue) / 2)
-        window.localStorage.setItem('leftValue',100-this.leftValue)
-        window.localStorage.setItem('bottomValue',this.bottomValue)
+        this.$store.dispatch('setLoginflag', { left: 100-this.leftValue })
       },
       changeright(event) {
         this.watchFlag = false
         this.bottomValue = parseInt((100 - event + 100 - this.leftValue) / 2)
-        window.localStorage.setItem('rightValue',100-this.rightValue)
-        window.localStorage.setItem('bottomValue',this.bottomValue)
+        this.$store.dispatch('setLoginflag', { right: 100-this.rightValue })
       },
 
       changeBottom() {
@@ -321,9 +322,7 @@
         setTimeout(() => {
         if (this.watchFlag) {
           this.calculateBottomValue(now, old);
-          window.localStorage.setItem('leftValue',100-this.leftValue)
-          window.localStorage.setItem('rightValue',100-this.rightValue)
-        window.localStorage.setItem('bottomValue',this.bottomValue)
+          this.$store.dispatch('setLoginflag', { left: 100-this.leftValue,right: 100-this.rightValue})
         }
         }, 500);
       }

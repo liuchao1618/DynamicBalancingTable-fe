@@ -77,8 +77,7 @@
                 })
             },
             cancel() {
-                console.log(11)
-                this.$store.dispatch('setLoginflag', { loginflag: false, login: false })
+                this.$store.dispatch('setLoginflag', { loginflag: false, login: false,index:1 })
             },
             login() {
                 let data = {
@@ -98,7 +97,7 @@
                         loginMsg().then((res) => {
                             window.localStorage.setItem('userCode', res.data.data.userCode)
                             window.localStorage.setItem('username', res.data.data.username)
-                            this.$store.dispatch('setLoginflag', { loginName: res.data.data.username,loginflag: false, login: true })
+                            this.$store.dispatch('setLoginflag', { loginName: res.data.data.username,loginflag: false, login: true,index:1 })
                         })
                     }
                 })

@@ -99,9 +99,31 @@
       this.leftPower = this.$route.query.leftPower;
       this.rightPower = this.$route.query.rightPower;
       this.avgPower = this.$route.query.avgPower;
+      if(this.model == 'LIVE'){
+        this.setTime = 1
+        this.currentTimeNum =0
+      }
     },
     methods: {
       start() {
+        if( this.model == 'LIVE'){
+          this.timer = setInterval(() => {
+            this.currentTimeNum++;
+            this.currentTime = s_to_hs(this.currentTimeNum)
+        }, 1000);
+        }else{
+          
+        this.timer = setInterval(() => {
+          if (this.currentTimeNum > 0) {
+            this.currentTimeNum--;
+            this.currentTime = s_to_hs(this.currentTimeNum)
+          } else {
+            clearInterval(this.timer)
+            window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
+            this.$router.push({ name: 'finish', query: { left: this.leftPower, right: this.rightPower, avg: this.avgPower ,fullPlayTime: this.fullPlayTime,realPlayTime:window.localStorage.getItem('setTrainTime') - this.currentTimeNum, id: res.data.data.id ,level:this.level,model:this.model }})
+          }
+        }, 1000);
+        }
         function s_to_hs(s) {
           //计算分钟
           //算法：将秒数除以60，然后下舍入，既得到分钟数
@@ -118,16 +140,6 @@
           s = (s.length == 1) ? '0' + s : s;
           return h + ':' + s;
         }
-        this.timer = setInterval(() => {
-          if (this.currentTimeNum > 0) {
-            this.currentTimeNum--;
-            this.currentTime = s_to_hs(this.currentTimeNum)
-          } else {
-            clearInterval(this.timer)
-            window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
-            this.$router.push({ name: 'finish', query: { left: this.leftPower, right: this.rightPower, avg: this.avgPower ,fullPlayTime: this.fullPlayTime,realPlayTime:window.localStorage.getItem('setTrainTime') - this.currentTimeNum, id: res.data.data.id ,level:this.level,model:this.model }})
-          }
-        }, 1000);
 
       },
       stop() {
