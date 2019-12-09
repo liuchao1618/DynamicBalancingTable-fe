@@ -9,7 +9,7 @@ const state = {
   loginflag:false,
   login:false,
   loginName:'',
-  modle:null,
+  modle:'null',
   type:'',
   left:0,
   right:0,

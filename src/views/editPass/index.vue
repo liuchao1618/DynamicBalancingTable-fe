@@ -7,16 +7,16 @@
                     </div>
                 </div>
         <div class='item'>
-            <div class='itemLeft'>*旧密码</div>
-            <van-field class="itemRight" v-model='form.oldpass' placeholder="请填写旧密码 >" />
+            <div class='itemLeft'>旧密码</div>
+            <van-field class="itemRight" v-model='form.oldpass' placeholder="请填写旧密码" />
         </div>
         <div class='item'>
-            <div class='itemLeft'>*新密码</div>
-            <van-field class="itemRight" v-model='form.newpass' placeholder="请输入6—12位数字字母组合新密码 >" />
+            <div class='itemLeft'>新密码</div>
+            <van-field class="itemRight" v-model='form.newpass' placeholder="请输入6—12位数字字母组合新密码" />
         </div>
         <div class='item'>
             <div class='itemLeft'>确认新密码</div>
-            <van-field class="itemRight" v-model='form.checkpass' placeholder="请确认6—12位数字字母组合新密码 >" />
+            <van-field class="itemRight" v-model='form.checkpass' placeholder="请确认6—12位数字字母组合新密码" />
         </div>
         <div class='buttonBox'>
             <p class='button' @click='cancle'>取消</p>

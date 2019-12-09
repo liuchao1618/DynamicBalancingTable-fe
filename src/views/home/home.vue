@@ -18,7 +18,7 @@
                 <div class='img'>
                     <img src="./image/none.png" alt="">未发现可用设备
                 </div>
-                <div class='load-button'>重新搜索</div>
+                <div @click="discoveryNewDevice()" class='load-button'>重新搜索</div>
             </div>
             <div v-if='statusContent === 3' class='load-loading'>
                 <div class='img'>
@@ -460,7 +460,6 @@
          * @param requestCode
          */
         function turnOnBluetooth() {
-            alert('打开设备')
             if (btAdapter == null) {
                 shortToast("没有蓝牙");
                 return;
@@ -489,7 +488,6 @@
          * 关闭蓝牙
          */
         function turnOffBluetooth() {
-            alert('关闭设备')
             if (btAdapter != null && btAdapter.isEnabled()) {
                 btAdapter.disable();
             }
@@ -551,8 +549,12 @@
          * 发现设备
          */
         function discoveryNewDevice(discoveryAddress) {
-            alert('要找到地址链接啦')
             alert(JSON.stringify(discoveryAddress))
+            if (discoveryAddress.length == 0) {
+                shortToast('未提供可配对设备地址')
+                cancelDiscovery(); // 取消发现
+                return
+            }
             if (btFindReceiver != null) {
                 try {
                     activity.unregisterReceiver(btFindReceiver);
@@ -580,15 +582,16 @@
 
                         let address = String(plus.android.invoke(device, "getAddress"))
                         if (discoveryAddress.indexOf(address) > -1) {
-                            cancelDiscovery();
                             connDevice(address)
+                            cancelDiscovery();
                         }
                     }
                     if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED == action) { // 搜索完成
-                        cancelDiscovery();
                         if (!state.readThreadState) {
+                            shortToast('未发现可用设备')
                             state.statusContent = 2;
                         }
+                        cancelDiscovery();
                         options.discoveryFinishedCallback && options.discoveryFinishedCallback(state.statusContent);
                     }
                 }
@@ -629,13 +632,13 @@
                             switch (blueState) {
                                 case BluetoothAdapter.STATE_TURNING_ON:
                                     stateStr = "STATE_TURNING_ON";
-                                    content = 0;
+                                    content = 1;
                                     break;
                                 case BluetoothAdapter.STATE_ON:
                                     state.bluetoothEnable = true;
                                     content = 1;
                                     stateStr = "STATE_ON";
-                                    alert('蓝牙已经打开，怎么打开的？')
+                                    shortToast('蓝牙已开启')
                                     break;
                                 case BluetoothAdapter.STATE_TURNING_OFF:
                                     stateStr = "STATE_TURNING_OFF";
@@ -643,7 +646,7 @@
                                     break;
                                 case BluetoothAdapter.STATE_OFF:
                                     stateStr = "STATE_OFF";
-                                    alert('蓝牙已关闭，请手动打开')
+                                    shortToast('设备已断开连接')
                                     content = 0;
                                     state.bluetoothEnable = false;
                                     break;
@@ -666,7 +669,7 @@
          * @return {Boolean}
          */
         function connDevice(address) {
-            alert('开始连接了')
+            // alert('开始连接了')
             // alert(address)
             let InputStream = plus.android.importClass("java.io.InputStream");
             let OutputStream = plus.android.importClass("java.io.OutputStream");
@@ -749,7 +752,7 @@
                 activity.unregisterReceiver(btFindReceiver);
                 btFindReceiver = null;
             }
-            alert('取消搜索了')
+            // alert('取消搜索了')
             state.discoveryDeviceState = false;
         }
 
@@ -793,8 +796,11 @@
                                 btOutStream.write([0b00]);
                             } catch (e) {
                                 state.readThreadState = false;
-                                state.setTimeCount = 2
-                                options.connExceptionCallback && options.connExceptionCallback(state.setTimeCount);
+                                alert('模拟java多线程读取数据')
+                                if (state.readThreadState) {
+                                    state.statusContent = 2
+                                }
+                                options.connExceptionCallback && options.connExceptionCallback(state.statusContent);
                             }
                         }
                         let dataArr = [];
@@ -859,8 +865,7 @@
                 tab: 0,
                 // loginFlag: false,
                 setup: false,
-                  loginSwitch: false,
-                //   status: 'fail',
+                loginSwitch: false,
                 status: 'success',
                 statusContent: 0,
                 deviceList: [], // 蓝牙地址(adress)
@@ -1015,12 +1020,16 @@
                 bluetoothTool = BluetoothTool();
                 bluetoothTool.init({
                     turnOnBluetoothCallback: function (stateContent) { // 打开蓝牙回调
-                        that.statusContent = stateContent
+                        that.statusContent = Number(stateContent)
                     },
                     connDeviceCallback: function (stateContent) { // 连接设备回调
-                        that.statusContent = stateContent
-                        that.watchReceiveData()
-                        alert('刚刚连接成功')
+                        that.statusContent = Number(stateContent)
+                        that.status = "success"
+                        that.$forceUpdate()
+                        alert('连接成功回调')
+                        alert(that.statusContent)
+                        alert( that.status)
+                        // that.watchReceiveData()
                     },
                     readDataCallback: function (dataArr) { // 读取数据回调
                         that.dataList = dataArr
@@ -1028,16 +1037,18 @@
                         alert('刚传完数据')
                     },
                     discoveryFinishedCallback: function (stateContent) { // 搜索发现回调
-                        that.statusContent = stateContent
+                        that.statusContent = Number(stateContent)
                     },
                     connExceptionCallback: function (stateContent) { // 设备中断连接回调
-                        that.statusContent = stateContent
+                        that.statusContent = Number(stateContent)
                     },
                     listenBTStatusCallback: function (stateContent) { // 监听蓝牙状态回调
-                        that.statusContent = stateContent
+                        that.statusContent = Number(stateContent)
                         if (bluetoothTool.state.bluetoothEnable) {
-                            alert('监听蓝牙是不是第二次打开')
                             that.discoveryNewDevice() // 发现设备
+                        } else {
+                            that.status = "fail"
+                            that.$router.push({name: 'Home'})
                         }
                     }
                 })
