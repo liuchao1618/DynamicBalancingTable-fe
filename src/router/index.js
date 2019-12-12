@@ -29,13 +29,14 @@ import text from '@/views/text'//
 
 export default new Router({
   routes: [
-    {
-      path: '/home',
-      name: 'Home',
-      component: Home
-    },
+    // {
+    //   path: '/home',
+    //   name: 'Home',
+    //   component: Home
+    // },
     {
       path: '/',
+      name: 'Home',
       component: Home
     },
     {
