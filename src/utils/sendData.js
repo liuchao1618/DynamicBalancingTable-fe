@@ -1,4 +1,4 @@
-export default {
+const pluginFub = {
     // 帧头 第一字节
     FRAME_HEAD : 0xCF,
 
@@ -23,30 +23,32 @@ export default {
     ZERO : 0,                // 置空位
 
     dataNum: function (type) {
-        if (type === 't0101') {
+        if (type === '0101') {
             return [this.FRAME_HEAD, this.SET_MODE, 0, 0, 0, this.MODE_SPEED, 0, 0]
-        } else if (type === 't0101') {
+        } else if (type === '0101') {
             return [this.FRAME_HEAD, this.SET_MODE, 0, 0, 0, this.MODE_POSITION, 0, 0]
-        } else if (type === 't0102') {
+        } else if (type === '0102') {
             return [this.FRAME_HEAD, this.SET_MODE, 0, 0, 0, this.MODE_POSITION, 0, 0]
-        } else if (type === 't0103') {
+        } else if (type === '0103') {
             return [this.FRAME_HEAD, this.SET_MODE, 0, 0, 0, this.MODE_PAUSE, 0, 0]
-        } else if (type === 't0104') {
+        } else if (type === '0104') {
             return [this.FRAME_HEAD, this.SET_MODE, 0, 0, 0, this.MODE_ZERO, 0, 0]
-        } else if (type === 't0105') {
+        } else if (type === '0105') {
             return [this.FRAME_HEAD, this.SET_MODE, 0, 0, 0, this.MODE_RESET, 0, 0]
-        } else if (type === 't1101') {
+        } else if (type === '1101') {
             return [this.FRAME_HEAD, this.SPEED_DATA, 0x01, 0, 0, 0, 0, 0]
-        } else if (type === 't1100') {
+        } else if (type === '1100') {
             return [this.FRAME_HEAD, this.SPEED_DATA, 0, 0x0C, 0x10, 0, 0, 0]
-        } else if (type === 't1200') {
+        } else if (type === '1200') {
             return [this.FRAME_HEAD, this.POSITION_DATA, 0, 0, 0, 0, 0, 0]
-        } else if (type === 't1201') {
-            return [this.FRAME_HEAD, this.SPEED_DATA, 0x01, 0xCC, 0, 0, 0, 0]
+        } else if (type === '1201') {
+            return [this.FRAME_HEAD, this.POSITION_DATA, 0x01, 0xCC, 0, 0, 0, 0]
         }
     },
         // 心跳
-    t80() {
+    t80: function () {
         return [this.FRAME_HEAD, this.HEART_FRAME, 0, 0, 0, 0, 0, 0]
     }
 }
+
+export default pluginFub
