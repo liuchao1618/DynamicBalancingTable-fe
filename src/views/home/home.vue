@@ -37,10 +37,11 @@
                     <div class="tab" :class="{'tabActive': tab === 0}" @click="tabBtn(0)">训练</div>
                     <div class="tab" :class="{'tabActive': tab === 1}" @click="tabBtn(1)">记录</div>
                     <div class="tab" :class="{'tabActive': tab === 2}" @click="tabBtn(2)">收藏</div>
-                    <div class="tab" :class="{'tabActive': tab === 3}" @click="tabBtn(3)">我的运动员</div>
+                    <div class="tab" :class="{'tabActive': tab === 3}" @click="tabBtn(3)" v-if='identity == "coach"'>我的运动员</div>
                 </div>
                 <div class="tabRight">
-                    <div class="name">教练：{{loginName}}</div>
+                    <div class="name" v-if='identity == "coach"'>教练：{{loginName}}</div>
+                    <div class="name" v-else>运动员：{{loginName}}</div>
                     <div class="setup">
                         <img @click="setup = !setup" src="./image/setup.png" />
                         <div class="setupList" v-if='setup'>
@@ -1055,6 +1056,7 @@
             }, false)
         },
         mounted() {
+            console.log(this.$store.state,'state')
             // this.loginflag = localStorage.getItem('loginflag')
             // this.login = localStorage.getItem('login')
             // console.log('  this.loginflag',  this.loginflag,'this.login',this.login)
@@ -1083,6 +1085,7 @@
             // 映射 this.loginflag 为 store.state.loginflag
             'loginflag',
             'login',
+            'identity',
             'loginName'
         ]),
         watch: {
@@ -1116,7 +1119,8 @@
                 });
             },
             detail(item) {
-                this.$router.push({ name: 'sportExerciseLog' })
+                console.log(item,'asdfa')
+                this.$router.push({ name: 'sportExerciseLog',query:{userCode:item.userCode} })
             },
             edit(item) {
                 this.$router.push({ name: 'addAthletes', query: { username: item.username, sex: item.sex, birth: item.birth, height: item.height, weight: item.weight, tel: item.mobile } })
@@ -1263,6 +1267,14 @@
                     this.leftValue = 90
                     this.rightValue = 95
                 }
+                console.log(text,'text11')
+                if(text == 'DEMO TEST') {
+                    
+                this.$store.dispatch('setLoginflag', { modle:'DEMO' })
+                }else if(text == 'PT'){
+                this.$store.dispatch('setLoginflag', { modle:'PT' })
+
+                }
                 this.$store.dispatch('setLoginflag', { left: this.leftValue,right:this.rightValue })
 
                 // window.localStorage.setItem('leftValue',this.leftValue)
@@ -1284,6 +1296,7 @@
                     })
                 }
                 else if (index == 11 && text == 'PT') {
+
                     // this.$store.dispatch('setLoginflag', { loginflag: true,index:2 })
 
                     
@@ -1752,6 +1765,7 @@
                     border-top: 0;
 
                     .myTdColor {
+                        margin-right: 20px;
                         color: #D1D5E6;
                     }
                 }

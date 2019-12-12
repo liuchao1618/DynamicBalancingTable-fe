@@ -21,10 +21,11 @@
 <script>
   import { saveRecord } from '@/api/index'
   export default {
+    mounted() {
+      // console.log(this.xPum,this.yPum)
+    },
     data() {
       return {
-        positionX: 0,
-        positionY: 0,
         flags: false,
         currentTime: '00:00',
         setTime: 0,
@@ -35,7 +36,11 @@
         startStr: '',
         currentStr: '',
         x: 0,
-        timers: null
+        timers: null,
+        xPum:418,
+        yPum:165,
+        bluetoothX:0,
+        bluetoothY:0
       }
     },
     methods: {
@@ -71,6 +76,7 @@
         })
       },
       start() {
+        clearInterval(this.timer)
         this.startStr = new Date() * 1
         this.flag = true
         /**
@@ -131,9 +137,9 @@
           this.xPum = this.dx + this.nx + 20;
           this.yPum = this.dy + this.ny + 20;
           if (this.xPum < 15) this.xPum = 15
-          if (this.xPum > 996) this.xPum = 996
+          if (this.xPum > 825) this.xPum = 825
           if (this.yPum < 20) this.yPum = 20
-          if (this.yPum > 265) this.yPum = 265
+          if (this.yPum > 315) this.yPum = 315
           moveDiv.style.left = this.xPum + "px";
           moveDiv.style.top = this.yPum + "px";
           //阻止页面的滑动默认事件
@@ -141,18 +147,41 @@
             // event.preventDefault();//jq 阻止冒泡事件
             // event.stopPropagation(); // 如果没有引入jq 就用 stopPropagation()
           }, false);
+          // console.log(this.xPum,this.yPum)
         }
       },
       //鼠标释放时候的函数
       end() {
 
-        this.dataArr.push({ t: new Date() * 1 + this.setTime * 1000 - this.startStr, c: [506, 142] })
+        this.dataArr.push({ t: new Date() * 1 + this.setTime * 1000 - this.startStr, c: [418, 165] })
         this.flags = false;
-        moveDiv.style.left = '506px'
-        moveDiv.style.top = '142px'
+        moveDiv.style.left = '418px'
+        moveDiv.style.top = '165px'
       },
     },
     watch: {
+      // addposition:{//深度监听，可监听到对象、数组的变化
+      //       handler(val, oldVal){
+      //           console.log('新',val,'旧',oldVal);//
+      //       },
+      //       immediate: true,
+      //       deep:true
+      //   },
+      xPum(now, old) {
+        if( now > 418 ){
+          this.bluetoothX = now*1.435*2
+        }else{
+          this.bluetoothX = ('-'+now) *1.435*2
+        }
+      },
+      yPum(now, old) {
+        if( now < 165 ){
+          this.bluetoothY = now*1.435*2
+        }else{
+          this.bluetoothY = ('-'+now)*1.435*2
+        }
+        console.log(parseInt(this.bluetoothY))
+      },
       flags(now, old) {
         if (now) {
           this.timers = setInterval(() => {
@@ -163,8 +192,14 @@
         }else{  
           clearInterval(this.timers)
         }
-      }
+      },
+
     },
+    // computed: {
+    //   addposition() {
+    //   　　　　 return JSON.parse(JSON.stringify(this.position))
+    // 　　}
+    // },
     name: 'Live',
   }
 </script>
@@ -251,12 +286,14 @@
     }
 
     .live_trajectory {
+      width: 1163px;
+      height: 467px;
       position: relative;
-      margin: 100px 130px 190px;
+      margin: 100px auto 120px;
 
       img {
-        width: 100%;
-        height: 396px;
+        width: 1163px;
+        height: 467px;
       }
     }
   }

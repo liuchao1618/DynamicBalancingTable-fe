@@ -95,10 +95,21 @@
                         // this.getData()
                         addPhoneList(data1)
                         loginMsg().then((res) => {
+                            if(res.data.data.parent == null){
+                            this.$store.dispatch('setLoginflag', { identity: 'coach' })
+                            }else{
+                            this.$store.dispatch('setLoginflag', { identity: 'athlete' })
+
+                            }
                             window.localStorage.setItem('userCode', res.data.data.userCode)
                             window.localStorage.setItem('username', res.data.data.username)
                             this.$store.dispatch('setLoginflag', { loginName: res.data.data.username,loginflag: false, login: true,index:1 })
                         })
+                    }else{
+                        this.$toast({
+                            message: res.data.msg,
+                            position: 'bottom'
+                        });
                     }
                 })
             },
