@@ -13,12 +13,16 @@ const state = {
   type:'',
   left:0,
   right:0,
-  text:''
+  text:'',
+  storeStatusContent: 0, // home页面蓝牙状态切换展示
+  storeStatus: 'fail', // 未连接成功的状态
 }
 // 所需要定义的mutations
 const mutations = {
   SETLOGINFLAG:(state,data)=>{
     state.text = data.text
+    state.storeStatusContent = data.storeStatusContent
+    state.storeStatus = data.storeStatus || state.storeStatus
     if(data.index == 1){
     state.loginflag = data.loginflag
     state.login = data.login
