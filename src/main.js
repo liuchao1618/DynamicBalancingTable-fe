@@ -40,7 +40,11 @@ Vue.use(Lazyload)
 Vue.use(List)
 Vue.use(VueHtml5Plus)
 
-
+// window.AndroidMethod = function (msg) {
+//   if (window.android !== null && typeof(window.android) !== "undefined") {
+//     window.android.callAndroid(msg);
+//   }
+// }
 /* VUE实例 */
 new Vue({
   el: '#app',

@@ -12,7 +12,7 @@
         </div>
         <div class='item'>
             <div class='itemLeft'>*联系方式</div>
-            <van-field class="itemRight" type="tel" v-model='form.tel' placeholder="请填写您的手机号">
+            <van-field class="itemRight" type="tel" v-model='form.tel' placeholder="请输入您的手机号">
             </van-field>
         </div>
         <div class='item' @click="show = true">
@@ -86,7 +86,35 @@
                 this.$router.push({ name: 'Home', query: { index: 3 } })
             },
             saveBtn() {
-                let data = {
+                let reg = /^1[3456789]\d{9}$/;
+                if(this.form.username.length > 5){
+                    this.$toast({
+                        message: '姓名长度不得大于5',
+                        position: 'bottom'
+                    });
+                }else if(!this.form.username&&!this.form.tel){
+                    this.$toast({
+                        message: '请输入您的姓名和联系方式',
+                        position: 'bottom'
+                    });
+                }else if(!this.form.username){
+                    this.$toast({
+                        message: '请输入您的姓名',
+                        position: 'bottom'
+                    });
+                }else if(!this.form.tel){
+                    this.$toast({
+                        message: '请输入您的联系方式',
+                        position: 'bottom'
+                    });
+                }else if(!reg.test(this.form.tel)){
+                    this.$toast({
+                        message: '请输入正确的联系方式',
+                        position: 'bottom'
+                    });
+                }
+                else{
+                    let data = {
                     parentUserCode: window.localStorage.getItem('userCode'),
                     targetUserCode: window.localStorage.getItem('editCode'),
                     username: this.form.username,
@@ -140,6 +168,8 @@
                     })
 
                 }
+                }
+                
                 console.log(this.form)
             },
             cancleBtn() {

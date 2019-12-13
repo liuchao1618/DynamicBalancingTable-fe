@@ -4,7 +4,10 @@
       <span @click='goback' class="img"><img src="../../assets/image/back.png" alt=""></span>
       <span>查看运动记录</span>
     </header>
-    <div class='item' v-for='(item,i) in recordList'>
+    <div v-if='flag' class="kongBox">
+      该运动员暂无运动记录
+    </div>
+    <div v-else class='item' v-for='(item,i) in recordList'>
       <div v-if='item.model=="PT"'>
         <div class='itemTitle'>{{item.createTime}} PT模式 </div>
         <div class='itemCon'>
@@ -40,7 +43,9 @@
           <div class='con'>
             <div class='name'>参与本次训练运动员</div>
             <!-- PT模式 DEMO模式 -->
-            <div class='time'>张晓晓、张明明</div>
+            <div style="display: flex;flex-wrap: wrap;">
+              <div style="color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
+            </div>
             <!-- PT模式 -->
             <!-- LIVE模式 -->
             <!-- <img class='img' src="./image/line.png" alt=""> -->
@@ -72,7 +77,9 @@
           <div class='con'>
             <div class='name'>参与本次训练运动员</div>
             <!-- PT模式 DEMO模式 -->
-            <div class='time'>张晓晓、张明明</div>
+            <div style="display: flex;flex-wrap: wrap;">
+              <div style="color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
+            </div>
             <!-- PT模式 -->
             <!-- LIVE模式 -->
             <!-- <img class='img' src="./image/line.png" alt=""> -->
@@ -96,12 +103,15 @@
           </div>
           <div class='con'>
             <div class='name'>操控点轨迹记录</div>
-            <div class='time'><img class='img' src="./image/line.png" alt=""></div>
+            <canvas :id="i" ref='myCanvas' width="253" height="72"
+              style="border:1px solid rgba(117,121,137,1);"></canvas>
           </div>
           <div class='con'>
             <div class='name'>参与本次训练运动员</div>
             <!-- PT模式 DEMO模式 -->
-            <div class='time'>张晓晓、张明明</div>
+            <div style="display: flex;flex-wrap: wrap;">
+              <div style="color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
+            </div>
             <!-- PT模式 -->
             <!-- LIVE模式 -->
             <!-- <img class='img' src="./image/line.png" alt=""> -->
@@ -120,27 +130,61 @@
   export default {
     data() {
       return {
-        recordList: []
+        recordList: [],
+        userCode: '',
+        flag: false
       }
     },
+    updated() {
+      console.log(this.recordList)
+      this.recordList.forEach((item, index) => {
+        var c = document.getElementById(index);
+        var ctx = c.getContext("2d");
+        ctx.strokeStyle = '#D1D5E6'
+        var arr = item.expands
+        arr.forEach((v, i) => {
+          ctx.lineTo(v[0], v[1]);
+        })
+        ctx.stroke();
+      })
+    },
     mounted() {
+      this.userCode = this.$route.query.userCode
       this.getExercise()
     },
     methods: {
-      getExercise(){
+      getExercise() {
         let data = {
-        userCode: window.localStorage.getItem('userCode')
-      }
-      memberExercise(data).then((res) => {
-        this.recordList = res.data.data;
-      })
+          userCode: this.userCode
+        }
+
+        memberExercise(data).then((res) => {
+          this.recordList = res.data.data;
+          res.data.data.forEach((item, index) => {
+            item.memberList = item.memberList.join('、')
+            item.expands = []
+            if (JSON.parse(item.expand) != null) {
+              var expand = JSON.parse(item.expand)
+              expand.forEach((v, ind) => {
+                var newArr = []
+                v.c.forEach((val, i) => {
+                  newArr.push(parseInt(val / 4))
+                })
+                item.expands.push(newArr)
+              })
+            }
+          })
+          if(this.recordList.length==0){
+            this.flag = true
+          }
+        })
       },
       goback() {
-        this.$router.go(-1)
+        this.$router.push({ name: 'Home', query: { index: 3 } })
       },
       AddCollect(item) {
         let data = {
-          userCode: window.localStorage.getItem('userCode'),
+          userCode: this.userCode,
           id: item.id * 1
         }
         addCollect(data).then((res) => {
@@ -151,7 +195,7 @@
       },
       DelCollect(item) {
         let data = {
-          userCode: window.localStorage.getItem('userCode'),
+          userCode: this.userCode,
           id: item.id * 1
         }
         delCollect(data).then((res) => {
@@ -164,6 +208,11 @@
   }
 </script>
 <style scoped lang="less">
+  .kongBox {
+    color: #B8BBC6;
+    font-size: 18px;
+  }
+
   header {
     width: 100%;
     height: 50px;

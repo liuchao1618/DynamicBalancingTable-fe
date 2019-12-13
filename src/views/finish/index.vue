@@ -16,23 +16,23 @@
               <span>实际运动时间</span>
               <h2>{{parseInt(realPlayTime/60)}}分钟</h2>
             </div>
-          <div class="log" >
-            <span>操控点轨迹记录</span>
-            <canvas id='mycanvas' ref='myCanvas' width="253" height="72"
-              style="border:1px solid rgba(117,121,137,1);"></canvas>
-          </div>
+            <div class="log">
+              <span>操控点轨迹记录</span>
+              <canvas id='mycanvas' ref='myCanvas' width="253" height="72"
+                style="border:1px solid rgba(117,121,137,1);"></canvas>
+            </div>
           </div>
           <div class='conCollect'>
-              <img v-if='favored' @click='Collect()' src="../../assets/image/starS.png" alt="">
-              <img v-else @click='Collect()' src="../../assets/image/star.png" alt="">
-            </div>
+            <img v-if='favored' @click='Collect()' src="../../assets/image/starS.png" alt="">
+            <img v-else @click='Collect()' src="../../assets/image/star.png" alt="">
+          </div>
         </div>
         <div class="exercise" v-else>
           <div class="exerciseTime">
             <span>设置运动时间</span>
-              <h2> {{parseInt(fullPlayTime/60)}}分钟</h2>
-              <span>实际运动时间</span>
-              <h2>{{parseInt(realPlayTime/60)}}分钟</h2>
+            <h2> {{parseInt(fullPlayTime/60)}}分钟</h2>
+            <span>实际运动时间</span>
+            <h2>{{parseInt(realPlayTime/60)}}分钟</h2>
           </div>
           <div class="usedevice">
             <span>本次使用设备</span>
@@ -82,9 +82,9 @@
           <div class="drill">
             <div class="coach">
               <span>教练：</span>
-              <div class="select">
+              <div class="select" @click='tabShow'>
                 <span>{{coachName}}</span>
-                <span @click='tabShow' class="img"><img src="../../assets/image/xiala.png" alt=""></span>
+                <span class="img"><img src="../../assets/image/xiala.png" alt=""></span>
               </div>
               <ul class="list" v-if='show'>
                 <li v-for='(item,i) in trainerName' @click='changeName(item.username)'>{{item.username}}</li>
@@ -99,15 +99,13 @@
           </div>
           <div class="exerciseName">
             <div class="info" v-for='(item,index) in nameList'>
-              <van-checkbox :disabled='item.disabled' v-model="item.checked" shape="square" @click='selectAll(item)'>
+              <van-checkbox :disabled='nameDisabled' :class='nameDisabled?"forbidBox":""' v-model="item.checked" shape="square" @click='selectAll(item)'>
                 {{item.username}}</van-checkbox>
             </div>
           </div>
 
           <div class="sub" :class="[checkName.length>0 ? 'active' : '']" @click='submit'>提交
           </div>
-          <!-- <div v-else class="sub" @click='submits'>重新提交
-          </div> -->
         </div>
       </div>
     </div>
@@ -125,6 +123,7 @@
         show: false,
         value1: '',
         coachName: '',
+        nameDisabled: false,
         trainerName: [],
         checkName: [],
         sportName: [],
@@ -204,7 +203,7 @@
     },
     methods: {
       goHome() {
-        this.$router.push('Home')
+        this.$router.push({name:'Home',query:{index:0}})
         window.localStorage.removeItem('locus')
       },
       checkNames(item) {
@@ -270,6 +269,7 @@
         }
       },
       submit() {
+        this.nameDisabled = true
         this.referFlag = false
         let data = {
           id: this.currentId * 1,
@@ -281,6 +281,10 @@
             this.nameList.forEach((item, i) => {
               item.checked = false
             })
+            this.$toast({
+              message: '提交成功',
+              position: 'bottom'
+            });
           }
         })
       },
@@ -334,7 +338,7 @@
         // })
       },
       selectAll(val) {
-        if (!val.checked && this.checkName.length < 5) {
+        if (!val.checked && this.checkName.length < 4) {
           this.checkName.unshift(val)
         } else {
           this.checkName.map((item, ind) => {
@@ -348,6 +352,9 @@
   }
 </script>
 <style scoped lang="less">
+  .forbidBox{
+    pointer-events: none
+  }
   .list {
     position: absolute;
     top: 35px;
@@ -365,6 +372,9 @@
     padding: 5px 10px;
     box-sizing: border-box;
     overflow: auto;
+    li{
+      width: 100%;
+    }
   }
 
   .lists {
@@ -464,38 +474,46 @@
     }
 
     .exercise,
-    .exercises,.livebox {
+    .exercises,
+    .livebox {
       height: 250px;
       background: rgba(254, 252, 255, 0.03);
       border-radius: 5px;
       border: 1px solid rgba(98, 101, 118, 1);
       color: rgba(209, 213, 230, 1);
     }
-    .livebox{
+
+    .livebox {
       display: flex;
       justify-content: space-between;
       padding: 20px;
       box-sizing: border-box;
+
       span {
-          font-size: 17px;
-          font-family: PingFangSC-Regular, PingFang SC;
-          font-weight: 400;
-          color: rgba(151, 154, 169, 1);
-          line-height: 24px;
-        }
-        h2 {
-          margin-top: 5px;
-          font-size: 26px;
-          font-family: PingFangSC-Regular, PingFang SC;
-          font-weight: 400;
-          color: rgba(209, 213, 230, 1);
-        }
-        #mycanvas{
-          margin-top: 5px;
-        }.log{
-          margin-top: 10px;
-        }
+        font-size: 17px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: rgba(151, 154, 169, 1);
+        line-height: 24px;
+      }
+
+      h2 {
+        margin-top: 5px;
+        font-size: 26px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: rgba(209, 213, 230, 1);
+      }
+
+      #mycanvas {
+        margin-top: 5px;
+      }
+
+      .log {
+        margin-top: 10px;
+      }
     }
+
     .exercises {
       padding: 20px;
       box-sizing: border-box;
@@ -519,7 +537,6 @@
           justify-content: space-between;
           align-items: center;
           box-sizing: border-box;
-          width: 100px;
           height: 38px;
           background: rgba(1, 9, 21, 0.2);
           border-radius: 4px;
@@ -645,6 +662,8 @@
 
         .usedevicebox {
           display: flex;
+          padding: 0 20px;
+          box-sizing: border-box;
           justify-content: space-between;
           width: 264px;
           height: 66px;
@@ -665,6 +684,7 @@
           }
 
           dd {
+            margin-top: 5px;
             text-align: center;
             font-size: 8px;
             -webkit-text-size-adjust: none;

@@ -37,10 +37,12 @@
                     <div class="tab" :class="{'tabActive': tab === 0}" @click="tabBtn(0)">训练</div>
                     <div class="tab" :class="{'tabActive': tab === 1}" @click="tabBtn(1)">记录</div>
                     <div class="tab" :class="{'tabActive': tab === 2}" @click="tabBtn(2)">收藏</div>
-                    <div class="tab" :class="{'tabActive': tab === 3}" @click="tabBtn(3)">我的运动员</div>
+                    <div class="tab" :class="{'tabActive': tab === 3}" @click="tabBtn(3)" v-if='identity == "coach"'>
+                        我的运动员</div>
                 </div>
                 <div class="tabRight">
-                    <div class="name">教练：{{loginName}}</div>
+                    <div class="name" v-if='identity == "coach"'>教练：{{loginName}}</div>
+                    <div class="name" v-else>运动员：{{loginName}}</div>
                     <div class="setup">
                         <img @click="setup = !setup" src="./image/setup.png" />
                         <div class="setupList" v-if='setup'>
@@ -351,7 +353,7 @@
                 tab: 0,
                 // loginFlag: false,
                 setup: false,
-                status: 'fail',
+                status:  'fail',
                 // status: 'success',
                 statusContent: 0,
                 loginSwitch: false,
@@ -359,11 +361,11 @@
                 dataList: [], // 接收到的数据
                 contrastData: [], // 做对比的数据
                 // sendDataNum: 0b10100000,
-                sendDataNum: [0b10100110, 0b10101000, 0b01100000, 0b10100110, 0b10101000,  0b00001010, 0b11100010, 0b11111111],
+                sendDataNum: [0b10100110, 0b10101000, 0b01100000, 0b10100110, 0b10101000, 0b00001010, 0b11100010, 0b11111111],
                 recordList: [],//记录 
                 merberList: [],//我的运动员
                 collectList: [],//收藏
-                list11:['0101','0102','0103','0104','0105','1101','1100','1200','1201'],
+                list11: ['0101', '0102', '0103', '0104', '0105', '1101', '1100', '1200', '1201'],
                 menuList: [
                     {
                         img: require('./image/banner1.png'),
@@ -492,7 +494,7 @@
             })
             // console.log(this.collectList,'this.collectList')
             this.collectList.forEach((item, index) => {
-                var c = document.getElementById('a'+index);
+                var c = document.getElementById('a' + index);
                 var ctx = c.getContext("2d");
                 var arr = item.expands
                 arr.forEach((v, i) => {
@@ -506,7 +508,6 @@
             this.getDeviceInfo()
         },
         mounted() {
-            console.log(this.$parent)
             // 在其他页面监听蓝牙与设备的连接状态
             let urlContent = this.$route.query.urlContent
             if (urlContent) {
@@ -518,63 +519,48 @@
             this.getExercise(); //所有记录
             this.getmemberMsg(); //我的运动员
             this.tab = this.$route.query.index * 1 || 0;
-            // if (this.login) {
-            //     this.$store.dispatch('setLoginflag', { modle:'PT' })
-            //     // window.localStorage.setItem('modle', 'PT')
-            // } else {
-            //     this.$store.dispatch('setLoginflag', { modle:'DEMO' })
-            //     // window.localStorage.setItem('modle', 'DEMO')
-            // }
+            window.localStorage.setItem('modle', 'PT')
         },
         computed: mapState([
             // 映射 this.loginflag 为 store.state.loginflag
             'loginflag',
             'login',
+            'identity',
             'loginName',
             'text',
             'storeStatusContent',
             'storeStatus'
         ]),
         watch: {
-            tab(now,old){
-                if(now == 1){
+            tab(now, old) {
+                if (now == 1) {
                     this.getExercise();
-                }else if(now == 2){
+                } else if (now == 2) {
                     this.getExercise();
-                }else if(now == 3){
+                } else if (now == 3) {
                     this.getmemberMsg();
                 }
             },
-            $route (to, from) {
+            $route(to, from) {
                 if (to != from) {
-                // alert('路由切换了') 
+                    // alert('路由切换了') 
                     this.$router.go(0)
                 }
             },
             storeStatusContent () {
               this.statusContent = this.storeStatusContent
-            //   alert('home监听storeStatusContent')
-                // alert(this.storeStatusContent)
-                // alert(this.statusContent)
-                // alert(this.status)
             },
             storeStatus () {
               this.status = this.storeStatus
-            //   alert('home监听storeStatus')
-            //   alert(this.storeStatus)
             }
         },
         methods: {
-            changeText(item){
-                this.$store.dispatch('setLoginflag', { text:item })
+            changeText(item) {
+                this.$store.dispatch('setLoginflag', { text: item })
             },
             // 点击
             discoveryNewDevice () {
                 this.$parent.$options.parent.$options.components.App.methods.searchDevice()
-            },
-            gogo(){
-                this.gogo111 = true
-                // this.$router.push('/text')
             },
             exitLogin() {
                 Dialog.confirm({
@@ -584,7 +570,7 @@
                     exitLogin().then((res) => {
                         this.tab = 0
                         this.setup = false
-                        this.$store.dispatch('setLoginflag', { login: false,index:3 })
+                        this.$store.dispatch('setLoginflag', { login: false, index: 3 })
                     })
                     // localStorage.clear()
                 }).catch(() => {
@@ -592,7 +578,7 @@
                 });
             },
             detail(item) {
-                this.$router.push({ name: 'sportExerciseLog' })
+                this.$router.push({ name: 'sportExerciseLog', query: { userCode: item.userCode } })
             },
             edit(item) {
                 this.$router.push({ name: 'addAthletes', query: { username: item.username, sex: item.sex, birth: item.birth, height: item.height, weight: item.weight, tel: item.mobile } })
@@ -687,70 +673,68 @@
                 this.tab = index
             },
             leftgoDetail(item, index) {
-                console.log(this.$store.state.modle)
-                let modle = this.$store.state.modle
+                let modle = window.localStorage.getItem('modle')
                 if (modle == 'DEMO') {
                     window.localStorage.setItem('level', item)
-                }else if(modle == 'PT'){
+                } else if (modle == 'PT') {
                 }
-                    if(index == 0){
+                if (index == 0) {
                     this.leftValue = 10
                     this.rightValue = 15
-                }else if(index == 1){
+                } else if (index == 1) {
                     this.leftValue = 40
                     this.rightValue = 45
-                }else if(index == 2){
+                } else if (index == 2) {
                     this.leftValue = 80
                     this.rightValue = 85
                 }
-                window.localStorage.setItem('leftValue',this.leftValue)
-                window.localStorage.setItem('rightValue',this.rightValue)
+                window.localStorage.setItem('leftValue', this.leftValue)
+                window.localStorage.setItem('rightValue', this.rightValue)
                 this.$router.push({ name: 'SelectTime' });
             },
             godetail(index, text) {
-                if(index == 0){
+                if (index == 0) {
                     this.leftValue = 15
                     this.rightValue = 20
-                }else if(index == 1){
+                } else if (index == 1) {
                     this.leftValue = 25
                     this.rightValue = 30
-                }else if(index == 2){
+                } else if (index == 2) {
                     this.leftValue = 30
                     this.rightValue = 35
-                }else if(index == 3){
+                } else if (index == 3) {
                     this.leftValue = 35
                     this.rightValue = 40
-                }else if(index == 4){
+                } else if (index == 4) {
                     this.leftValue = 50
                     this.rightValue = 55
-                }else if(index == 5){
+                } else if (index == 5) {
                     this.leftValue = 55
                     this.rightValue = 60
-                }else if(index == 6){
+                } else if (index == 6) {
                     this.leftValue = 60
                     this.rightValue = 65
-                }else if(index == 7){
+                } else if (index == 7) {
                     this.leftValue = 70
                     this.rightValue = 75
-                }else if(index == 8){
+                } else if (index == 8) {
                     this.leftValue = 85
                     this.rightValue = 90
-                }else if(index == 9){
+                } else if (index == 9) {
                     this.leftValue = 90
                     this.rightValue = 95
                 }
-                this.$store.dispatch('setLoginflag', { left: this.leftValue,right:this.rightValue })
-
-                // window.localStorage.setItem('leftValue',this.leftValue)
-                // window.localStorage.setItem('rightValue',this.rightValue)
+                if(window.localStorage.getItem('modle') == 'DEMO'){
+                    this.$store.dispatch('setLoginflag', { mode: 'DEMO' })
+                }else if(window.localStorage.getItem('modle') == 'PT'){
+                    this.$store.dispatch('setLoginflag', { mode: 'PT' })
+                }
                 if (index == 10 && text == 'LIVE') {
-                this.$store.dispatch('setLoginflag', { modle:'LIVE' })
+                    this.$store.dispatch('setLoginflag', { mode: 'LIVE' })
                     this.$router.push({ name: 'live' });
                 }
                 else if (index == 11 && text == 'DEMO TEST') {
-                    // window.localStorage.setItem('modle', 'DEMO')
-                this.$store.dispatch('setLoginflag', { modle:'DEMO' })
-
+                    window.localStorage.setItem('modle', 'DEMO')
                     this.list.forEach((item, i) => {
                         if (i == 10) {
                             item.text = 'FUNTIONAL 3 <br/>L4'
@@ -760,10 +744,7 @@
                     })
                 }
                 else if (index == 11 && text == 'PT') {
-                    // this.$store.dispatch('setLoginflag', { loginflag: true,index:2 })
-
-                    
-                    // window.localStorage.setItem('modle', 'PT')
+                    window.localStorage.setItem('modle', 'PT')
                     this.list.forEach((item, i) => {
                         if (i == 10) {
                             item.text = 'LIVE'
@@ -773,52 +754,50 @@
                     })
                 }
                 else {
+                    this.$store.dispatch('setLoginflag', { left: this.leftValue, right: this.rightValue })
                     this.$router.push({ name: 'SelectTime' });
                 }
                 window.localStorage.setItem('level', text)
             },
             godetails(index, text) {
-                if(index == 0){
+                if (index == 0) {
                     this.leftValue = 15
                     this.rightValue = 20
-                }else if(index == 1){
+                } else if (index == 1) {
                     this.leftValue = 25
                     this.rightValue = 30
-                }else if(index == 2){
+                } else if (index == 2) {
                     this.leftValue = 30
                     this.rightValue = 35
-                }else if(index == 3){
+                } else if (index == 3) {
                     this.leftValue = 35
                     this.rightValue = 40
-                }else if(index == 4){
+                } else if (index == 4) {
                     this.leftValue = 50
                     this.rightValue = 55
-                }else if(index == 5){
+                } else if (index == 5) {
                     this.leftValue = 55
                     this.rightValue = 60
-                }else if(index == 6){
+                } else if (index == 6) {
                     this.leftValue = 60
                     this.rightValue = 65
-                }else if(index == 7){
+                } else if (index == 7) {
                     this.leftValue = 70
                     this.rightValue = 75
-                }else if(index == 8){
+                } else if (index == 8) {
                     this.leftValue = 85
                     this.rightValue = 90
-                }else if(index == 9){
+                } else if (index == 9) {
                     this.leftValue = 90
                     this.rightValue = 95
                 }
-                this.$store.dispatch('setLoginflag', { left: this.leftValue,right:this.rightValue })
-                console.log('left', this.leftValue,'right',this.rightValue)
-                // window.localStorage.setItem('leftValue',this.leftValue)
-                // window.localStorage.setItem('rightValue',this.rightValue)
+                this.$store.dispatch('setLoginflag', { left: this.leftValue, right: this.rightValue })
                 if (index == 11 && text == 'PT') {
-                this.$store.dispatch('setLoginflag', { modle:'PT' })
-                    this.$store.dispatch('setLoginflag', { loginflag: true,index:2 })
-                    // this.$store.dispatch('setLoginflag', { login: false })
+                    this.$store.dispatch('setLoginflag', { loginflag: true, index: 2 })
                 }
                 else {
+                    this.$store.dispatch('setLoginflag', { mode: 'DEMO' })
+
                     this.$router.push({ name: 'SelectTime' });
                 }
                 window.localStorage.setItem('level', text)
@@ -899,7 +878,7 @@
             //     }, 6000)
             // },
             // 十六进制转化
-            toString16 (int) {
+            toString16(int) {
                 if (int.length < 2) {
                     return '0' + int
                 } else {
@@ -915,20 +894,25 @@
 
 
 <style scoped lang="less">
-  ul{
-    display: flex;
-    flex-wrap: wrap;
-  }
-.li{
-  width: 15%;
-  height: 180px;
-  background: #ccc;
-  margin: 10px;
-  font-size: 25px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+    .van-cell__value--alone{
+        color:#969799
+    }
+    ul {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .li {
+        width: 15%;
+        height: 180px;
+        background: #ccc;
+        margin: 10px;
+        font-size: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     .addSport {
         display: flex;
         align-items: center;
@@ -952,7 +936,7 @@
     .box {
         width: 100vw;
         min-height: 100vh;
-        padding: 40px 40px 0;
+        padding: 30px 30px 0;
         box-sizing: border-box;
         background: url("./image/bg.png") no-repeat left top;
         background-size: cover;
@@ -1096,12 +1080,12 @@
 
             .menu {
                 display: flex;
-                padding-top: 40px;
+                padding-top: 20px;
 
                 .menuLeft {
                     .menuItem {
                         width: 450px;
-                        height: 250px;
+                        height: 230px;
                         margin-bottom: 30px;
                         position: relative;
 
@@ -1135,7 +1119,7 @@
 
                     .rightItem {
                         width: 22%;
-                        height: 250px;
+                        height: 230px;
                         text-align: center;
                         font-size: 26px;
                         font-weight: 500;
@@ -1175,6 +1159,7 @@
                         border-radius: 5px;
 
                         .con {
+
                             /* width: 235px; */
                             .name {
                                 color: #979AA9;
@@ -1274,6 +1259,7 @@
                     border-top: 0;
 
                     .myTdColor {
+                        margin-right: 20px;
                         color: #D1D5E6;
                     }
                 }
@@ -1289,8 +1275,8 @@
     }
 
     .van-cell {
-        height: 64px;
-        line-height: 42px;
+        height: 60px;
+        line-height: 40px;
         font-size: 22px;
     }
 
@@ -1300,7 +1286,7 @@
     }
 
     .van-field__control {
-        color: #8D8D94;
+        color: #8D8D94!important;
         font-size: 22px;
     }
 </style>

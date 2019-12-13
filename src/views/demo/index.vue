@@ -58,14 +58,29 @@
           this.currentTime = s_to_hs(this.setTime)
         } else {
           clearInterval(this.timer)
-          window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
-          this.$router.push({ name: 'finish', query: { fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, level: level, id: res.data.data.id, model: 'PT' } });
+          this.$store.dispatch('setLoginflag', { mode:'null' })
+
+        let level = window.localStorage.getItem('level').split('<br/>').join('-')
+        let data = {
+          userCode: window.localStorage.getItem('userCode'),
+          model: 'DEMO',
+          devices: [{ deviceId: 1, deviceAlias: '设备1' }],
+          fullPlayTime: window.localStorage.getItem('setTime') * 1,
+          realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime,
+          level: level
+        }
+        saveRecord(data).then((res) => {
+          if (res.data.code == 200) {
+            window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
+            this.$router.push({ name: 'finish', query: { fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, level: level, id: res.data.data.id, model: 'PT' } });
+          }
+        })
         }
       }, 1000);
     },
     methods: {
       stop() {
-        this.$store.dispatch('setLoginflag', { modle:'null' })
+        this.$store.dispatch('setLoginflag', { mode:'null' })
 
         let level = window.localStorage.getItem('level').split('<br/>').join('-')
         let data = {

@@ -85,7 +85,6 @@
                     password: this.pwd
                 }
                 login(data).then((res) => {
-                    console.log(res)
                     if (res.data.code == 200) {
                         let data1 = {
                             padCode: 'asdf526asdf',
@@ -95,10 +94,22 @@
                         // this.getData()
                         addPhoneList(data1)
                         loginMsg().then((res) => {
-                            window.localStorage.setItem('userCode', res.data.data.userCode)
+                            if(res.data.data.parent == null){
+                            this.$store.dispatch('setLoginflag', { identity: 'coach' })
                             window.localStorage.setItem('username', res.data.data.username)
+                            }else{
+                            window.localStorage.setItem('username', res.data.data.parent.username)
+                            this.$store.dispatch('setLoginflag', { identity: 'athlete' })
+
+                            }
+                            window.localStorage.setItem('userCode', res.data.data.userCode)
                             this.$store.dispatch('setLoginflag', { loginName: res.data.data.username,loginflag: false, login: true,index:1 })
                         })
+                    }else{
+                        this.$toast({
+                            message: res.data.msg,
+                            position: 'bottom'
+                        });
                     }
                 })
             },

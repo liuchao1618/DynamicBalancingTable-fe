@@ -21,10 +21,11 @@
 <script>
   import { saveRecord } from '@/api/index'
   export default {
+    mounted() {
+      // console.log(this.xPum,this.yPum)
+    },
     data() {
       return {
-        positionX: 0,
-        positionY: 0,
         flags: false,
         currentTime: '00:00',
         setTime: 0,
@@ -35,12 +36,16 @@
         startStr: '',
         currentStr: '',
         x: 0,
-        timers: null
+        timers: null,
+        xPum: 400,
+        yPum: 175,
+        bluetoothX: 0,
+        bluetoothY: 0
       }
     },
     methods: {
       stop() {
-        this.$store.dispatch('setLoginflag', { modle:'null' })
+        this.$store.dispatch('setLoginflag', { mode: 'null' })
 
         clearInterval(this.timers)
         clearInterval(this.timer)
@@ -54,23 +59,24 @@
           devices: [{ deviceId: 1, deviceAlias: '设备1' }],
           realPlayTime: this.setTime,
           userCode: window.localStorage.getItem('userCode'),
-          locus:this.dataArr
+          locus: this.dataArr
         }
-        saveRecord(data).then(res=>{
-          window.localStorage.setItem('locus',JSON.stringify(this.dataArr))
+        saveRecord(data).then(res => {
+          window.localStorage.setItem('locus', JSON.stringify(this.dataArr))
           this.$router.push({
-              name: 'finish',
-              query: {
-                model: 'LIVE',
-                id: res.data.data.id,
-                devices: [{ deviceId: 1, deviceAlias: '设备1' }],
-                realPlayTime: this.setTime,
-                userCode: window.localStorage.getItem('userCode')
-              }
-            });
+            name: 'finish',
+            query: {
+              model: 'LIVE',
+              id: res.data.data.id,
+              devices: [{ deviceId: 1, deviceAlias: '设备1' }],
+              realPlayTime: this.setTime,
+              userCode: window.localStorage.getItem('userCode')
+            }
+          });
         })
       },
       start() {
+        clearInterval(this.timer)
         this.startStr = new Date() * 1
         this.flag = true
         /**
@@ -131,9 +137,9 @@
           this.xPum = this.dx + this.nx + 20;
           this.yPum = this.dy + this.ny + 20;
           if (this.xPum < 15) this.xPum = 15
-          if (this.xPum > 996) this.xPum = 996
+          if (this.xPum > 785) this.xPum = 785
           if (this.yPum < 20) this.yPum = 20
-          if (this.yPum > 265) this.yPum = 265
+          if (this.yPum > 330) this.yPum = 330
           moveDiv.style.left = this.xPum + "px";
           moveDiv.style.top = this.yPum + "px";
           //阻止页面的滑动默认事件
@@ -141,29 +147,43 @@
             // event.preventDefault();//jq 阻止冒泡事件
             // event.stopPropagation(); // 如果没有引入jq 就用 stopPropagation()
           }, false);
+          // console.log(this.xPum, this.yPum)
         }
       },
       //鼠标释放时候的函数
       end() {
 
-        this.dataArr.push({ t: new Date() * 1 + this.setTime * 1000 - this.startStr, c: [506, 142] })
+        this.dataArr.push({ t: new Date() * 1 + this.setTime * 1000 - this.startStr, c: [400, 175] })
         this.flags = false;
-        moveDiv.style.left = '506px'
-        moveDiv.style.top = '142px'
+        moveDiv.style.left = '400px'
+        moveDiv.style.top = '175px'
       },
     },
     watch: {
       flags(now, old) {
+        function coordinateTransform(site) {
+          const ratio = 3;
+          const targetLeftTop = [-1155, 465];
+          const sourceLeftTop = [15, 20];
+          return [(site[0] - sourceLeftTop[0]) * ratio + targetLeftTop[0],
+          targetLeftTop[1] - (site[1] - sourceLeftTop[1]) * ratio];
+
+        }
         if (now) {
           this.timers = setInterval(() => {
             this.dataArr.push(
               { t: new Date() * 1 + this.setTime * 1000 - this.startStr, c: [this.xPum, this.yPum] }
             )
           }, 200);
-        }else{  
+          this.timers = setInterval(() => {
+            this.$store.dispatch('setLoginflag', { xOffset: coordinateTransform([this.xPum, this.yPum])[0] })
+            this.$store.dispatch('setLoginflag', { yOffset: coordinateTransform([this.xPum, this.yPum])[1] })
+          }, 1000);
+        } else {
           clearInterval(this.timers)
         }
-      }
+      },
+
     },
     name: 'Live',
   }
@@ -251,12 +271,14 @@
     }
 
     .live_trajectory {
+      width: 1105px;
+      height: 490px;
       position: relative;
-      margin: 100px 130px 190px;
+      margin: 80px auto 50px;
 
       img {
-        width: 100%;
-        height: 396px;
+        width: 1105px;
+        height: 490px;
       }
     }
   }

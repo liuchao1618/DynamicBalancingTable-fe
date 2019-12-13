@@ -62,18 +62,20 @@
                         newPassword: this.form.newpass
                     }
                     editPass(data).then(res => {
+                        console.log(res)
                         if (res.data.code == 200) {
                             this.$toast({
-                                message: '两次输入密码不一致！',
+                                message: '修改成功',
                                 position: 'bottom'
                             });
+                            this.$router.push({ name: 'Home', query: { index: 0 } })
                         }
-                        else{
-                            this.$toast({
-                                message: res.data.msg,
-                                position: 'bottom'
-                            });
-                        }
+                        // else{
+                        //     this.$toast({
+                        //         message: res.data.msg,
+                        //         position: 'bottom'
+                        //     });
+                        // }
                     })
                 }
                 console.log(this.form, 'form')

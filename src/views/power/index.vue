@@ -73,8 +73,8 @@
       }
     },
     mounted() {
-      var left = this.$store.state.left
-      var right = this.$store.state.right
+      var left = this.$store.state.BluetoothData.leftPower
+      var right = this.$store.state.BluetoothData.rightPower
       this.leftValue = 100 - left
       this.rightValue = 100 - right
       this.bottomValue = parseInt((left*1 + right*1)/2)
@@ -113,7 +113,7 @@
             realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime,
             leftPower: 100 - this.leftValue,
             rightPower: 100 - this.rightValue,
-            avgPower: this.calculateAvg(this.leftPower, this.rightPower),
+            avgPower: parseInt((100 - this.leftValue + 100 - this.rightValue) / 2),
             userCode: window.localStorage.getItem('userCode')
           }
           saveRecord(data).then((res) => {
@@ -127,7 +127,7 @@
                 query: {
                   left: 100 - this.leftValue,
                   right: 100 - this.rightValue,
-                  avg: this.calculateAvg(this.left, this.right),
+                  avg: parseInt((100 - this.leftValue + 100 - this.rightValue) / 2),
                   fullPlayTime: window.localStorage.getItem('setTime') * 1,
                   realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime,
                   id: res.data.data.id,
@@ -145,7 +145,7 @@
       },
 
       stop() {
-        this.$store.dispatch('setLoginflag', { modle:'null' })
+        this.$store.dispatch('setLoginflag', { mode:'null' })
 
         clearInterval(this.timer)
 
