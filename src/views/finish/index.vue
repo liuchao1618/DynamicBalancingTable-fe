@@ -82,9 +82,9 @@
           <div class="drill">
             <div class="coach">
               <span>教练：</span>
-              <div class="select">
+              <div class="select" @click='tabShow'>
                 <span>{{coachName}}</span>
-                <span @click='tabShow' class="img"><img src="../../assets/image/xiala.png" alt=""></span>
+                <span class="img"><img src="../../assets/image/xiala.png" alt=""></span>
               </div>
               <ul class="list" v-if='show'>
                 <li v-for='(item,i) in trainerName' @click='changeName(item.username)'>{{item.username}}</li>
@@ -99,15 +99,13 @@
           </div>
           <div class="exerciseName">
             <div class="info" v-for='(item,index) in nameList'>
-              <van-checkbox :disabled='nameDisabled' v-model="item.checked" shape="square" @click='selectAll(item)'>
+              <van-checkbox :disabled='nameDisabled' :class='nameDisabled?"forbidBox":""' v-model="item.checked" shape="square" @click='selectAll(item)'>
                 {{item.username}}</van-checkbox>
             </div>
           </div>
 
           <div class="sub" :class="[checkName.length>0 ? 'active' : '']" @click='submit'>提交
           </div>
-          <!-- <div v-else class="sub" @click='submits'>重新提交
-          </div> -->
         </div>
       </div>
     </div>
@@ -205,7 +203,7 @@
     },
     methods: {
       goHome() {
-        this.$router.push('Home')
+        this.$router.push({name:'Home',query:{index:0}})
         window.localStorage.removeItem('locus')
       },
       checkNames(item) {
@@ -354,6 +352,9 @@
   }
 </script>
 <style scoped lang="less">
+  .forbidBox{
+    pointer-events: none
+  }
   .list {
     position: absolute;
     top: 35px;
@@ -371,6 +372,9 @@
     padding: 5px 10px;
     box-sizing: border-box;
     overflow: auto;
+    li{
+      width: 100%;
+    }
   }
 
   .lists {
@@ -533,7 +537,6 @@
           justify-content: space-between;
           align-items: center;
           box-sizing: border-box;
-          width: 100px;
           height: 38px;
           background: rgba(1, 9, 21, 0.2);
           border-radius: 4px;
@@ -659,6 +662,8 @@
 
         .usedevicebox {
           display: flex;
+          padding: 0 20px;
+          box-sizing: border-box;
           justify-content: space-between;
           width: 264px;
           height: 66px;
@@ -679,6 +684,7 @@
           }
 
           dd {
+            margin-top: 5px;
             text-align: center;
             font-size: 8px;
             -webkit-text-size-adjust: none;

@@ -174,6 +174,9 @@
               })
             }
           })
+          if(this.recordList.length==0){
+            this.flag = true
+          }
         })
       },
       goback() {

@@ -48,7 +48,6 @@ const mutations = {
     }
     window.localStorage.setItem('login', data.login)
     window.localStorage.setItem('loginflag', data.loginflag)
-    console.log(state, data)
   }
 }
 

@@ -37,15 +37,15 @@
         currentStr: '',
         x: 0,
         timers: null,
-        xPum:418,
-        yPum:165,
-        bluetoothX:0,
-        bluetoothY:0
+        xPum: 400,
+        yPum: 175,
+        bluetoothX: 0,
+        bluetoothY: 0
       }
     },
     methods: {
       stop() {
-        this.$store.dispatch('setLoginflag', { modle:'null' })
+        this.$store.dispatch('setLoginflag', { modle: 'null' })
 
         clearInterval(this.timers)
         clearInterval(this.timer)
@@ -59,20 +59,20 @@
           devices: [{ deviceId: 1, deviceAlias: '设备1' }],
           realPlayTime: this.setTime,
           userCode: window.localStorage.getItem('userCode'),
-          locus:this.dataArr
+          locus: this.dataArr
         }
-        saveRecord(data).then(res=>{
-          window.localStorage.setItem('locus',JSON.stringify(this.dataArr))
+        saveRecord(data).then(res => {
+          window.localStorage.setItem('locus', JSON.stringify(this.dataArr))
           this.$router.push({
-              name: 'finish',
-              query: {
-                model: 'LIVE',
-                id: res.data.data.id,
-                devices: [{ deviceId: 1, deviceAlias: '设备1' }],
-                realPlayTime: this.setTime,
-                userCode: window.localStorage.getItem('userCode')
-              }
-            });
+            name: 'finish',
+            query: {
+              model: 'LIVE',
+              id: res.data.data.id,
+              devices: [{ deviceId: 1, deviceAlias: '设备1' }],
+              realPlayTime: this.setTime,
+              userCode: window.localStorage.getItem('userCode')
+            }
+          });
         })
       },
       start() {
@@ -137,9 +137,9 @@
           this.xPum = this.dx + this.nx + 20;
           this.yPum = this.dy + this.ny + 20;
           if (this.xPum < 15) this.xPum = 15
-          if (this.xPum > 825) this.xPum = 825
+          if (this.xPum > 785) this.xPum = 785
           if (this.yPum < 20) this.yPum = 20
-          if (this.yPum > 315) this.yPum = 315
+          if (this.yPum > 330) this.yPum = 330
           moveDiv.style.left = this.xPum + "px";
           moveDiv.style.top = this.yPum + "px";
           //阻止页面的滑动默认事件
@@ -147,16 +147,16 @@
             // event.preventDefault();//jq 阻止冒泡事件
             // event.stopPropagation(); // 如果没有引入jq 就用 stopPropagation()
           }, false);
-          // console.log(this.xPum,this.yPum)
+          // console.log(this.xPum, this.yPum)
         }
       },
       //鼠标释放时候的函数
       end() {
 
-        this.dataArr.push({ t: new Date() * 1 + this.setTime * 1000 - this.startStr, c: [418, 165] })
+        this.dataArr.push({ t: new Date() * 1 + this.setTime * 1000 - this.startStr, c: [400, 175] })
         this.flags = false;
-        moveDiv.style.left = '418px'
-        moveDiv.style.top = '165px'
+        moveDiv.style.left = '400px'
+        moveDiv.style.top = '175px'
       },
     },
     watch: {
@@ -168,38 +168,42 @@
       //       deep:true
       //   },
       xPum(now, old) {
-        if( now > 418 ){
-          this.bluetoothX = now*1.435*2
-        }else{
-          this.bluetoothX = ('-'+now) *1.435*2
+        if (now > 400) {
+          this.bluetoothX = now * 1.435 * 2
+        } else {
+          this.bluetoothX = ('-' + now) * 1.435 * 2
         }
+        // console.log(parseInt(this.bluetoothX))
       },
       yPum(now, old) {
-        if( now < 165 ){
-          this.bluetoothY = now*1.435*2
-        }else{
-          this.bluetoothY = ('-'+now)*1.435*2
+        if (now < 175) {
+          this.bluetoothY = now * 1.435 * 2
+        } else {
+          this.bluetoothY = ('-' + now) * 1.435 * 2
         }
-        console.log(parseInt(this.bluetoothY))
       },
       flags(now, old) {
+        function coordinateTransform(site) {
+          const ratio = 3;
+          const targetLeftTop = [-1155, 465];
+          const sourceLeftTop = [15, 20];
+          return [(site[0] - sourceLeftTop[0]) * ratio + targetLeftTop[0],
+          targetLeftTop[1] - (site[1] - sourceLeftTop[1]) * ratio];
+
+        }
         if (now) {
           this.timers = setInterval(() => {
             this.dataArr.push(
               { t: new Date() * 1 + this.setTime * 1000 - this.startStr, c: [this.xPum, this.yPum] }
             )
+            console.log(coordinateTransform([this.xPum, this.yPum]))
           }, 200);
-        }else{  
+        } else {
           clearInterval(this.timers)
         }
       },
 
     },
-    // computed: {
-    //   addposition() {
-    //   　　　　 return JSON.parse(JSON.stringify(this.position))
-    // 　　}
-    // },
     name: 'Live',
   }
 </script>
@@ -286,14 +290,14 @@
     }
 
     .live_trajectory {
-      width: 1163px;
-      height: 467px;
+      width: 1105px;
+      height: 490px;
       position: relative;
-      margin: 100px auto 120px;
+      margin: 80px auto 50px;
 
       img {
-        width: 1163px;
-        height: 467px;
+        width: 1105px;
+        height: 490px;
       }
     }
   }

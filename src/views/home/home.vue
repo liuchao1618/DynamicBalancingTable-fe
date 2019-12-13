@@ -37,7 +37,8 @@
                     <div class="tab" :class="{'tabActive': tab === 0}" @click="tabBtn(0)">训练</div>
                     <div class="tab" :class="{'tabActive': tab === 1}" @click="tabBtn(1)">记录</div>
                     <div class="tab" :class="{'tabActive': tab === 2}" @click="tabBtn(2)">收藏</div>
-                    <div class="tab" :class="{'tabActive': tab === 3}" @click="tabBtn(3)" v-if='identity == "coach"'>我的运动员</div>
+                    <div class="tab" :class="{'tabActive': tab === 3}" @click="tabBtn(3)" v-if='identity == "coach"'>
+                        我的运动员</div>
                 </div>
                 <div class="tabRight">
                     <div class="name" v-if='identity == "coach"'>教练：{{loginName}}</div>
@@ -329,7 +330,7 @@
         </div>
         <!-- login组件 -->
         <login v-if='loginflag'></login>
-        <button @click='gogo' style="width:200px;height:50px;">测试页面</button>
+        <!-- <button @click='gogo' style="width:200px;height:50px;">测试页面</button> -->
         <ul v-if="gogo111">
             <div style="background: #fff; color: #333;width: 100%;line-height: 60px;font-size: 20px;">
                 <span v-for="(item, index) of att" :key="index">{{item}} </span>
@@ -404,15 +405,15 @@
              * @param {Exception} e
              */
             connExceptionCallback: function (stateContent) { },
-             /**
-             * 蓝牙获取已经配对设备回调
-             * @param {Exception} e
-             */
+            /**
+            * 蓝牙获取已经配对设备回调
+            * @param {Exception} e
+            */
             getPairedDevicesback: function (stateContent) { },
-             /**
-             * 蓝牙发送数据回调
-             * @param {Exception} e
-             */
+            /**
+            * 蓝牙发送数据回调
+            * @param {Exception} e
+            */
             sendDataback: function (stateContent) { }
         }
 
@@ -596,21 +597,21 @@
 
             //6.0以后的如果需要利用本机查找周围的wifi和蓝牙设备, 申请权限
             if (Build.VERSION.SDK_INT >= 6.0) {
-                plus.android.requestPermissions(['android.permission.ACCESS_FINE_LOCATION'], function(e){
-                    if(e.deniedAlways.length>0){	//权限被永久拒绝
+                plus.android.requestPermissions(['android.permission.ACCESS_FINE_LOCATION'], function (e) {
+                    if (e.deniedAlways.length > 0) {	//权限被永久拒绝
                         // 弹出提示框解释为何需要定位权限，引导用户打开设置页面开启
-                        console.log('Always Denied!!! '+ e.deniedAlways.toString());
+                        console.log('Always Denied!!! ' + e.deniedAlways.toString());
                     }
-                    if(e.deniedPresent.length>0){	//权限被临时拒绝
+                    if (e.deniedPresent.length > 0) {	//权限被临时拒绝
                         // 弹出提示框解释为何需要定位权限，可再次调用plus.android.requestPermissions申请权限
-                        console.log('Present Denied!!! '+e.deniedPresent.toString());
+                        console.log('Present Denied!!! ' + e.deniedPresent.toString());
                     }
-                    if(e.granted.length>0){	//权限被允许
+                    if (e.granted.length > 0) {	//权限被允许
                         //调用依赖获取定位权限的代码
-                        console.log('Granted!!! '+e.granted.toString());
+                        console.log('Granted!!! ' + e.granted.toString());
                     }
-                }, function(e){
-                        console.log('Request Permissions error:'+JSON.stringify(e));
+                }, function (e) {
+                    console.log('Request Permissions error:' + JSON.stringify(e));
                 });
             }
             btFindReceiver = plus.android.implements("io.dcloud.android.content.BroadcastReceiver", {
@@ -876,7 +877,7 @@
             // let bytes = invoke(dataStr, 'getBytes', 'gbk');
             // alert('发送数据')
             try {
-               for (let i = 0; i < dataStr.length; i++) {
+                for (let i = 0; i < dataStr.length; i++) {
                     btOutStream.write(dataStr[i])
                 }
             } catch (e) {
@@ -909,24 +910,24 @@
             return {
                 att: '1111',
                 gogo111: false,
-                leftValue:0,
-                rightValue:0,
+                leftValue: 0,
+                rightValue: 0,
                 tab: 0,
                 // loginFlag: false,
                 setup: false,
-                status: 'fail',
-                // status: 'success',
+                // status:  'fail',
+                status: 'success',
                 statusContent: 0,
                 loginSwitch: false,
                 deviceList: [], // 蓝牙地址(adress)
                 dataList: [], // 接收到的数据
                 contrastData: [], // 做对比的数据
                 // sendDataNum: 0b10100000,
-                sendDataNum: [0b10100110, 0b10101000, 0b01100000, 0b10100110, 0b10101000,  0b00001010, 0b11100010, 0b11111111],
+                sendDataNum: [0b10100110, 0b10101000, 0b01100000, 0b10100110, 0b10101000, 0b00001010, 0b11100010, 0b11111111],
                 recordList: [],//记录 
                 merberList: [],//我的运动员
                 collectList: [],//收藏
-                list11:['0101','0102','0103','0104','0105','1101','1100','1200','1201'],
+                list11: ['0101', '0102', '0103', '0104', '0105', '1101', '1100', '1200', '1201'],
                 menuList: [
                     {
                         img: require('./image/banner1.png'),
@@ -1055,7 +1056,7 @@
             })
             // console.log(this.collectList,'this.collectList')
             this.collectList.forEach((item, index) => {
-                var c = document.getElementById('a'+index);
+                var c = document.getElementById('a' + index);
                 var ctx = c.getContext("2d");
                 var arr = item.expands
                 arr.forEach((v, i) => {
@@ -1105,7 +1106,7 @@
                         // alert('设备中断连接回调')
                         that.status = "fail"
                         if (this.$route.name != 'Home') {
-                            that.$router.push({name: 'Home', query: {urlContent: Number(stateContent)}})
+                            that.$router.push({ name: 'Home', query: { urlContent: Number(stateContent) } })
                         }
                         that.statusContent = Number(stateContent)
                     },
@@ -1119,7 +1120,7 @@
                         } else {
                             that.statusContent = Number(stateContent)
                             that.status = "fail"
-                            that.$router.push({name: 'Home', query: {urlContent: Number(stateContent)}})
+                            that.$router.push({ name: 'Home', query: { urlContent: Number(stateContent) } })
                         }
                     },
                     sendDataback: function (stateContent) {
@@ -1129,7 +1130,6 @@
             }, false)
         },
         mounted() {
-            console.log(this.$route.name == 'Home')
             // 在其他页面监听蓝牙与设备的连接状态
             let urlContent = this.$route.query.urlContent
             if (urlContent) {
@@ -1141,13 +1141,7 @@
             this.getExercise(); //所有记录
             this.getmemberMsg(); //我的运动员
             this.tab = this.$route.query.index * 1 || 0;
-            // if (this.login) {
-            //     this.$store.dispatch('setLoginflag', { modle:'PT' })
-            //     // window.localStorage.setItem('modle', 'PT')
-            // } else {
-            //     this.$store.dispatch('setLoginflag', { modle:'DEMO' })
-            //     // window.localStorage.setItem('modle', 'DEMO')
-            // }
+            window.localStorage.setItem('modle', 'PT')
             let that = this
             document.addEventListener("plusready", () => {
                 bluetoothTool.turnOnBluetooth()
@@ -1166,23 +1160,23 @@
             'text'
         ]),
         watch: {
-            tab(now,old){
-                if(now == 1){
+            tab(now, old) {
+                if (now == 1) {
                     this.getExercise();
-                }else if(now == 2){
+                } else if (now == 2) {
                     this.getExercise();
-                }else if(now == 3){
+                } else if (now == 3) {
                     this.getmemberMsg();
                 }
             },
-            $route (to, from) {
+            $route(to, from) {
                 if (to != from) {
-                // alert('路由切换了') 
+                    // alert('路由切换了') 
                     this.$router.go(0)
                 }
             },
             // 监听模式切换发送数据
-            text () {
+            text() {
                 // alert('开始监听啦')
                 // alert(this.text)
                 let blueDate = pluginFub.dataNum(this.text)
@@ -1191,10 +1185,10 @@
             },
         },
         methods: {
-            changeText(item){
-                this.$store.dispatch('setLoginflag', { text:item })
+            changeText(item) {
+                this.$store.dispatch('setLoginflag', { text: item })
             },
-            gogo(){
+            gogo() {
                 this.gogo111 = true
                 // this.$router.push('/text')
             },
@@ -1206,7 +1200,7 @@
                     exitLogin().then((res) => {
                         this.tab = 0
                         this.setup = false
-                        this.$store.dispatch('setLoginflag', { login: false,index:3 })
+                        this.$store.dispatch('setLoginflag', { login: false, index: 3 })
                     })
                     // localStorage.clear()
                 }).catch(() => {
@@ -1214,8 +1208,7 @@
                 });
             },
             detail(item) {
-                console.log(item,'asdfa')
-                this.$router.push({ name: 'sportExerciseLog',query:{userCode:item.userCode} })
+                this.$router.push({ name: 'sportExerciseLog', query: { userCode: item.userCode } })
             },
             edit(item) {
                 this.$router.push({ name: 'addAthletes', query: { username: item.username, sex: item.sex, birth: item.birth, height: item.height, weight: item.weight, tel: item.mobile } })
@@ -1310,78 +1303,68 @@
                 this.tab = index
             },
             leftgoDetail(item, index) {
-                console.log(this.$store.state.modle)
-                let modle = this.$store.state.modle
+                let modle = window.localStorage.getItem('modle')
                 if (modle == 'DEMO') {
                     window.localStorage.setItem('level', item)
-                }else if(modle == 'PT'){
+                } else if (modle == 'PT') {
                 }
-                    if(index == 0){
+                if (index == 0) {
                     this.leftValue = 10
                     this.rightValue = 15
-                }else if(index == 1){
+                } else if (index == 1) {
                     this.leftValue = 40
                     this.rightValue = 45
-                }else if(index == 2){
+                } else if (index == 2) {
                     this.leftValue = 80
                     this.rightValue = 85
                 }
-                window.localStorage.setItem('leftValue',this.leftValue)
-                window.localStorage.setItem('rightValue',this.rightValue)
+                window.localStorage.setItem('leftValue', this.leftValue)
+                window.localStorage.setItem('rightValue', this.rightValue)
                 this.$router.push({ name: 'SelectTime' });
             },
             godetail(index, text) {
-                if(index == 0){
+                if (index == 0) {
                     this.leftValue = 15
                     this.rightValue = 20
-                }else if(index == 1){
+                } else if (index == 1) {
                     this.leftValue = 25
                     this.rightValue = 30
-                }else if(index == 2){
+                } else if (index == 2) {
                     this.leftValue = 30
                     this.rightValue = 35
-                }else if(index == 3){
+                } else if (index == 3) {
                     this.leftValue = 35
                     this.rightValue = 40
-                }else if(index == 4){
+                } else if (index == 4) {
                     this.leftValue = 50
                     this.rightValue = 55
-                }else if(index == 5){
+                } else if (index == 5) {
                     this.leftValue = 55
                     this.rightValue = 60
-                }else if(index == 6){
+                } else if (index == 6) {
                     this.leftValue = 60
                     this.rightValue = 65
-                }else if(index == 7){
+                } else if (index == 7) {
                     this.leftValue = 70
                     this.rightValue = 75
-                }else if(index == 8){
+                } else if (index == 8) {
                     this.leftValue = 85
                     this.rightValue = 90
-                }else if(index == 9){
+                } else if (index == 9) {
                     this.leftValue = 90
                     this.rightValue = 95
                 }
-                console.log(text,'text11')
-                if(text == 'DEMO TEST') {
-                    
-                this.$store.dispatch('setLoginflag', { modle:'DEMO' })
-                }else if(text == 'PT'){
-                this.$store.dispatch('setLoginflag', { modle:'PT' })
-
+                if(window.localStorage.getItem('modle') == 'DEMO'){
+                    this.$store.dispatch('setLoginflag', { modle: 'DEMO' })
+                }else if(window.localStorage.getItem('modle') == 'PT'){
+                    this.$store.dispatch('setLoginflag', { modle: 'PT' })
                 }
-                this.$store.dispatch('setLoginflag', { left: this.leftValue,right:this.rightValue })
-
-                // window.localStorage.setItem('leftValue',this.leftValue)
-                // window.localStorage.setItem('rightValue',this.rightValue)
                 if (index == 10 && text == 'LIVE') {
-                this.$store.dispatch('setLoginflag', { modle:'LIVE' })
+                    this.$store.dispatch('setLoginflag', { modle: 'LIVE' })
                     this.$router.push({ name: 'live' });
                 }
                 else if (index == 11 && text == 'DEMO TEST') {
-                    // window.localStorage.setItem('modle', 'DEMO')
-                this.$store.dispatch('setLoginflag', { modle:'DEMO' })
-
+                    window.localStorage.setItem('modle', 'DEMO')
                     this.list.forEach((item, i) => {
                         if (i == 10) {
                             item.text = 'FUNTIONAL 3 <br/>L4'
@@ -1391,11 +1374,7 @@
                     })
                 }
                 else if (index == 11 && text == 'PT') {
-
-                    // this.$store.dispatch('setLoginflag', { loginflag: true,index:2 })
-
-                    
-                    // window.localStorage.setItem('modle', 'PT')
+                    window.localStorage.setItem('modle', 'PT')
                     this.list.forEach((item, i) => {
                         if (i == 10) {
                             item.text = 'LIVE'
@@ -1405,52 +1384,50 @@
                     })
                 }
                 else {
+                    this.$store.dispatch('setLoginflag', { left: this.leftValue, right: this.rightValue })
                     this.$router.push({ name: 'SelectTime' });
                 }
                 window.localStorage.setItem('level', text)
             },
             godetails(index, text) {
-                if(index == 0){
+                if (index == 0) {
                     this.leftValue = 15
                     this.rightValue = 20
-                }else if(index == 1){
+                } else if (index == 1) {
                     this.leftValue = 25
                     this.rightValue = 30
-                }else if(index == 2){
+                } else if (index == 2) {
                     this.leftValue = 30
                     this.rightValue = 35
-                }else if(index == 3){
+                } else if (index == 3) {
                     this.leftValue = 35
                     this.rightValue = 40
-                }else if(index == 4){
+                } else if (index == 4) {
                     this.leftValue = 50
                     this.rightValue = 55
-                }else if(index == 5){
+                } else if (index == 5) {
                     this.leftValue = 55
                     this.rightValue = 60
-                }else if(index == 6){
+                } else if (index == 6) {
                     this.leftValue = 60
                     this.rightValue = 65
-                }else if(index == 7){
+                } else if (index == 7) {
                     this.leftValue = 70
                     this.rightValue = 75
-                }else if(index == 8){
+                } else if (index == 8) {
                     this.leftValue = 85
                     this.rightValue = 90
-                }else if(index == 9){
+                } else if (index == 9) {
                     this.leftValue = 90
                     this.rightValue = 95
                 }
-                this.$store.dispatch('setLoginflag', { left: this.leftValue,right:this.rightValue })
-                console.log('left', this.leftValue,'right',this.rightValue)
-                // window.localStorage.setItem('leftValue',this.leftValue)
-                // window.localStorage.setItem('rightValue',this.rightValue)
+                this.$store.dispatch('setLoginflag', { left: this.leftValue, right: this.rightValue })
                 if (index == 11 && text == 'PT') {
-                this.$store.dispatch('setLoginflag', { modle:'PT' })
-                    this.$store.dispatch('setLoginflag', { loginflag: true,index:2 })
-                    // this.$store.dispatch('setLoginflag', { login: false })
+                    this.$store.dispatch('setLoginflag', { loginflag: true, index: 2 })
                 }
                 else {
+                    this.$store.dispatch('setLoginflag', { modle: 'DEMO' })
+
                     this.$router.push({ name: 'SelectTime' });
                 }
                 window.localStorage.setItem('level', text)
@@ -1491,17 +1468,17 @@
                 bluetoothTool.discoveryNewDevice(this.deviceList)
             },
             // 发送数据
-            sendDataTime (data) {
+            sendDataTime(data) {
                 if (!bluetoothTool.state.readThreadState) {
                     return false
                 }
                 bluetoothTool.sendData(data)
             },
             // 发送心跳
-            sendHeard () {
+            sendHeard() {
                 let data = pluginFub.t80()
                 let that = this
-                let timerHeard = setInterval (() => {
+                let timerHeard = setInterval(() => {
                     // alert('发送心跳')
                     // alert(bluetoothTool.state.readThreadState)
                     if (that.statusContent != 3) {
@@ -1510,7 +1487,7 @@
                     } else {
                         bluetoothTool.sendData(data)
                     }
-                },3000)
+                }, 3000)
             },
             // 实时判断是否在实时接收数据
             watchReceiveData() {
@@ -1531,7 +1508,7 @@
                 }, 6000)
             },
             // 十六进制转化
-            toString16 (int) {
+            toString16(int) {
                 if (int.length < 2) {
                     return '0' + int
                 } else {
@@ -1547,20 +1524,25 @@
 
 
 <style scoped lang="less">
-  ul{
-    display: flex;
-    flex-wrap: wrap;
-  }
-.li{
-  width: 15%;
-  height: 180px;
-  background: #ccc;
-  margin: 10px;
-  font-size: 25px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+    .van-cell__value--alone{
+        color:#969799
+    }
+    ul {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .li {
+        width: 15%;
+        height: 180px;
+        background: #ccc;
+        margin: 10px;
+        font-size: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     .addSport {
         display: flex;
         align-items: center;
@@ -1584,7 +1566,7 @@
     .box {
         width: 100vw;
         min-height: 100vh;
-        padding: 40px 40px 0;
+        padding: 30px 30px 0;
         box-sizing: border-box;
         background: url("./image/bg.png") no-repeat left top;
         background-size: cover;
@@ -1728,12 +1710,12 @@
 
             .menu {
                 display: flex;
-                padding-top: 40px;
+                padding-top: 20px;
 
                 .menuLeft {
                     .menuItem {
                         width: 450px;
-                        height: 250px;
+                        height: 230px;
                         margin-bottom: 30px;
                         position: relative;
 
@@ -1767,7 +1749,7 @@
 
                     .rightItem {
                         width: 22%;
-                        height: 250px;
+                        height: 230px;
                         text-align: center;
                         font-size: 26px;
                         font-weight: 500;
@@ -1807,6 +1789,7 @@
                         border-radius: 5px;
 
                         .con {
+
                             /* width: 235px; */
                             .name {
                                 color: #979AA9;
@@ -1922,8 +1905,8 @@
     }
 
     .van-cell {
-        height: 64px;
-        line-height: 42px;
+        height: 60px;
+        line-height: 40px;
         font-size: 22px;
     }
 
@@ -1933,7 +1916,7 @@
     }
 
     .van-field__control {
-        color: #8D8D94;
+        color: #8D8D94!important;
         font-size: 22px;
     }
 </style>

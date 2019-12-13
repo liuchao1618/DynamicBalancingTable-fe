@@ -29,6 +29,9 @@
         timeStr:'05:00'
       }
     },
+    mounted() {
+      console.log(this.$store.state.modle,'aaaaaaaaaaaa')
+    },
     methods: {
       back(){
         this.$router.back(-1)
