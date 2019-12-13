@@ -1355,12 +1355,12 @@
                     this.rightValue = 95
                 }
                 if(window.localStorage.getItem('modle') == 'DEMO'){
-                    this.$store.dispatch('setLoginflag', { modle: 'DEMO' })
+                    this.$store.dispatch('setLoginflag', { mode: 'DEMO' })
                 }else if(window.localStorage.getItem('modle') == 'PT'){
-                    this.$store.dispatch('setLoginflag', { modle: 'PT' })
+                    this.$store.dispatch('setLoginflag', { mode: 'PT' })
                 }
                 if (index == 10 && text == 'LIVE') {
-                    this.$store.dispatch('setLoginflag', { modle: 'LIVE' })
+                    this.$store.dispatch('setLoginflag', { mode: 'LIVE' })
                     this.$router.push({ name: 'live' });
                 }
                 else if (index == 11 && text == 'DEMO TEST') {
@@ -1426,7 +1426,7 @@
                     this.$store.dispatch('setLoginflag', { loginflag: true, index: 2 })
                 }
                 else {
-                    this.$store.dispatch('setLoginflag', { modle: 'DEMO' })
+                    this.$store.dispatch('setLoginflag', { mode: 'DEMO' })
 
                     this.$router.push({ name: 'SelectTime' });
                 }

@@ -18,8 +18,7 @@
           --this.word
         }else{
           clearInterval(this.timer)
-          console.log(this.$store.state)
-          let model = this.$store.state.modle
+          let model = this.$store.state.BluetoothData.mode
           if(model == 'PT'){
             this.$router.push({ name: 'power'});
           }else{

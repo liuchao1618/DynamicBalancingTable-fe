@@ -9,16 +9,21 @@ const state = {
   loginflag: false,
   login: false,
   loginName: '',
-  modle: 'null',
-  type: '',
-  left: 0,
-  right: 0,
   text: '',
-  identity:''
+  identity:'',
+  BluetoothData:{
+    mode: 'null',
+    type: '',
+    leftPower: 0,
+    rightPower: 0,
+    xOffset:0,
+    yOffset:0
+  }
 }
 // 所需要定义的mutations
 const mutations = {
   SETLOGINFLAG: (state, data) => {
+    console.log(state,data)
     state.text = data.text
     if (data.index == 1) {
       state.loginflag = data.loginflag
@@ -32,18 +37,29 @@ const mutations = {
     if (data.loginName) {
       state.loginName = data.loginName
     }
-    if (data.modle) {
-      state.modle = data.modle
+    if (data.mode) {
+      state.BluetoothData.mode = data.mode
     }
     if (data.type) {
-      state.type = data.type
+      state.BluetoothData.type = data.type      
     }
     if (data.left) {
-      state.left = data.left
+      state.BluetoothData.leftPower = data.left
+
     }
     if (data.right) {
-      state.right = data.right
-    } if (data.identity) {
+      state.BluetoothData.rightPower = data.right
+
+    } 
+    if (data.yOffset) {
+      state.BluetoothData.yOffset = data.yOffset
+
+    } 
+    if (data.xOffset) {
+      state.BluetoothData.xOffset = data.xOffset
+
+    } 
+    if (data.identity) {
       state.identity = data.identity
     }
     window.localStorage.setItem('login', data.login)

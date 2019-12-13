@@ -45,7 +45,7 @@
     },
     methods: {
       stop() {
-        this.$store.dispatch('setLoginflag', { modle: 'null' })
+        this.$store.dispatch('setLoginflag', { mode: 'null' })
 
         clearInterval(this.timers)
         clearInterval(this.timer)
@@ -160,28 +160,6 @@
       },
     },
     watch: {
-      // addposition:{//深度监听，可监听到对象、数组的变化
-      //       handler(val, oldVal){
-      //           console.log('新',val,'旧',oldVal);//
-      //       },
-      //       immediate: true,
-      //       deep:true
-      //   },
-      xPum(now, old) {
-        if (now > 400) {
-          this.bluetoothX = now * 1.435 * 2
-        } else {
-          this.bluetoothX = ('-' + now) * 1.435 * 2
-        }
-        // console.log(parseInt(this.bluetoothX))
-      },
-      yPum(now, old) {
-        if (now < 175) {
-          this.bluetoothY = now * 1.435 * 2
-        } else {
-          this.bluetoothY = ('-' + now) * 1.435 * 2
-        }
-      },
       flags(now, old) {
         function coordinateTransform(site) {
           const ratio = 3;
@@ -196,8 +174,11 @@
             this.dataArr.push(
               { t: new Date() * 1 + this.setTime * 1000 - this.startStr, c: [this.xPum, this.yPum] }
             )
-            console.log(coordinateTransform([this.xPum, this.yPum]))
           }, 200);
+          this.timers = setInterval(() => {
+            this.$store.dispatch('setLoginflag', { xOffset: coordinateTransform([this.xPum, this.yPum])[0] })
+            this.$store.dispatch('setLoginflag', { yOffset: coordinateTransform([this.xPum, this.yPum])[1] })
+          }, 1000);
         } else {
           clearInterval(this.timers)
         }
