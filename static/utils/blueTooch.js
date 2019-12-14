@@ -71,7 +71,9 @@ function BluetoothTool() {
          * 蓝牙发送数据回调
          * @param {Exception} e
          */
-        sendDataback: function (stateContent) { }
+        sendDataback: function (stateContent) { },
+        // 获取默认蓝牙回调
+        getPairedDevicescallback: function(stateContent) {}
     }
 
     let bluetoothToolInstance = {
@@ -192,7 +194,9 @@ function BluetoothTool() {
      * @return {Array} connetedDevices
      */
     function getPairedDevices(discoveryAddress) {
-        alert('获取已经配对的设备')
+        state.statusContent = 1
+        options.getPairedDevicescallback && options.getPairedDevicescallback(state.stateContent)
+        // alert('获取已经配对的设备')
         let pairedDevices = [];
 
         //蓝牙连接android原生对象，是一个set集合
@@ -223,7 +227,7 @@ function BluetoothTool() {
      * 发现设备
      */
     function discoveryNewDevice(discoveryAddress) {
-        alert('发现设备')
+        // alert('发现设备')
         state.statusContent = 1
         options.discoveryFinishedCallback && options.discoveryFinishedCallback(state.statusContent);
 
@@ -357,7 +361,7 @@ function BluetoothTool() {
      * @return {Boolean}
      */
     function connDevice(address) {
-        alert('开始连接了')
+        // alert('开始连接了')
         let InputStream = plus.android.importClass("java.io.InputStream");
         let OutputStream = plus.android.importClass("java.io.OutputStream");
         let BluetoothSocket = plus.android.importClass("android.bluetooth.BluetoothSocket");
@@ -512,7 +516,7 @@ function BluetoothTool() {
      * @return {Boolean}
      */
     function sendData(dataStr) {
-        alert('发送数据')
+        // alert('发送数据')
         if (!btOutStream) {
             shortToast("创建输出流失败！");
             return;
@@ -529,8 +533,6 @@ function BluetoothTool() {
             options.sendDataback && options.sendDataback(state.statusContent)
             alert('发送失败')
             return false;
-        } finally {
-
         }
         // alert('发送成功')
         return true;

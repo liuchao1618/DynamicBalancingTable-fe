@@ -509,6 +509,8 @@
             this.getDeviceInfo()
         },
         mounted() {
+            alert(this.statusContent)
+            alert(this.status)
             // 在其他页面监听蓝牙与设备的连接状态
             let urlContent = this.$route.query.urlContent
             if (urlContent) {
@@ -553,9 +555,11 @@
             },
             storeStatusContent () {
               this.statusContent = this.storeStatusContent
+              alert(this.statusContent)
             },
             storeStatus () {
               this.status = this.storeStatus
+              alert(this.status)
             }
         },
         methods: {
