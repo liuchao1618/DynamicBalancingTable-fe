@@ -19,6 +19,7 @@ export default {
       flag: false,
       originResponse : {
         success: function (res) {
+          alert('success')
           that.sendDataTime()
           if(pluginFub.equals(res, pluginFub.STOP_OVER)) {
             that.$store.dispatch('setLoginflag', { transmitType:  'normal'})
@@ -26,7 +27,8 @@ export default {
           }
         },
         error: function (e) {
-          // alert('error')
+          alert('error')
+          alert(e)
           switch (e) {
             case pluginFub.resetting: 
               that.sendReset() // 发送复位
@@ -43,7 +45,7 @@ export default {
         },
         complete: function (arrayCache) {
           localStorage.setItem('arrayCache', arrayCache)
-          // alert('complete')
+          alert('complete')
         }
       }
     }
@@ -111,7 +113,7 @@ export default {
           that.$store.dispatch('setLoginflag', { storeStatus: 'fail' })
         },
         readDataCallback: function (dataStr) { // 接收数据
-        // alert('接收数据')
+        alert('接收数据')
         // alert(dataStr)
           dataStr = dataStr.slice(0, parseInt(dataStr.length / 8) * 8 )
           pluginFub.responseHandler(dataStr, that.originResponse)
@@ -135,11 +137,11 @@ export default {
   computed: mapState([
     'text',
     'storeStatus',
-    'BluetoothData',
-    'readData'
+    'BluetoothDataArr',
   ]),
   watch: {
-    BluetoothData () {
+    BluetoothDataArr () {
+      alert('BluetoothDataArr改变了')
       this.sendDataTime()
     }
   },
@@ -170,10 +172,13 @@ export default {
       // if (!bluetoothTool.state.readThreadState) {
       //     return false
       // }
+      alert('ffffffffff')
       let responseArray = localStorage.getItem('arrayCache').split(',')
       let data = '';
+      alert(this.BluetoothDataArr)
+      alert(this.BluetoothDataArr[0])
       try {
-        data = pluginFub.invoke(this.BluetoothData.mode,this.BluetoothData.type,responseArray,this.BluetoothData.leftPower,this.BluetoothData.rightPower,this.BluetoothData.xOffset,this.BluetoothData.yOffset)
+        data = pluginFub.invoke(this.BluetoothDataArr[0],this.BluetoothDataArr[1],responseArray,this.BluetoothDataArr[2],this.BluetoothDataArr[3],this.BluetoothDataArr[4],this.BluetoothDataArr[5])
         alert(data)
         let loopFlag = data.pop()
         bluetoothTool.sendData(data)
@@ -184,7 +189,7 @@ export default {
         }
       }
       catch(e) {
-        // alert(e)
+        alert(e)
         switch(e) {
           case pluginFub.unknown:
             console.log('pluginFub.unknown')
@@ -199,7 +204,7 @@ export default {
           return false
         }
         that.sendDataTime()
-      }, 300)
+      }, 700)
     }
   }
 }

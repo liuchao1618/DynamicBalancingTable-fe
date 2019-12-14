@@ -354,8 +354,8 @@
                 tab: 0,
                 // loginFlag: false,
                 setup: false,
-                // status:  'fail',
-                status: 'success',
+                status:  'fail',
+                // status: 'success',
                 statusContent: 0,
                 loginSwitch: false,
                 deviceList: [], // 蓝牙地址(adress)
@@ -513,7 +513,10 @@
             let urlContent = this.$route.query.urlContent
             if (urlContent) {
                 this.statusContent = urlContent
+            } else {
+                this.statusContent = this.storeStatusContent
             }
+            this.status = this.storeStatus
             // this.loginflag = localStorage.getItem('loginflag')
             // this.login = localStorage.getItem('login')
             // console.log('  this.loginflag',  this.loginflag,'this.login',this.login)
