@@ -19,7 +19,7 @@ export default {
       flag: false,
       originResponse : {
         success: function (res) {
-          alert('success')
+          // alert('success')
           that.sendDataTime()
           if(pluginFub.equals(res, pluginFub.STOP_OVER)) {
             that.$store.dispatch('setLoginflag', { transmitType:  'normal'})
@@ -87,7 +87,7 @@ export default {
           // alert('连接设备回调')
           // alert(bluetoothTool.state.readThreadState)
           if(bluetoothTool.state.readThreadState) {
-            // that.sendHeard()
+            that.sendHeard()
             that.$store.dispatch('setLoginflag', { storeStatus: 'success' })
           }
           that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
