@@ -354,8 +354,8 @@
                 tab: 0,
                 // loginFlag: false,
                 setup: false,
-                status:  'fail',
-                // status: 'success',
+                // status:  'fail',
+                status: 'success',
                 statusContent: 0,
                 loginSwitch: false,
                 deviceList: [], // 蓝牙地址(adress)
