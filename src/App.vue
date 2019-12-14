@@ -27,7 +27,7 @@ export default {
           }
         },
         error: function (e) {
-          alert('error')
+          // alert('error')
           alert(e)
           switch (e) {
             case pluginFub.resetting: 
@@ -45,7 +45,7 @@ export default {
         },
         complete: function (arrayCache) {
           localStorage.setItem('arrayCache', arrayCache)
-          alert('complete')
+          // alert('complete')
         }
       }
     }
@@ -83,6 +83,9 @@ export default {
           // alert('搜索设备回调')
           that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
         },
+        getPairedDevicescallback: function (Content) { // 搜索默认蓝牙回调
+          that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
+        },
         connDeviceCallback: function (Content) { // 连接设备回调
           // alert('连接设备回调')
           // alert(bluetoothTool.state.readThreadState)
@@ -102,7 +105,7 @@ export default {
           that.$store.dispatch('setLoginflag', { storeStatus: 'fail' })
         },
         sendDataback: function (Content) { // 发送数据 失败
-          // alert('发送数据 失败')
+          alert('发送数据 失败')
           if (that.$route.name != 'Home') {
             that.$router.push({name: 'Home', query: {urlContent: Number(Content)}})
           }
@@ -113,7 +116,7 @@ export default {
           that.$store.dispatch('setLoginflag', { storeStatus: 'fail' })
         },
         readDataCallback: function (dataStr) { // 接收数据
-        alert('接收数据')
+        // alert('接收数据')
         // alert(dataStr)
           dataStr = dataStr.slice(0, parseInt(dataStr.length / 8) * 8 )
           pluginFub.responseHandler(dataStr, that.originResponse)
@@ -141,7 +144,7 @@ export default {
   ]),
   watch: {
     BluetoothDataArr () {
-      alert('BluetoothDataArr改变了')
+      // alert('BluetoothDataArr改变了')
       this.sendDataTime()
     }
   },
@@ -158,7 +161,7 @@ export default {
         let that = this
         timerHeard = setInterval (() => {
           bluetoothTool.sendData(pluginFub.sendHeart())
-        },2000)
+        },4000)
     },
     // 发送复位
     sendReset () {
@@ -172,14 +175,14 @@ export default {
       // if (!bluetoothTool.state.readThreadState) {
       //     return false
       // }
-      alert('ffffffffff')
+      // alert('ffffffffff')
       let responseArray = localStorage.getItem('arrayCache').split(',')
       let data = '';
-      alert(this.BluetoothDataArr)
-      alert(this.BluetoothDataArr[0])
+      // alert(this.BluetoothDataArr)
+      // alert(this.BluetoothDataArr[0])
       try {
         data = pluginFub.invoke(this.BluetoothDataArr[0],this.BluetoothDataArr[1],responseArray,this.BluetoothDataArr[2],this.BluetoothDataArr[3],this.BluetoothDataArr[4],this.BluetoothDataArr[5])
-        alert(data)
+        // alert(data)
         let loopFlag = data.pop()
         bluetoothTool.sendData(data)
         if(loopFlag) {
