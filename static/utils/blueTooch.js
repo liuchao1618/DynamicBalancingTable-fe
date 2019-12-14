@@ -512,7 +512,7 @@ function BluetoothTool() {
      * @return {Boolean}
      */
     function sendData(dataStr) {
-        // alert('发送数据')
+        alert('发送数据')
         if (!btOutStream) {
             shortToast("创建输出流失败！");
             return;
