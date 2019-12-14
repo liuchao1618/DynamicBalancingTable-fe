@@ -13,14 +13,15 @@ const state = {
   identity:'',
   storeStatusContent: 0, // home页面蓝牙状态切换展示
   storeStatus: 'fail', // 未连接成功的状态
-  BluetoothData:{
-    mode: 'null',
-    type: '',
-    leftPower: 0,
-    rightPower: 0,
-    xOffset:0,
-    yOffset:0
-  }
+  // BluetoothData:{
+  //   mode: 'null',
+  //   type: '',
+  //   leftPower: 0,
+  //   rightPower: 0,
+  //   xOffset:0,
+  //   yOffset:0
+  // },
+  BluetoothDataArr:[]
 }
 // 所需要定义的mutations
 const mutations = {
@@ -36,6 +37,8 @@ const mutations = {
     }if(data.index == 2){
     state.loginflag = data.loginflag
 
+    if(data.BluetoothDataArr){
+      state.BluetoothDataArr = data.BluetoothDataArr
     }
     if (data.index == 3) {
       state.login = data.login
@@ -43,34 +46,35 @@ const mutations = {
     if (data.loginName) {
       state.loginName = data.loginName
     }
-    if (data.mode) {
-      state.BluetoothData.mode = data.mode
-    }
-    if (data.type) {
-      state.BluetoothData.type = data.type      
-    }
-    if (data.left) {
-      state.BluetoothData.leftPower = data.left
+    // if (data.mode) {
+    //   state.BluetoothData.mode = data.mode
+    // }
+    // if (data.type) {
+    //   state.BluetoothData.type = data.type      
+    // }
+    // if (data.left) {
+    //   state.BluetoothData.leftPower = data.left
 
-    }
-    if (data.right) {
-      state.BluetoothData.rightPower = data.right
+    // }
+    // if (data.right) {
+    //   state.BluetoothData.rightPower = data.right
 
-    } 
-    if (data.yOffset) {
-      state.BluetoothData.yOffset = data.yOffset
+    // } 
+    // if (data.yOffset) {
+    //   state.BluetoothData.yOffset = data.yOffset
 
-    } 
-    if (data.xOffset) {
-      state.BluetoothData.xOffset = data.xOffset
+    // } 
+    // if (data.xOffset) {
+    //   state.BluetoothData.xOffset = data.xOffset
 
-    } 
+    // } 
     if (data.identity) {
       state.identity = data.identity
     }
     window.localStorage.setItem('login', data.login)
     window.localStorage.setItem('loginflag', data.loginflag)
   }
+}
 }
 
 export default new vuex.Store({
