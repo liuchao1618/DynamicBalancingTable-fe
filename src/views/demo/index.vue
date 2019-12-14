@@ -26,8 +26,8 @@
       return {
         currentTime: '00:00',
         pause: 'PAUSE',
-        left:this.$store.state.BluetoothData.leftPower,
-        right: this.$store.state.BluetoothData.rightPower,
+        left:this.$store.state.BluetoothDataArr[2],
+        right: this.$store.state.BluetoothDataArr[3],
         freeze: 'FREEZE',
         align: 'ALIGN',
         setTime: 0,
