@@ -44,7 +44,7 @@
                     <div class="name" v-if='identity == "coach"'>教练：{{loginName}}</div>
                     <div class="name" v-else>运动员：{{loginName}}</div>
                     <div class="setup">
-                        <img @click="setup = !setup" src="./image/setup.png" />
+                        <img @click="setup = !setup" id='setup' src="./image/setup.png" />
                         <div class="setupList" v-if='setup'>
                             <div class='setupItem' @click='editPWD'>修改密码</div>
                             <div class='setupItem' @click='exitLogin'>退出登录</div>
@@ -55,6 +55,7 @@
                     </div>
                 </div>
             </div>
+            <div style="height:50px" v-else></div>
             <!-- 训练 -->
             <div v-show='tab === 0' class="menu">
                 <div class="menuLeft">
@@ -166,7 +167,7 @@
                             </div>
                             <div class='con'>
                                 <div class='name'>操控点轨迹记录</div>
-                                <canvas :id="i" ref='myCanvas' width="253" height="72"
+                                <canvas :id="i" ref='myCanvas' width="198" height="88"
                                     style="border:1px solid rgba(117,121,137,1);"></canvas>
                                 <!-- <div class='time'><img class='img' src="./image/line.png" alt=""></div> -->
                             </div>
@@ -279,7 +280,7 @@
                             </div>
                             <div class='con'>
                                 <div class='name'>操控点轨迹记录</div>
-                                <canvas :id="'a'+i" ref='myCanvas' width="253" height="72"
+                                <canvas :id="'a'+i" ref='myCanvas' width="198" height="88"
                                     style="border:1px solid rgba(117,121,137,1);"></canvas>
                             </div>
                             <div class='con' style='width:200px'>
@@ -893,7 +894,6 @@
         }
     };
     let bluetoothTool = null;
-
     import login from './components/login'
     import { Dialog } from 'vant'
     import { mapState } from 'vuex'
@@ -1355,12 +1355,12 @@
                     this.rightValue = 95
                 }
                 if(window.localStorage.getItem('modle') == 'DEMO'){
-                    this.$store.dispatch('setLoginflag', { mode: 'DEMO' })
+                    this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO','',this.leftValue,this.rightValue,0,0] })
                 }else if(window.localStorage.getItem('modle') == 'PT'){
-                    this.$store.dispatch('setLoginflag', { mode: 'PT' })
+                    this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','',this.leftValue,this.rightValue,0,0]  })
                 }
                 if (index == 10 && text == 'LIVE') {
-                    this.$store.dispatch('setLoginflag', { mode: 'LIVE' })
+                    this.$store.dispatch('setLoginflag', { BluetoothDataArr:  ['LIVE','',this.leftValue,this.rightValue,0,0] })
                     this.$router.push({ name: 'live' });
                 }
                 else if (index == 11 && text == 'DEMO TEST') {
@@ -1384,7 +1384,7 @@
                     })
                 }
                 else {
-                    this.$store.dispatch('setLoginflag', { left: this.leftValue, right: this.rightValue })
+                    // this.$store.dispatch('setLoginflag', { left: this.leftValue, right: this.rightValue })
                     this.$router.push({ name: 'SelectTime' });
                 }
                 window.localStorage.setItem('level', text)
@@ -1421,13 +1421,11 @@
                     this.leftValue = 90
                     this.rightValue = 95
                 }
-                this.$store.dispatch('setLoginflag', { left: this.leftValue, right: this.rightValue })
                 if (index == 11 && text == 'PT') {
                     this.$store.dispatch('setLoginflag', { loginflag: true, index: 2 })
                 }
                 else {
-                    this.$store.dispatch('setLoginflag', { mode: 'DEMO' })
-
+                    this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO','',this.leftValue,this.rightValue,0,0] })
                     this.$router.push({ name: 'SelectTime' });
                 }
                 window.localStorage.setItem('level', text)
@@ -1679,7 +1677,7 @@
 
                         .setupList {
                             position: absolute;
-                            bottom: -282px;
+                            bottom: -250px;
                             left: -200px;
                             width: 245px;
                             height: 245px;
@@ -1702,6 +1700,9 @@
                                 .switch {
                                     margin-left: 16px;
                                 }
+                            }
+                            :last-child{
+                                border: 0
                             }
                         }
                     }

@@ -11,20 +11,24 @@ const state = {
   loginName: '',
   text: '',
   identity:'',
-  BluetoothData:{
-    mode: 'null',
-    type: '',
-    leftPower: 0,
-    rightPower: 0,
-    xOffset:0,
-    yOffset:0
-  }
+  // BluetoothData:{
+  //   mode: 'null',
+  //   type: '',
+  //   leftPower: 0,
+  //   rightPower: 0,
+  //   xOffset:0,
+  //   yOffset:0
+  // },
+  BluetoothDataArr:[]
 }
 // 所需要定义的mutations
 const mutations = {
   SETLOGINFLAG: (state, data) => {
     console.log(state,data)
     state.text = data.text
+    if(data.BluetoothDataArr){
+      state.BluetoothDataArr = data.BluetoothDataArr
+    }
     if (data.index == 1) {
       state.loginflag = data.loginflag
       state.login = data.login
@@ -37,28 +41,28 @@ const mutations = {
     if (data.loginName) {
       state.loginName = data.loginName
     }
-    if (data.mode) {
-      state.BluetoothData.mode = data.mode
-    }
-    if (data.type) {
-      state.BluetoothData.type = data.type      
-    }
-    if (data.left) {
-      state.BluetoothData.leftPower = data.left
+    // if (data.mode) {
+    //   state.BluetoothData.mode = data.mode
+    // }
+    // if (data.type) {
+    //   state.BluetoothData.type = data.type      
+    // }
+    // if (data.left) {
+    //   state.BluetoothData.leftPower = data.left
 
-    }
-    if (data.right) {
-      state.BluetoothData.rightPower = data.right
+    // }
+    // if (data.right) {
+    //   state.BluetoothData.rightPower = data.right
 
-    } 
-    if (data.yOffset) {
-      state.BluetoothData.yOffset = data.yOffset
+    // } 
+    // if (data.yOffset) {
+    //   state.BluetoothData.yOffset = data.yOffset
 
-    } 
-    if (data.xOffset) {
-      state.BluetoothData.xOffset = data.xOffset
+    // } 
+    // if (data.xOffset) {
+    //   state.BluetoothData.xOffset = data.xOffset
 
-    } 
+    // } 
     if (data.identity) {
       state.identity = data.identity
     }

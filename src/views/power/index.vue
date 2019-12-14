@@ -40,7 +40,7 @@
       </div>
     </div>
     <div class="centBottom">
-      <van-slider :step="5" class="bottomLine" v-model="bottomValue" bar-height='23px' @change="changeBottom" />
+      <van-slider :step="5" class="bottomLine" @drag-end='botEnd' v-model="bottomValue" bar-height='23px' @change="changeBottom" />
       <img src="../../assets/image/bottom.png" alt="">
     </div>
     <div class="bottom">
@@ -73,8 +73,8 @@
       }
     },
     mounted() {
-      var left = this.$store.state.BluetoothData.leftPower
-      var right = this.$store.state.BluetoothData.rightPower
+      var left = this.$store.state.BluetoothDataArr[2]
+      var right = this.$store.state.BluetoothDataArr[3]
       this.leftValue = 100 - left
       this.rightValue = 100 - right
       this.bottomValue = parseInt((left*1 + right*1)/2)
@@ -143,12 +143,12 @@
       l(...obj) {
         console.log(obj);
       },
-
+      botEnd(){
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','', 100-this.leftValue,100-this.rightValue,0,0] })
+      },
       stop() {
-        this.$store.dispatch('setLoginflag', { mode:'null' })
-
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null','',0,0,0,0] })
         clearInterval(this.timer)
-
         let data = {
           model: 'PT',
           devices: [{ deviceId: 1, deviceAlias: '设备1' }],
@@ -184,12 +184,12 @@
       changeleft(event) {
         this.watchFlag = false
         this.bottomValue = parseInt((100 - event + 100 - this.rightValue) / 2)
-        this.$store.dispatch('setLoginflag', { left: 100-this.leftValue })
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','', 100-this.leftValue,100-this.rightValue,0,0] })
       },
       changeright(event) {
         this.watchFlag = false
         this.bottomValue = parseInt((100 - event + 100 - this.leftValue) / 2)
-        this.$store.dispatch('setLoginflag', { right: 100-this.rightValue })
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','', 100-this.leftValue,100-this.rightValue,0,0] })
       },
 
       changeBottom() {
@@ -242,7 +242,9 @@
               });
             }
           }, 1000);
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','', 100-this.leftValue,100-this.rightValue,0,0] })
         } else {
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','',0,0,0,0] })
           this.pause = 'RESUME'
           clearInterval(this.timer)
         }
@@ -251,8 +253,10 @@
       changefreeze() {
         if (this.freeze == 'FREEZE') {
           this.freeze = 'UNFREEZE'
+          // this.$store.dispatch('setLoginflag', { left:0,right:0})
         } else {
           this.freeze = 'FREEZE'
+          // this.$store.dispatch('setLoginflag', { left: 100-this.leftValue,right: 100-this.rightValue})
         }
       },
 
@@ -322,7 +326,6 @@
         setTimeout(() => {
         if (this.watchFlag) {
           this.calculateBottomValue(now, old);
-          this.$store.dispatch('setLoginflag', { left: 100-this.leftValue,right: 100-this.rightValue})
         }
         }, 500);
       }

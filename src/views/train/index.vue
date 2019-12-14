@@ -37,7 +37,8 @@
         <!-- 操控点轨迹记录 -->
         <div v-if="model == 'LIVE'" class="pattern_right">
           <p>操控点轨迹记录</p>
-          <div class="pattern_content">line</div>
+              <canvas id='mycanvas' ref='myCanvas' width="198" height="88"
+              style="border:1px solid rgba(117,121,137,1);"></canvas>
         </div>
       </div>
     </div>
@@ -61,7 +62,7 @@
       return {
         value: 2,
         setTime: 0,
-        currentTime: '',
+        currentTime: '00:00',
         model: '',
         devices: '',
         fullPlayTime: '',
@@ -92,8 +93,6 @@
           return h + ':' + s;
         }
       this.fullPlayTime = this.$route.query.fullPlayTime;
-      this.currentTimeNum = this.fullPlayTime - this.$route.query.realPlayTime
-      this.currentTime =s_to_hs(this.fullPlayTime - this.$route.query.realPlayTime);
       this.model = this.$route.query.model;
       this.level = this.$route.query.level;
       this.leftPower = this.$route.query.leftPower;
@@ -102,7 +101,12 @@
       if(this.model == 'LIVE'){
         this.setTime = 1
         this.currentTimeNum =0
+      }else{
+      this.currentTimeNum = this.fullPlayTime - this.$route.query.realPlayTime
+      this.currentTime =s_to_hs(this.fullPlayTime - this.$route.query.realPlayTime);
+
       }
+      console.log(this.setTime,this.currentTimeNum)
     },
     methods: {
       start() {
@@ -178,7 +182,7 @@
     .patternWapper {
       width: 94%;
       margin: 0 auto;
-      margin-top: 148px;
+      margin-top: 100px;
 
       p {
         color: #B8BBC6;
@@ -233,7 +237,7 @@
       width: 30%;
       display: flex;
       margin: 0 auto;
-      margin-top: 80px;
+      margin-top: 60px;
 
       .time_title {
         color: #C4C8D0;

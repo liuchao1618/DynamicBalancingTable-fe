@@ -18,7 +18,7 @@
             </div>
             <div class="log">
               <span>操控点轨迹记录</span>
-              <canvas id='mycanvas' ref='myCanvas' width="253" height="72"
+              <canvas id='mycanvas' ref='myCanvas' width="198" height="88"
                 style="border:1px solid rgba(117,121,137,1);"></canvas>
             </div>
           </div>
@@ -511,6 +511,8 @@
 
       .log {
         margin-top: 10px;
+        display: flex;
+        flex-direction: column;
       }
     }
 
