@@ -12,17 +12,21 @@ const state = {
   identity:'',
   storeStatusContent: 0, // home页面蓝牙状态切换展示
   storeStatus: 'fail', // 未连接成功的状态
+  readData: [], // 接收到的数据
+  transmitType: 'normal', // 传给操作界面，用来判断该显示的状态和提示 normal：正常,stopping:急停
   BluetoothDataArr:[]
 }
 // 所需要定义的mutations
 const mutations = {
   SETLOGINFLAG: (state, data) => {
-    console.log(state,data)
     state.storeStatusContent = data.storeStatusContent
     state.storeStatus = data.storeStatus || state.storeStatus
+    state.transmitType = data.transmitType || state.transmitType
+
     if(data.text =='coach'){
       state.identity = data.identity
     }
+
     if(data.index == 1){
     state.loginflag = data.loginflag
     state.login = data.login
