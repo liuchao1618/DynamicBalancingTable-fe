@@ -725,13 +725,15 @@
                     this.leftValue = 90
                     this.rightValue = 95
                 }
-                if(window.localStorage.getItem('modle') == 'DEMO'){
-                    this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO','',this.leftValue,this.rightValue,0,0] })
-                }else if(window.localStorage.getItem('modle') == 'PT'){
-                    this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','',this.leftValue,this.rightValue,0,0]  })
-                }
+                window.localStorage.setItem('left',this.leftValue)
+                window.localStorage.setItem('right',this.rightValue)
+                // if(window.localStorage.getItem('modle') == 'DEMO'){
+                //     this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO','',this.leftValue,this.rightValue,0,0] })
+                // }else if(window.localStorage.getItem('modle') == 'PT'){
+                //     this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','',this.leftValue,this.rightValue,0,0]  })
+                // }
                 if (index == 10 && text == 'LIVE') {
-                    this.$store.dispatch('setLoginflag', { BluetoothDataArr:  ['LIVE','',this.leftValue,this.rightValue,0,0] })
+                    window.localStorage.setItem('modle','LIVE')
                     this.$router.push({ name: 'live' });
                 }
                 else if (index == 11 && text == 'DEMO TEST') {
@@ -793,10 +795,14 @@
                     this.rightValue = 95
                 }
                 if (index == 11 && text == 'PT') {
+                    window.localStorage.setItem('modle', 'PT')
                     this.$store.dispatch('setLoginflag', { loginflag: true, index: 2 })
                 }
                 else {
-                    this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO','',this.leftValue,this.rightValue,0,0] })
+                    window.localStorage.setItem('modle','DEMO')
+                    window.localStorage.setItem('left',this.leftValue)
+                    window.localStorage.setItem('right',this.rightValue)
+                    // this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO','',this.leftValue,this.rightValue,0,0] })
                     this.$router.push({ name: 'SelectTime' });
                 }
                 window.localStorage.setItem('level', text)
