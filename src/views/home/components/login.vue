@@ -95,11 +95,11 @@
                         addPhoneList(data1)
                         loginMsg().then((res) => {
                             if(res.data.data.parent == null){
-                            this.$store.dispatch('setLoginflag', { identity: 'coach' })
+                            this.$store.dispatch('setLoginflag', { identity: 'coach',text:'coach' })
                             window.localStorage.setItem('username', res.data.data.username)
                             }else{
                             window.localStorage.setItem('username', res.data.data.parent.username)
-                            this.$store.dispatch('setLoginflag', { identity: 'athlete' })
+                            this.$store.dispatch('setLoginflag', { identity: 'athlete',text:'coach' })
 
                             }
                             window.localStorage.setItem('userCode', res.data.data.userCode)

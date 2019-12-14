@@ -45,7 +45,7 @@
     },
     methods: {
       stop() {
-        this.$store.dispatch('setLoginflag', { mode: 'null' })
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null','',0,0,0,0] })
 
         clearInterval(this.timers)
         clearInterval(this.timer)
@@ -157,6 +157,7 @@
         this.flags = false;
         moveDiv.style.left = '400px'
         moveDiv.style.top = '175px'
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['LIVE','',0,0,0,0] })
       },
     },
     watch: {
@@ -171,13 +172,10 @@
         }
         if (now) {
           this.timers = setInterval(() => {
+            this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['LIVE','',0,0,coordinateTransform([this.xPum, this.yPum])[0] ,coordinateTransform([this.xPum, this.yPum])[1] ] })
             this.dataArr.push(
               { t: new Date() * 1 + this.setTime * 1000 - this.startStr, c: [this.xPum, this.yPum] }
             )
-          }, 200);
-          this.timers = setInterval(() => {
-            this.$store.dispatch('setLoginflag', { xOffset: coordinateTransform([this.xPum, this.yPum])[0] })
-            this.$store.dispatch('setLoginflag', { yOffset: coordinateTransform([this.xPum, this.yPum])[1] })
           }, 1000);
         } else {
           clearInterval(this.timers)
@@ -277,8 +275,10 @@
       margin: 80px auto 50px;
 
       img {
-        width: 1105px;
-        height: 490px;
+        width: 100%;
+        height: 100%;
+        /* width: 1105px;
+        height: 490px; */
       }
     }
   }

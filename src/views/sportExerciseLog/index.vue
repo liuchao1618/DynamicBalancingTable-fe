@@ -103,7 +103,7 @@
           </div>
           <div class='con'>
             <div class='name'>操控点轨迹记录</div>
-            <canvas :id="i" ref='myCanvas' width="253" height="72"
+            <canvas :id="i" ref='myCanvas' width="198" height="88"
               style="border:1px solid rgba(117,121,137,1);"></canvas>
           </div>
           <div class='con'>

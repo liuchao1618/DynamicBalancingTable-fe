@@ -29,7 +29,7 @@
         </div>
         <div class='item'>
             <div class='itemLeft'>体重（kg）</div>
-            <van-field class="itemRight" v-model='form.weight' placeholder="请输入您的身高" />
+            <van-field class="itemRight" v-model='form.weight' placeholder="请输入您的体重" />
         </div>
         <div class='itemNo'>标*项为必填项，填写的手机号将作为运动员的账号使用</div>
         <div class='buttonBox'>
@@ -87,6 +87,7 @@
             },
             saveBtn() {
                 let reg = /^1[3456789]\d{9}$/;
+                let numReg = /^[0-9]*$/;
                 if(this.form.username.length > 5){
                     this.$toast({
                         message: '姓名长度不得大于5',
@@ -110,6 +111,17 @@
                 }else if(!reg.test(this.form.tel)){
                     this.$toast({
                         message: '请输入正确的联系方式',
+                        position: 'bottom'
+                    });
+                }
+                else if(!numReg.test(this.form.height)){
+                    this.$toast({
+                        message: '请输入数字',
+                        position: 'bottom'
+                    });
+                }else if(!numReg.test(this.form.weight)){
+                    this.$toast({
+                        message: '请输入数字',
                         position: 'bottom'
                     });
                 }
@@ -199,6 +211,10 @@
 </script>
 
 <style lang="less" scoped>
+    /deep/.van-picker-column__wrapper{
+        display: flex;
+        flex-direction: column;
+    }
     .backHeader {
         color: #EAEAF0;
         font-size: 30px;

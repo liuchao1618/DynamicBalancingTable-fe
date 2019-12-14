@@ -4,16 +4,17 @@
       <img src="../../assets/image/title.png" />
     </div>
     <div class="box">
-      <div @click='changefreeze' :class="[freeze=='FREEZE' ? 'freeze' : 'unfreeze']">{{freeze}}</div>
+      <div v-if="pause=='RESUME'" class="none freeze">FREEZE</div>
+      <div v-else @click='changefreeze' :class="[freeze=='FREEZE' ? 'freeze' : 'unfreeze']">{{freeze}}</div>
       <div class="cenCent">
         <span>TIMER</span>
         <span>{{currentTime}}</span>
       </div>
-      <div class="orange" @click='changealign'>{{align}}</div>
+      <div v-if="pause=='RESUME'" class="none orange">ALIGN</div>
+      <div v-else @click='changealign' class="orange">{{align}}</div>
     </div>
     <div class="bottom">
       <div @click='changepause' :class="[pause=='PAUSE' ? 'pauses' : 'resumes']">{{pause}}</div>
-
       <div @click='stop'>STOP</div>
     </div>
   </div>
@@ -25,9 +26,12 @@
       return {
         currentTime: '00:00',
         pause: 'PAUSE',
+        left:this.$store.state.BluetoothDataArr[2],
+        right: this.$store.state.BluetoothDataArr[3],
         freeze: 'FREEZE',
         align: 'ALIGN',
-        setTime: 0
+        setTime: 0,
+
       }
     },
     mounted() {
@@ -58,29 +62,29 @@
           this.currentTime = s_to_hs(this.setTime)
         } else {
           clearInterval(this.timer)
-          this.$store.dispatch('setLoginflag', { mode:'null' })
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null','',0,0,0,0] })
 
-        let level = window.localStorage.getItem('level').split('<br/>').join('-')
-        let data = {
-          userCode: window.localStorage.getItem('userCode'),
-          model: 'DEMO',
-          devices: [{ deviceId: 1, deviceAlias: '设备1' }],
-          fullPlayTime: window.localStorage.getItem('setTime') * 1,
-          realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime,
-          level: level
-        }
-        saveRecord(data).then((res) => {
-          if (res.data.code == 200) {
-            window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
-            this.$router.push({ name: 'finish', query: { fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, level: level, id: res.data.data.id, model: 'PT' } });
+          let level = window.localStorage.getItem('level').split('<br/>').join('-')
+          let data = {
+            userCode: window.localStorage.getItem('userCode'),
+            model: 'DEMO',
+            devices: [{ deviceId: 1, deviceAlias: '设备1' }],
+            fullPlayTime: window.localStorage.getItem('setTime') * 1,
+            realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime,
+            level: level
           }
-        })
+          saveRecord(data).then((res) => {
+            if (res.data.code == 200) {
+              window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
+              this.$router.push({ name: 'finish', query: { fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, level: level, id: res.data.data.id, model: 'PT' } });
+            }
+          })
         }
       }, 1000);
     },
     methods: {
       stop() {
-        this.$store.dispatch('setLoginflag', { mode:'null' })
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null','',0,0,0,0] })
 
         let level = window.localStorage.getItem('level').split('<br/>').join('-')
         let data = {
@@ -95,6 +99,8 @@
           if (res.data.code == 200) {
             window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
             this.$router.push({ name: 'finish', query: { fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, level: level, id: res.data.data.id, model: 'PT' } });
+          } else if (res.data.code == 401) {
+            this.$router.push({ name: 'Home' })
           }
         })
       },
@@ -128,7 +134,9 @@
             }
           }, 1000);
           this.pause = 'PAUSE'
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO','',this.left,this.right,0,0] })
         } else {
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO','',0,0,0,0] })
           this.pause = 'RESUME'
           clearInterval(this.timer)
         }
@@ -136,8 +144,11 @@
       changefreeze() {
         if (this.freeze == 'FREEZE') {
           this.freeze = 'UNFREEZE'
+          // this.$store.dispatch('setLoginflag', { left:0,right:0})
         } else {
           this.freeze = 'FREEZE'
+          // this.$store.dispatch('setLoginflag', { left: this.left,right:this.right})
+
         }
       },
       changealign() {
@@ -147,6 +158,9 @@
   }
 </script>
 <style scoped lang="less">
+  .none {
+    pointer-events: none;
+  }
   .cenCent {
     display: flex;
     margin-top: -60px;
