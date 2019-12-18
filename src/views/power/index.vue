@@ -253,15 +253,17 @@
       changefreeze() {
         if (this.freeze == 'FREEZE') {
           this.freeze = 'UNFREEZE'
-          // this.$store.dispatch('setLoginflag', { left:0,right:0})
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','',0,0,0,0] })
         } else {
           this.freeze = 'FREEZE'
-          // this.$store.dispatch('setLoginflag', { left: 100-this.leftValue,right: 100-this.rightValue})
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','', 100-this.leftValue,100-this.rightValue,0,0] })
         }
       },
 
       changealign() {
         this.freeze = 'UNFREEZE'
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','ALIGN', 0,0,0,0] })
+
       },
 
       calculateBottomValue(now, old) {

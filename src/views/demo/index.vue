@@ -21,16 +21,25 @@
 </template>
 <script>
   import { saveRecord } from '@/api/index'
+  const minLeftPower = 10;
+  const minRightPower = 15;
+  const minRuntime = 6.0;
+  const maxRuntime = 10.0;
+  const minStoptime = 1.0;
+  const maxStoptime = 3.0;
   export default {
     data() {
       return {
         currentTime: '00:00',
         pause: 'PAUSE',
-        left:this.$store.state.BluetoothDataArr[2],
-        right: this.$store.state.BluetoothDataArr[3],
+        left:window.localStorage.getItem('left'),
+        right:window.localStorage.getItem('right'),
         freeze: 'FREEZE',
         align: 'ALIGN',
         setTime: 0,
+        intervalCount: 0, // 结束要置零  偶数运动 奇数停止
+        interva: null,
+        closeFlag: false
 
       }
     },
@@ -62,7 +71,8 @@
           this.currentTime = s_to_hs(this.setTime)
         } else {
           clearInterval(this.timer)
-          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null','',0,0,0,0] })
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', '', 0, 0, 0, 0] })
+          clearTimeout(this.interva)
 
           let level = window.localStorage.getItem('level').split('<br/>').join('-')
           let data = {
@@ -81,12 +91,55 @@
           })
         }
       }, 1000);
+      this.a();
+      
     },
     methods: {
+      randomScope(min, max, decimal) {
+        if (!decimal || decimal <= 0) decimal = 0;
+        return (Math.random() * (max - min + 1) + min).toFixed(decimal);
+      },
+      toInt(db) {
+        return parseInt(parseFloat(db) * 1000);
+      },
+
+      /**
+       * 10-15 ~ 90-95 差值位0-80
+       * @param this.left
+       */
+       randomFuture() {
+        try {
+          if (this.intervalCount % 2 === 0) {
+            let random0 = Math.floor(this.randomScope(0, this.left, 0) / 5) * 5;
+            random0 = Math.min(random0, this.left - minLeftPower);
+            return [random0 + minLeftPower, random0 + minRightPower, this.toInt(this.randomScope(minRuntime, maxRuntime, 1))]
+          } else {
+            return [0, 0, this.toInt(this.randomScope(minStoptime, maxStoptime, 1))]
+          }
+        } finally {
+          this.intervalCount++;
+        }
+      },
+
+       a() {
+        clearTimeout(this.interva);
+        if (this.closeFlag) {
+          return;
+        }
+        let future = this.randomFuture(this.left,this.right);
+        console.log(future);
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO', this.intervalCount, future[0],future[1], 0, 0] })
+        
+        this.interva = setTimeout(()=> {
+          this.a();
+        }, future[2])
+      },
       stop() {
-        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null','',0,0,0,0] })
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', '', 0, 0, 0, 0] })
+        clearTimeout(this.interva)
 
         let level = window.localStorage.getItem('level').split('<br/>').join('-')
+        this.$router.push({ name: 'Home' })
         let data = {
           userCode: window.localStorage.getItem('userCode'),
           model: 'DEMO',
@@ -107,17 +160,11 @@
       changepause() {
         if (this.pause == 'RESUME') {
           function s_to_hs(s) {
-            //计算分钟
-            //算法：将秒数除以60，然后下舍入，既得到分钟数
             var h;
             h = Math.floor(s / 60);
-            //计算秒
-            //算法：取得秒%60的余数，既得到秒数
             s = s % 60;
-            //将变量转换为字符串
             h += '';
             s += '';
-            //如果只有一位数，前面增加一个0
             h = (h.length == 1) ? '0' + h : h;
             s = (s.length == 1) ? '0' + s : s;
             return h + ':' + s;
@@ -134,9 +181,10 @@
             }
           }, 1000);
           this.pause = 'PAUSE'
-          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO','',this.left,this.right,0,0] })
+          this.a();
         } else {
-          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO','',0,0,0,0] })
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO', '', 0, 0, 0, 0] })
+          clearTimeout(this.interva)
           this.pause = 'RESUME'
           clearInterval(this.timer)
         }
@@ -144,15 +192,21 @@
       changefreeze() {
         if (this.freeze == 'FREEZE') {
           this.freeze = 'UNFREEZE'
-          // this.$store.dispatch('setLoginflag', { left:0,right:0})
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO', '', 0, 0, 0, 0] })
+          clearTimeout(this.interva)
         } else {
           this.freeze = 'FREEZE'
-          // this.$store.dispatch('setLoginflag', { left: this.left,right:this.right})
+          this.a();
+
 
         }
       },
       changealign() {
+        clearTimeout(this.interva)
+        this.intervalCount = 0
         this.freeze = 'UNFREEZE'
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', 'ALIGN',0,0, 0, 0] })
+
       }
     }
   }
@@ -161,6 +215,7 @@
   .none {
     pointer-events: none;
   }
+
   .cenCent {
     display: flex;
     margin-top: -60px;

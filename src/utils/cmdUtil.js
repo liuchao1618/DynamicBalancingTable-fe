@@ -10,7 +10,7 @@
     let HEART_FRAME =  0x80;       // 心跳
 
 // 异常信息 第三字节
-    let DEVICE_EXC =  0x01;
+    let DEVICE_EXC =  0x10;
 
 // 模式种类(只有在SET_MODE条件下有效) 第六字节
     let MODE_SPEED =  0x01;        // 速度模式 PT-DEMO(响应成功)
@@ -39,6 +39,7 @@
     let INVALID =  0xCC;    // 格式校验无效
     let UNKNOWN =  0xDD;    // 协议之外的未知操作
     let ILLEGAL =  0xEE;    // 非法操作(比如在速度模式下传坐标) 可以无视
+    let NOTHING = 0xFF;     // 啥也不做
 
     function sendHeart0 () {
         return createCrc16([FRAME_HEAD, HEART_FRAME, BLANK, BLANK, BLANK, BLANK]);
@@ -62,11 +63,15 @@
 
         // 现在为正常处理 先判断是否为模式执行成功 当速度模式、位置模式执行成功后 要通知蓝牙再次发送当前请求
         // 暂停模式成功、复位成功、故障复位成功、急停解成通知 不需要做处理
-        
+
         switch (getMode(mode)) {
             case MODE_SPEED:
+                if(type === 'ALIGN') {
+                    let ar = createCrc16([FRAME_HEAD, SET_MODE, BLANK, BLANK, BLANK, MODE_ZERO]);
+                    ar.push(false);
+                    return  ar;
+                }
                 if (isSpeedMode(responseArray) || isSetSpeed(responseArray)) {
-                    // alert('invoke22222222222')
                     data = [FRAME_HEAD, SPEED_DATA];
                     data.push(...toHexArray(speedConvert(leftPower)));
                     data.push(...toHexArray(speedConvert(rightPower)));
@@ -74,13 +79,16 @@
                     data.push(false);
                     return data;
                 } else if (isSetMode(responseArray) && !equalsCode(responseArray[5], MODE_SPEED)) {
-                    // alert('33333333')
                     // 需要切换模式 并重新调取
+                    if (mode === 'DEMO') {
+                        if (typeof type === 'number' && type > 1) {
+                            throw NOTHING;
+                        }
+                    }
                     data = createCrc16([FRAME_HEAD, SET_MODE, BLANK, BLANK, BLANK, MODE_SPEED]);
                     data.push(true);
                     return data;
                 } else {
-                    // alert('3444444444444')
                     throw ILLEGAL;
                 }
             case MODE_POSITION:
@@ -155,6 +163,9 @@
     }
 
     function getMode(modeStr) {
+
+        // alert(modeStr)
+        // alert(typeof modeStr)
         switch (modeStr.toUpperCase()) {
             case 'PT':
             case 'DEMO':
@@ -168,7 +179,7 @@
 
     function analyzeDataArray(originResponse) {
         const l = originResponse.length;
-        
+
         if (l < 8) {
             throw INVALID;
         } else if (l === 8 && equalsCode(originResponse[0], FRAME_HEAD)) {
@@ -177,7 +188,7 @@
         } else if (l > 8) {
             // 排除心跳
             if (originResponse.join(' ').includes(HEART_RESPONSE_STR)) {
-                originResponse = originResponse.replaceAll(HEART_RESPONSE_STR, '')
+                originResponse = originResponse.join(' ').replace(HEART_RESPONSE_STR, '')
                     .trim().split(/\s+/);
                 if (originResponse.length < 8) {
                     // 此时全部都是心跳
@@ -305,7 +316,8 @@ const pluginFub = {
     invalid: 0xCC,     // 格式校验无效
     unknown: 0xDD,     // 协议之外的未知操作
     illegal: 0xEE,     // 非法操作(比如在速度模式下传坐标) 可以无视
-    
+    nothing: 0xFF,     // 啥也不用处理
+
     STOP_OVER: 0x0B,
     LOOP_FLAG: false,
 
@@ -342,7 +354,7 @@ const pluginFub = {
      */
     invoke: function (mode, type, responseArray, leftPower, rightPower, xOffset, yOffset) {
         return invoke0(mode, type, leftPower, rightPower, xOffset, yOffset, responseArray);
-    
+
     },
 
     /**
