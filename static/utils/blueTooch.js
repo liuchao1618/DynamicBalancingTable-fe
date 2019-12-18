@@ -516,7 +516,7 @@ function BluetoothTool() {
      * @return {Boolean}
      */
     function sendData(dataStr) {
-        // alert('发送数据')
+        console.log('发送111111111的数据' + dataStr.map(v => (v.toString(16))))
         if (!btOutStream) {
             shortToast("创建输出流失败！");
             return;

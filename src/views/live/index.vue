@@ -45,7 +45,7 @@
     },
     methods: {
       stop() {
-        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null','',0,0,0,0] })
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', '', 0, 0, 0, 0] })
 
         clearInterval(this.timers)
         clearInterval(this.timer)
@@ -157,26 +157,26 @@
         this.flags = false;
         moveDiv.style.left = '400px'
         moveDiv.style.top = '175px'
-        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['LIVE','',0,0,0,0] })
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['LIVE', '', 0, 0, 0, 0] })
       },
     },
     watch: {
       flags(now, old) {
         function coordinateTransform(site) {
-          const ratio = 3;
-          const targetLeftTop = [-1155, 465];
+          const xRatio = 1.22;
+          const yRatio = 7;
+          const targetLeftTop = [-465, 1155];
           const sourceLeftTop = [15, 20];
-          return [(site[0] - sourceLeftTop[0]) * ratio + targetLeftTop[0],
-          targetLeftTop[1] - (site[1] - sourceLeftTop[1]) * ratio];
-
+          return [parseInt(targetLeftTop[0] + (site[0] - sourceLeftTop[0]) * xRatio),
+          parseInt(targetLeftTop[1] - (site[1] - sourceLeftTop[1]) * yRatio)];
         }
         if (now) {
           this.timers = setInterval(() => {
-            this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['LIVE','',0,0,coordinateTransform([this.xPum, this.yPum])[0] ,coordinateTransform([this.xPum, this.yPum])[1] ] })
+            this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['LIVE', '', 0, 0, coordinateTransform([this.xPum, this.yPum])[0], coordinateTransform([this.xPum, this.yPum])[1]] })
             this.dataArr.push(
               { t: new Date() * 1 + this.setTime * 1000 - this.startStr, c: [this.xPum, this.yPum] }
             )
-          }, 1000);
+          }, 500);
         } else {
           clearInterval(this.timers)
         }

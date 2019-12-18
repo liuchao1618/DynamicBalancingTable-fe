@@ -353,9 +353,9 @@
                 rightValue:0,
                 tab: 0,
                 // loginFlag: false,
-                setup: false,
+                // setup: false,
                 status:  'fail',
-                // status: 'success',
+                status: 'success',
                 statusContent: 0,
                 loginSwitch: false,
                 deviceList: [], // 蓝牙地址(adress)
@@ -509,8 +509,8 @@
             this.getDeviceInfo()
         },
         mounted() {
-            alert(this.statusContent)
-            alert(this.status)
+            // alert(this.statusContent)
+            // alert(this.status)
             // 在其他页面监听蓝牙与设备的连接状态
             let urlContent = this.$route.query.urlContent
             if (urlContent) {
@@ -555,11 +555,11 @@
             },
             storeStatusContent () {
               this.statusContent = this.storeStatusContent
-              alert(this.statusContent)
+            //   alert(this.statusContent)
             },
             storeStatus () {
               this.status = this.storeStatus
-              alert(this.status)
+            //   alert(this.status)
             }
         },
         methods: {
@@ -731,6 +731,9 @@
                 } else if (index == 9) {
                     this.leftValue = 90
                     this.rightValue = 95
+                }else if (index == 10) {
+                    this.leftValue = 95
+                    this.rightValue = 100
                 }
                 window.localStorage.setItem('left',this.leftValue)
                 window.localStorage.setItem('right',this.rightValue)
@@ -800,6 +803,9 @@
                 } else if (index == 9) {
                     this.leftValue = 90
                     this.rightValue = 95
+                }else if (index == 10) {
+                    this.leftValue = 95
+                    this.rightValue = 100
                 }
                 if (index == 11 && text == 'PT') {
                     window.localStorage.setItem('modle', 'PT')

@@ -26,7 +26,6 @@
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','',this.left,this.right,0,0] })
           }else{
             this.$router.push({ name: 'demo'});
-          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO','',this.left,this.right,0,0] })
           }
         }
           

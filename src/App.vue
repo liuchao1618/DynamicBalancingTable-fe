@@ -20,7 +20,7 @@ export default {
       originResponse : {
         success: function (res) {
           // alert('success')
-          that.sendDataTime()
+          // that.sendDataTime()
           if(pluginFub.equals(res, pluginFub.STOP_OVER)) {
             that.$store.dispatch('setLoginflag', { transmitType:  'normal'})
             // 传值给操作界面
@@ -28,10 +28,11 @@ export default {
         },
         error: function (e) {
           // alert('error')
-          alert(e)
+          // alert(e)
           switch (e) {
             case pluginFub.resetting: 
               that.sendReset() // 发送复位
+              console.log('5365353534534534534534534543543发送复位')
               break;
             case pluginFub.stopping:
               that.$store.dispatch('setLoginflag', { transmitType:  'stopping'})
@@ -117,7 +118,13 @@ export default {
         },
         readDataCallback: function (dataStr) { // 接收数据
         // alert('接收数据')
-        // alert(dataStr)
+        console.log('接收到的数据' + dataStr.map(v => {
+          let a = v.toString(16);
+          if(a.length === 1) {
+            a = '0' + a;
+          }
+          return a;
+        }));
           dataStr = dataStr.slice(0, parseInt(dataStr.length / 8) * 8 )
           pluginFub.responseHandler(dataStr, that.originResponse)
         }
@@ -145,6 +152,7 @@ export default {
   watch: {
     BluetoothDataArr () {
       // alert('BluetoothDataArr改变了')
+      // alert(this.BluetoothDataArr)
       this.sendDataTime()
     }
   },
@@ -188,26 +196,22 @@ export default {
         if(loopFlag) {
           this.hhhh(loopFlag)
         } else {
-          clearTimeout(flagFalse)
+          return false
         }
       }
       catch(e) {
-        alert(e)
+        console.log(e.toString(16))
         switch(e) {
           case pluginFub.unknown:
             console.log('pluginFub.unknown')
         }
       }
     },
-    hhhh (loopFlag) {
+    hhhh () {
       let that = this
       flagFalse = setTimeout(() => {
-        if (!loopFlag) {
-          clearTimeout(fff)
-          return false
-        }
         that.sendDataTime()
-      }, 700)
+      }, 1000)
     }
   }
 }
