@@ -20,7 +20,7 @@ const state = {
 const mutations = {
   SETLOGINFLAG: (state, data) => {
     console.log(state,data)
-    state.storeStatusContent = data.storeStatusContent
+    state.storeStatusContent = data.storeStatusContent || state.storeStatusContent
     state.storeStatus = data.storeStatus || state.storeStatus
     state.transmitType = data.transmitType || state.transmitType
 

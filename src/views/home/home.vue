@@ -18,9 +18,9 @@
                 <div class='img'>
                     <img src="./image/none.png" alt="">未发现可用设备
                 </div>
-                <div style="display: flex">
+                <div style="display: flex;width: 30%;margin: 0 auto">
                     <div @click="discoveryNewDevice()" class='load-button'>重新搜索</div>
-                    <div @click="discoveryNewDevice()" class='load-button'>重新搜索</div>
+                    <div @click="changeStoreStatus()" class='load-button'>进入页面</div>
                 </div>
                 
             </div>
@@ -843,6 +843,10 @@
                 // .catch((err) => {
                 //     console.log(err)
                 // })
+            },
+            // 点击进入页面改变store里面的值
+            changeStoreStatus () {
+              this.$store.dispatch('setLoginflag', { storeStatus: 'success' })
             },
         }
     }

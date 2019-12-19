@@ -135,7 +135,6 @@ export default {
     }, false)
   },
   computed: mapState([
-    'text',
     'storeStatus',
     'BluetoothDataArr',
   ]),
