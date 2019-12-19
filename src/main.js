@@ -28,10 +28,12 @@ import VueHtml5Plus from 'vue-html5plus'
 import 'lib-flexible'
 import { Toast } from 'vant';
 
+import { Overlay } from 'vant';
 
 import store from './store/store'
 Vue.config.productionTip = false
 
+Vue.use(Overlay);
 Vue.use(VueAxios, axios)
 Vue.use(vuex)
 Vue.use(Toast);

@@ -25,15 +25,16 @@ import editPass from '@/views/editPass'//训练finish
 import live from '@/views/live'//live模式
 import sportExerciseLog from '@/views/sportExerciseLog'//查看运动记录
 import text from '@/views/text'//
+import online from '@/views/online/index.vue'//无网络页面
 
 
 export default new Router({
   routes: [
-    // {
-    //   path: '/home',
-    //   name: 'Home',
-    //   component: Home
-    // },
+    {
+      path: '/home',
+      name: 'Home',
+      component: Home
+    },
     {
       path: '/',
       name: 'Home',
@@ -43,6 +44,11 @@ export default new Router({
       path: '/sportExerciseLog',
       name: 'sportExerciseLog',
       component: sportExerciseLog
+    },
+    {
+      path: '/online',
+      name: 'online',
+      component: online
     },
     {
       path: '/text',

@@ -99,7 +99,8 @@
           </div>
           <div class="exerciseName">
             <div class="info" v-for='(item,index) in nameList'>
-              <van-checkbox :disabled='nameDisabled' :class='nameDisabled?"forbidBox":""' v-model="item.checked" shape="square" @click='selectAll(item)'>
+              <van-checkbox :disabled='nameDisabled' :class='nameDisabled?"forbidBox":""' v-model="item.checked"
+                shape="square" @click='selectAll(item)'>
                 {{item.username}}</van-checkbox>
             </div>
           </div>
@@ -139,6 +140,7 @@
         realPlayTime: '',
         referFlag: true,
         model: '',
+        clickName: [],
         devices: [],
         dataList: [
           {
@@ -203,13 +205,19 @@
     },
     methods: {
       goHome() {
-        this.$router.push({name:'Home',query:{index:0}})
+        this.$router.push({ name: 'Home', query: { index: 0 } })
         window.localStorage.removeItem('locus')
       },
       checkNames(item) {
         item.checked = true
         this.checkName.push(item)
         this.shows = false
+        this.clickName.push(item.username)
+        this.nameList.forEach((v, i) => {
+          if (this.clickName.indexOf(v.username) !== -1) {
+            v.checked = true
+          }
+        })
       },
       changeIpt() {
         runnersName().then((res) => {
@@ -338,6 +346,7 @@
         // })
       },
       selectAll(val) {
+        console.log(val, 'val')
         if (!val.checked && this.checkName.length < 4) {
           this.checkName.unshift(val)
         } else {
@@ -348,13 +357,31 @@
           })
         }
       }
-    }
+    },
+    watch: {
+      nameList: { //监听的对象
+        deep: true, //深度监听设置为 true
+        handler: function (newV, oldV) {
+          if (newV !== oldV) {
+            newV.forEach((v, i) => {
+              if (this.clickName.indexOf(v.username) !== -1) {
+                v.checked = true
+              }
+            })
+          } else {
+            console.log(newV == oldV)
+          }
+        }
+      }
+    },
+
   }
 </script>
 <style scoped lang="less">
-  .forbidBox{
+  .forbidBox {
     pointer-events: none
   }
+
   .list {
     position: absolute;
     top: 35px;
@@ -372,7 +399,8 @@
     padding: 5px 10px;
     box-sizing: border-box;
     overflow: auto;
-    li{
+
+    li {
       width: 100%;
     }
   }
@@ -476,7 +504,7 @@
     .exercise,
     .exercises,
     .livebox {
-      height: 250px;
+      height: 300px;
       background: rgba(254, 252, 255, 0.03);
       border-radius: 5px;
       border: 1px solid rgba(98, 101, 118, 1);
@@ -521,18 +549,23 @@
       box-sizing: border-box;
 
       .check {
+        font-size: 18px;
+
         display: flex;
         height: 38px;
         align-items: center;
         color: rgba(171, 175, 189, 1);
 
         .chekbox {
+          font-size: 18px;
+
           display: flex;
           flex-wrap: wrap;
           margin-bottom: 10px;
         }
 
         .checkName {
+          font-size: 18px;
           margin-right: 20px;
           padding: 0 10px;
           display: flex;
@@ -551,7 +584,8 @@
         height: 35px;
         justify-content: space-between;
         align-items: center;
-
+        font-size: 18px;
+        margin: 15px 0 20px 0;
         .coach {
           position: relative;
           display: flex;
@@ -586,7 +620,7 @@
       }
 
       .exerciseName {
-        margin: 10px 0;
+        margin: 10px 0 20px 0;
         display: flex;
         height: 82px;
         overflow-y: scroll;
@@ -596,6 +630,7 @@
         border: 1px solid rgba(98, 101, 118, 1);
 
         .info {
+          font-size: 18px;
           width: 20%;
           display: flex;
           height: 38px;

@@ -4,19 +4,23 @@
       <img src="../../assets/image/title.png" />
     </div>
     <div class="box">
-      <div v-if="pause=='RESUME'" class="none freeze">FREEZE</div>
-      <div v-else @click='changefreeze' :class="[freeze=='FREEZE' ? 'freeze' : 'unfreeze']">{{freeze}}</div>
+      <div v-if="pause=='继续'" class="none freeze">冻结</div>
+      <div v-else @click='changefreeze' :class="[freeze=='冻结' ? 'freeze' : 'unfreeze']">{{freeze}}</div>
       <div class="cenCent">
-        <span>TIMER</span>
+        <span>倒计时</span>
         <span>{{currentTime}}</span>
       </div>
-      <div v-if="pause=='RESUME'" class="none orange">ALIGN</div>
+      <div v-if="pause=='继续'" class="none orange">复位</div>
       <div v-else @click='changealign' class="orange">{{align}}</div>
     </div>
     <div class="bottom">
-      <div @click='changepause' :class="[pause=='PAUSE' ? 'pauses' : 'resumes']">{{pause}}</div>
-      <div @click='stop'>STOP</div>
+      <div @click='changepause' :class="[pause=='暂停' ? 'pauses' : 'resumes']">{{pause}}</div>
+      <div @click='stop'>结束</div>
     </div>
+    <van-overlay :show="markFlag">
+        <div class="wrapperMark">
+        <img src="../../assets/image/timg.gif" alt=""></div>
+      </van-overlay>
   </div>
 </template>
 <script>
@@ -31,15 +35,16 @@
     data() {
       return {
         currentTime: '00:00',
-        pause: 'PAUSE',
+        pause: '暂停',
         left:window.localStorage.getItem('left'),
         right:window.localStorage.getItem('right'),
-        freeze: 'FREEZE',
-        align: 'ALIGN',
+        freeze: '冻结',
+        align: '复位',
         setTime: 0,
         intervalCount: 0, // 结束要置零  偶数运动 奇数停止
         interva: null,
-        closeFlag: false
+        closeFlag: false,
+        markFlag:false
 
       }
     },
@@ -158,7 +163,7 @@
         })
       },
       changepause() {
-        if (this.pause == 'RESUME') {
+        if (this.pause == '继续') {
           function s_to_hs(s) {
             var h;
             h = Math.floor(s / 60);
@@ -180,31 +185,35 @@
               this.$router.push({ name: 'finish', query: { fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, level: level, id: res.data.data.id, model: 'PT' } });
             }
           }, 1000);
-          this.pause = 'PAUSE'
+          this.pause = '暂停'
           this.a();
         } else {
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO', '', 0, 0, 0, 0] })
           clearTimeout(this.interva)
-          this.pause = 'RESUME'
+          this.pause = '继续'
           clearInterval(this.timer)
         }
       },
       changefreeze() {
-        if (this.freeze == 'FREEZE') {
-          this.freeze = 'UNFREEZE'
+        if (this.freeze == '冻结') {
+          this.freeze = '解冻'
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO', '', 0, 0, 0, 0] })
           clearTimeout(this.interva)
         } else {
-          this.freeze = 'FREEZE'
+          this.freeze = '冻结'
           this.a();
 
 
         }
       },
       changealign() {
+        this.markFlag = true;
+        setTimeout(()=>{
+          this.markFlag = false;
+        },3000)
         clearTimeout(this.interva)
         this.intervalCount = 0
-        this.freeze = 'UNFREEZE'
+        this.freeze = '解冻'
         this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', 'ALIGN',0,0, 0, 0] })
 
       }
@@ -212,6 +221,12 @@
   }
 </script>
 <style scoped lang="less">
+  .wrapperMark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
   .none {
     pointer-events: none;
   }
