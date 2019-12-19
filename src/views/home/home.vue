@@ -18,7 +18,11 @@
                 <div class='img'>
                     <img src="./image/none.png" alt="">未发现可用设备
                 </div>
-                <div @click="discoveryNewDevice()" class='load-button'>重新搜索</div>
+                <div style="display: flex">
+                    <div @click="discoveryNewDevice()" class='load-button'>重新搜索</div>
+                    <div @click="discoveryNewDevice()" class='load-button'>重新搜索</div>
+                </div>
+                
             </div>
             <div v-if='statusContent === 3' class='load-loading'>
                 <div class='img'>
@@ -355,18 +359,13 @@
                 // loginFlag: false,
                 // setup: false,
                 status:  'fail',
-                status: 'success',
-                statusContent: 0,
+                // status: 'success',
+                statusContent: 2,
                 loginSwitch: false,
                 deviceList: [], // 蓝牙地址(adress)
-                dataList: [], // 接收到的数据
-                contrastData: [], // 做对比的数据
-                // sendDataNum: 0b10100000,
-                sendDataNum: [0b10100110, 0b10101000, 0b01100000, 0b10100110, 0b10101000, 0b00001010, 0b11100010, 0b11111111],
                 recordList: [],//记录 
                 merberList: [],//我的运动员
                 collectList: [],//收藏
-                list11: ['0101', '0102', '0103', '0104', '0105', '1101', '1100', '1200', '1201'],
                 menuList: [
                     {
                         img: require('./image/banner1.png'),
@@ -504,9 +503,6 @@
                 ctx.stroke();
                 ctx.strokeStyle = '#D1D5E6'
             })
-        },
-        created() {
-            this.getDeviceInfo()
         },
         mounted() {
             // alert(this.statusContent)
@@ -835,8 +831,6 @@
             },
             // 获取到的蓝牙地址
             getDeviceInfo() {
-                // this.deviceList = '00:15:A6:00:44:2A'  // 设备蓝牙地址
-                this.deviceList = ['00:15:A6:00:1E:36', '00:15:A6:00:44:2A', '00:19:09:01:1D:B0']
                 // deviceInfo().then((res) => {
                 //     if (res.data.code == 200) {
                 //         let list = res.data.data
@@ -850,66 +844,11 @@
                 //     console.log(err)
                 // })
             },
-            // 发现设备
-            // discoveryNewDevice() {
-            //     this.statusContent = 1
-            //     bluetoothTool.discoveryNewDevice(this.deviceList)
-            // },
-            // 发送数据
-            // sendDataTime (data) {
-            //     if (!bluetoothTool.state.readThreadState) {
-            //         return false
-            //     }
-            //     bluetoothTool.sendData(data)
-            // },
-            // 发送心跳
-            // sendHeard () {
-            //     let data = pluginFub.t80()
-            //     let that = this
-            //     let timerHeard = setInterval (() => {
-            //         // alert('发送心跳')
-            //         // alert(bluetoothTool.state.readThreadState)
-            //         if (that.statusContent != 3) {
-            //             clearInterval(timerHeard)
-            //             return false
-            //         } else {
-            //             bluetoothTool.sendData(data)
-            //         }
-            //     },3000)
-            // },
-            // 实时判断是否在实时接收数据
-            // watchReceiveData() {
-            //     let that = this
-            //     let timer = setInterval(() => {
-            //         // alert(bluetoothTool.state.readThreadState)
-            //         if (!bluetoothTool.state.readThreadState) {
-            //             clearInterval(timer)
-            //             return false
-            //         }
-            //         if (that.dataList.length == 0) {
-            //             // alert('未接收到数据')
-            //         } else {
-            //             // alert('接收数据正常')
-            //             that.dataList = []
-            //         }
-            //         return false
-            //     }, 6000)
-            // },
-            // 十六进制转化
-            toString16(int) {
-                if (int.length < 2) {
-                    return '0' + int
-                } else {
-                    return int
-                }
-            },
         }
     }
     export default vm
 
 </script>
-
-
 
 <style scoped lang="less">
     .van-cell__value--alone{

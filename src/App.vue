@@ -19,7 +19,6 @@ export default {
       flag: false,
       originResponse : {
         success: function (res) {
-          // alert('success')
           // that.sendDataTime()
           if(pluginFub.equals(res, pluginFub.STOP_OVER)) {
             that.$store.dispatch('setLoginflag', { transmitType:  'normal'})
@@ -98,7 +97,6 @@ export default {
         },
         connExceptionCallback: function (Content) {
           // alert('设备中断回调')
-          // alert(bluetoothTool.state.readThreadState)
           if (that.$route.name != 'Home') {
             that.$router.push({name: 'Home', query: {urlContent: Number(Content)}})
           }
@@ -117,14 +115,6 @@ export default {
           that.$store.dispatch('setLoginflag', { storeStatus: 'fail' })
         },
         readDataCallback: function (dataStr) { // 接收数据
-        // alert('接收数据')
-        console.log('接收到的数据' + dataStr.map(v => {
-          let a = v.toString(16);
-          if(a.length === 1) {
-            a = '0' + a;
-          }
-          return a;
-        }));
           dataStr = dataStr.slice(0, parseInt(dataStr.length / 8) * 8 )
           pluginFub.responseHandler(dataStr, that.originResponse)
         }
@@ -151,8 +141,6 @@ export default {
   ]),
   watch: {
     BluetoothDataArr () {
-      // alert('BluetoothDataArr改变了')
-      // alert(this.BluetoothDataArr)
       this.sendDataTime()
     }
   },
@@ -183,18 +171,15 @@ export default {
       // if (!bluetoothTool.state.readThreadState) {
       //     return false
       // }
-      // alert('ffffffffff')
       let responseArray = localStorage.getItem('arrayCache').split(',')
       let data = '';
-      // alert(this.BluetoothDataArr)
-      // alert(this.BluetoothDataArr[0])
       try {
         data = pluginFub.invoke(this.BluetoothDataArr[0],this.BluetoothDataArr[1],responseArray,this.BluetoothDataArr[2],this.BluetoothDataArr[3],this.BluetoothDataArr[4],this.BluetoothDataArr[5])
         // alert(data)
         let loopFlag = data.pop()
         bluetoothTool.sendData(data)
         if(loopFlag) {
-          this.hhhh(loopFlag)
+          this.loopSend(loopFlag)
         } else {
           return false
         }
@@ -207,11 +192,19 @@ export default {
         }
       }
     },
-    hhhh () {
+    loopSend () {
       let that = this
       flagFalse = setTimeout(() => {
         that.sendDataTime()
       }, 1000)
+    },
+    // home页面需要判断的蓝牙状态
+    readThreadFlag () {
+      if (bluetoothTool.state.readThreadState) {
+        return true
+      } else {
+        return false
+      }
     }
   }
 }
