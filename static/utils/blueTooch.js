@@ -12,9 +12,8 @@ function BluetoothTool() {
     let btAdapter = BluetoothAdapter.getDefaultAdapter(); //默认适配器
     let activity = plus.android.runtimeMainActivity();
     let windowMe = activity.getWindow();
-    let decorView = invoke(windowMe, "getDecorView");
 
-    // plus.android.importClass(windowMe);
+    let decorView = invoke(windowMe, "getDecorView");
 
 
     let btSocket = null;
@@ -115,7 +114,6 @@ function BluetoothTool() {
     function shortToast(msg) {
         Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
     }
-
     function windowMeFlag () {
         invoke(decorView, "setSystemUiVisibility", 0x800);
         // windowMe.getDecorView().setSystemUiVisibility(4108);//这里的4108可防止从底部滑动调出底部导航栏

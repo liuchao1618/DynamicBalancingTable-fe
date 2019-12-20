@@ -90,7 +90,7 @@ export default {
           // alert('连接设备回调')
           // alert(bluetoothTool.state.readThreadState)
           if(bluetoothTool.state.readThreadState) {
-            that.sendHeard()
+            // that.sendHeard()
             that.$store.dispatch('setLoginflag', { storeStatus: 'success' })
           }
           that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
@@ -126,7 +126,7 @@ export default {
     let that = this
     document.addEventListener("plusready", () => {
       bluetoothTool.turnOnBluetooth()
-      bluetoothTool.windowMeFlag()
+      // bluetoothTool.windowMeFlag()
       if (bluetoothTool.state.bluetoothEnable) { // 如果蓝牙是开启状态就搜索设备
         that.defaultDevice()
       }

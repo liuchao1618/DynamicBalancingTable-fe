@@ -250,7 +250,7 @@
           }, 1000);
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','', 100-this.leftValue,100-this.rightValue,0,0] })
         } else {
-          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','',0,0,0,0] })
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','PAUSE',0,0,0,0] })
           this.pause = '继续'
           clearInterval(this.timer)
         }
@@ -259,7 +259,7 @@
       changefreeze() {
         if (this.freeze == '冻结') {
           this.freeze = '解冻'
-          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','',0,0,0,0] })
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','PAUSE',0,0,0,0] })
         } else {
           this.freeze = '冻结'
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','', 100-this.leftValue,100-this.rightValue,0,0] })

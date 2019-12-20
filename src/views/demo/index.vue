@@ -188,7 +188,7 @@
           this.pause = '暂停'
           this.a();
         } else {
-          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO', '', 0, 0, 0, 0] })
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO', 'PAUSE', 0, 0, 0, 0] })
           clearTimeout(this.interva)
           this.pause = '继续'
           clearInterval(this.timer)
@@ -197,7 +197,7 @@
       changefreeze() {
         if (this.freeze == '冻结') {
           this.freeze = '解冻'
-          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO', '', 0, 0, 0, 0] })
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO', 'PAUSE', 0, 0, 0, 0] })
           clearTimeout(this.interva)
         } else {
           this.freeze = '冻结'
