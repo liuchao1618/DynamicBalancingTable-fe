@@ -11,8 +11,13 @@ function BluetoothTool() {
     let invoke = plus.android.invoke;
     let btAdapter = BluetoothAdapter.getDefaultAdapter(); //默认适配器
     let activity = plus.android.runtimeMainActivity();
+<<<<<<< HEAD
     // let windowMe = activity.getWindow().getDecorView();
     // plus.android.importClass(windowMe);
+=======
+    let windowMe = activity.getWindow();
+    plus.android.importClass(windowMe);
+>>>>>>> f5ef125cd3cd71bdd8bc0ad3d1652abf7d5866be
 
 
     let btSocket = null;
