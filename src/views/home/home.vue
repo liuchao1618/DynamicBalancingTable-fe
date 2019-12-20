@@ -85,7 +85,7 @@
                             <li v-for='(item,i) in sportName' @click='checkNames(item)'>{{item.username}}</li>
                         </ul>
                     </div>
-                    <input class="dataIpt" type="date" @change='timeSele' value="2019-12-30" />
+                    <input class="dataIpt" type="date" @change='timeSele' v-model="currentTime" />
                     <div class="selectbox">
                         <div class="select" @click='tabShow'>
                             <span>{{kindModleText}}</span>
@@ -370,6 +370,7 @@
         },
         data() {
             return {
+                currentTime:'2019-12-20',
                 sportName: [],
                 kindModleText: '显示所有训练记录',
                 kindModle: ['显示所有训练记录', '仅显示DEMO模式', '仅显示手动模式', '仅显示轨迹模式'],
@@ -582,8 +583,58 @@
             }
         },
         methods: {
-            timeSele(val){
-                console.log(val)
+            timeSele(){
+                console.log(this.currentTime,this.iptName)
+                var kindModleText = ''
+                if(this.kindModleText == '显示所有训练记录') {
+                    kindModleText = ''
+                }else if(this.kindModleText == '仅显示DEMO模式'){
+                    kindModleText = 'DEMO'
+
+                }else if(this.kindModleText == '仅显示手动模式'){
+                    kindModleText = 'PT'
+
+                }else if(this.kindModleText == '仅显示轨迹模式'){
+                    kindModleText = 'LIVE'
+
+                }
+                console.log(this.kindModleText,'this.kindModleText')
+                if(this.iptName==''){
+                    var data = {
+                        userCode: window.localStorage.getItem('userCode'),
+                        condDate:this.currentTime,
+                        condMode:kindModleText
+                    }
+                }
+                else{
+                    var data = {
+                        userCode: window.localStorage.getItem('userCode'),
+                        condDate:this.currentTime,
+                        condRunner:this.iptName,
+                        condMode:kindModleText
+                    }
+                }
+                memberExercise(data).then((res) => {
+                    this.recordList = res.data.data;
+                    this.collectList = [];
+                    res.data.data && res.data.data.forEach((item, index) => {
+                        item.memberList = item.memberList.join('、')
+                        item.expands = []
+                        if (JSON.parse(item.expand) != null) {
+                            var expand = JSON.parse(item.expand)
+                            expand.forEach((v, ind) => {
+                                var newArr = []
+                                v.c.forEach((val, i) => {
+                                    newArr.push(parseInt(val / 4))
+                                })
+                                item.expands.push(newArr)
+                            })
+                        }
+                        if (item.favored) {
+                            this.collectList.push(item)
+                        }
+                    })
+                })
             },
             tabShow() {
                 if (this.show == false) {
@@ -595,14 +646,98 @@
             changekindModleText(val) {
                 this.kindModleText = val
                 this.show = false
+                var kindModleText = ''
+                if(this.kindModleText == '显示所有训练记录') {
+                    kindModleText = ''
+                }else if(this.kindModleText == '仅显示DEMO模式'){
+                    kindModleText = 'DEMO'
 
+                }else if(this.kindModleText == '仅显示手动模式'){
+                    kindModleText = 'PT'
+
+                }else if(this.kindModleText == '仅显示轨迹模式'){
+                    kindModleText = 'LIVE'
+
+                }
+                if(this.iptName==''){
+                    var data = {
+                        userCode: window.localStorage.getItem('userCode'),
+                        condDate:this.currentTime,
+                        condMode:kindModleText
+                    }
+                }else{
+                    var data = {
+                        userCode: window.localStorage.getItem('userCode'),
+                        condDate:this.currentTime,
+                        condRunner:this.iptName,
+                        condMode:kindModleText
+                    }
+                }
+                if(this.currentTime==''){
+                    var data = {
+                        userCode: window.localStorage.getItem('userCode'),
+                        condRunner:this.iptName,
+                        condMode:kindModleText
+                    }
+                }else if(this.iptName==''){
+                    var data = {
+                        userCode: window.localStorage.getItem('userCode'),
+                        condDate:this.currentTime,
+                        condMode:kindModleText
+                    }
+                }
+                memberExercise(data).then((res) => {
+                    this.recordList = res.data.data;
+                    this.collectList = [];
+                    res.data.data && res.data.data.forEach((item, index) => {
+                        item.memberList = item.memberList.join('、')
+                        item.expands = []
+                        if (JSON.parse(item.expand) != null) {
+                            var expand = JSON.parse(item.expand)
+                            expand.forEach((v, ind) => {
+                                var newArr = []
+                                v.c.forEach((val, i) => {
+                                    newArr.push(parseInt(val / 4))
+                                })
+                                item.expands.push(newArr)
+                            })
+                        }
+                        if (item.favored) {
+                            this.collectList.push(item)
+                        }
+                    })
+                })
             },
             checkNames(val){
                 this.iptName = val.username
                 this.shows = false
-                let data = {
-                    userCode: window.localStorage.getItem('userCode'),
-                    condRunner:this.iptName
+                var kindModleText = ''
+                if(this.kindModleText == '显示所有训练记录') {
+                    kindModleText = ''
+                }else if(this.kindModleText == '仅显示DEMO模式'){
+                    kindModleText = 'DEMO'
+
+                }else if(this.kindModleText == '仅显示手动模式'){
+                    kindModleText = 'PT'
+
+                }else if(this.kindModleText == '仅显示轨迹模式'){
+                    kindModleText = 'LIVE'
+
+                }
+                if(this.currentTime==''){
+                    var data = {
+                        userCode: window.localStorage.getItem('userCode'),
+                        condRunner:this.iptName,
+                        condMode:kindModleText
+                    }
+                }
+                else{
+                    var data = {
+                        userCode: window.localStorage.getItem('userCode'),
+                        condDate:this.currentTime,
+                        condRunner:this.iptName,
+                        condMode:kindModleText
+                    }
                 }
                 memberExercise(data).then((res) => {
                     this.recordList = res.data.data;

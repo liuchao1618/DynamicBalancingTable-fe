@@ -11,7 +11,8 @@ function BluetoothTool() {
     let invoke = plus.android.invoke;
     let btAdapter = BluetoothAdapter.getDefaultAdapter(); //默认适配器
     let activity = plus.android.runtimeMainActivity();
-    var windowMe = main.getWindow();
+    // let windowMe = activity.getWindow().getDecorView();
+    // plus.android.importClass(windowMe);
 
 
     let btSocket = null;
@@ -94,7 +95,7 @@ function BluetoothTool() {
         cancelDiscovery: cancelDiscovery,
         readData: readData,
         sendData: sendData,
-        windowMeFlag: windowMeFlag
+        // windowMeFlag: windowMeFlag
     }
     if (window.bluetoothToolInstance) {
         return window.bluetoothToolInstance;
@@ -113,10 +114,10 @@ function BluetoothTool() {
         Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
     }
 
-    function windowMeFlag () {
-        windowMe.getDecorView().setSystemUiVisibility(4108);//这里的4108可防止从底部滑动调出底部导航栏
-        windowMe.getDecorView().setSystemUiVisibility(2054);
-    }
+    // function windowMeFlag () {
+    //     windowMe.getDecorView().setSystemUiVisibility(4108);//这里的4108可防止从底部滑动调出底部导航栏
+    //     windowMe.setSystemUiVisibility(2054);
+    // }
 
     /**
      * 是否支持蓝牙
