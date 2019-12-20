@@ -32,7 +32,7 @@ import { Overlay } from 'vant';
 
 import store from './store/store'
 Vue.config.productionTip = false
-
+import './assets/css/utils.css'
 Vue.use(Overlay);
 Vue.use(VueAxios, axios)
 Vue.use(vuex)

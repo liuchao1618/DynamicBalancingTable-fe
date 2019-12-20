@@ -18,8 +18,8 @@
                 <div class='img'>
                     <img src="./image/none.png" alt="">未发现可用设备
                 </div>
-                    <div @click="discoveryNewDevice()" class='load-button'>重新搜索</div>
-                
+                <div @click="discoveryNewDevice()" class='load-button'>重新搜索</div>
+
             </div>
             <div v-if='statusContent === 3' class='load-loading'>
                 <div class='img'>
@@ -78,6 +78,26 @@
             </div>
             <!-- 记录 -->
             <div v-show='tab === 1' class='list'>
+                <div class="logHead">
+                    <div class="search">
+                        <van-search placeholder="请输入运动员姓名" @input='changeIpt' v-model="iptName" />
+                        <ul class="lists" v-if='shows'>
+                            <li v-for='(item,i) in sportName' @click='checkNames(item)'>{{item.username}}</li>
+                        </ul>
+                    </div>
+                    <input class="dataIpt" type="date" @change='timeSele' value="2019-12-30" />
+                    <div class="selectbox">
+                        <div class="select" @click='tabShow'>
+                            <span>{{kindModleText}}</span>
+                            <span class="img"><img src="../../assets/image/xiala.png" alt=""></span>
+                        </div>
+                        <ul class="xialalist" v-if='show'>
+                            <li v-for='(item,i) in kindModle' @click='changekindModleText(item)'>{{item}}
+                            </li>
+                        </ul>
+
+                    </div>
+                </div>
                 <div class='item' v-for='(item,i) in recordList'>
                     <div v-show='item.model=="PT"'>
                         <div class='itemTitle'>{{item.createTime}} PT模式 </div>
@@ -339,7 +359,7 @@
     import login from './components/login'
     import { Dialog } from 'vant'
     import { mapState } from 'vuex'
-    import { memberExercise, memberMessage, addCollect, delCollect, delMember, trainDetail, exitLogin } from '@/api/index'
+    import { memberExercise, memberMessage, addCollect, delCollect, delMember, trainDetail, exitLogin, runnersName } from '@/api/index'
     import { deviceInfo } from '../../api/api'
     import pluginFub from '../../utils/sendData.js'
 
@@ -350,12 +370,18 @@
         },
         data() {
             return {
-                leftValue:0,
-                rightValue:0,
+                sportName: [],
+                kindModleText: '显示所有训练记录',
+                kindModle: ['显示所有训练记录', '仅显示DEMO模式', '仅显示手动模式', '仅显示轨迹模式'],
+                shows: false,
+                show: false,
+                iptName: '',
+                leftValue: 0,
+                rightValue: 0,
                 tab: 0,
                 // loginFlag: false,
                 setup: false,
-                status:  'fail',
+                status: 'fail',
                 // status: 'success',
                 statusContent: 2,
                 loginSwitch: false,
@@ -546,21 +572,85 @@
                     this.$router.go(0)
                 }
             },
-            storeStatusContent () {
-              this.statusContent = this.storeStatusContent
-            //   alert(this.statusContent)
+            storeStatusContent() {
+                this.statusContent = this.storeStatusContent
+                //   alert(this.statusContent)
             },
-            storeStatus () {
-              this.status = this.storeStatus
-            //   alert(this.status)
+            storeStatus() {
+                this.status = this.storeStatus
+                //   alert(this.status)
             }
         },
         methods: {
+            timeSele(val){
+                console.log(val)
+            },
+            tabShow() {
+                if (this.show == false) {
+                    this.show = true
+                } else {
+                    this.show = false
+                }
+            },
+            changekindModleText(val) {
+                this.kindModleText = val
+                this.show = false
+
+            },
+            checkNames(val){
+                this.iptName = val.username
+                this.shows = false
+                let data = {
+                    userCode: window.localStorage.getItem('userCode'),
+                    condRunner:this.iptName
+                }
+                memberExercise(data).then((res) => {
+                    this.recordList = res.data.data;
+                    this.collectList = [];
+                    res.data.data && res.data.data.forEach((item, index) => {
+                        item.memberList = item.memberList.join('、')
+                        item.expands = []
+                        if (JSON.parse(item.expand) != null) {
+                            var expand = JSON.parse(item.expand)
+                            expand.forEach((v, ind) => {
+                                var newArr = []
+                                v.c.forEach((val, i) => {
+                                    newArr.push(parseInt(val / 4))
+                                })
+                                item.expands.push(newArr)
+                            })
+                        }
+                        if (item.favored) {
+                            this.collectList.push(item)
+                        }
+                    })
+                })
+            },
+            changeIpt() {
+                runnersName().then((res) => {
+                    this.sportName = []
+                    res.data.data.forEach((item, i) => {
+                        item.checked = false
+                        if (this.iptName !== '') {
+                            if (item.username.indexOf(this.iptName) !== -1) {
+                                this.sportName.push(item)
+                            }
+
+                        } else {
+                            this.shows = false
+                        }
+                    })
+                    if (this.sportName.length > 0) {
+                        this.shows = true
+                    }
+                    // this.sportName = res.data.data
+                })
+            },
             changeText(item) {
                 this.$store.dispatch('setLoginflag', { text: item })
             },
             // 点击
-            discoveryNewDevice () {
+            discoveryNewDevice() {
                 this.$parent.$options.parent.$options.components.App.methods.searchDevice()
             },
             exitLogin() {
@@ -694,126 +784,147 @@
                 this.$router.push({ name: 'SelectTime' });
             },
             godetail(index, text) {
-                if (index == 0) {
-                    this.leftValue = 15
-                    this.rightValue = 20
-                } else if (index == 1) {
-                    this.leftValue = 25
-                    this.rightValue = 30
-                } else if (index == 2) {
-                    this.leftValue = 30
-                    this.rightValue = 35
-                } else if (index == 3) {
-                    this.leftValue = 35
-                    this.rightValue = 40
-                } else if (index == 4) {
-                    this.leftValue = 50
-                    this.rightValue = 55
-                } else if (index == 5) {
-                    this.leftValue = 55
-                    this.rightValue = 60
-                } else if (index == 6) {
-                    this.leftValue = 60
-                    this.rightValue = 65
-                } else if (index == 7) {
-                    this.leftValue = 70
-                    this.rightValue = 75
-                } else if (index == 8) {
-                    this.leftValue = 85
-                    this.rightValue = 90
-                } else if (index == 9) {
-                    this.leftValue = 90
-                    this.rightValue = 95
-                }else if (index == 10) {
-                    this.leftValue = 95
-                    this.rightValue = 100
+                // if(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() ==false){
+                if (!this) {
+                    this.$toast({
+                        message: '未连接可用设备，请连接后重试。',
+                        position: 'bottom'
+                    });
+                } else {
+                    if (index == 0) {
+                        this.leftValue = 15
+                        this.rightValue = 20
+                    } else if (index == 1) {
+                        this.leftValue = 25
+                        this.rightValue = 30
+                    } else if (index == 2) {
+                        this.leftValue = 30
+                        this.rightValue = 35
+                    } else if (index == 3) {
+                        this.leftValue = 35
+                        this.rightValue = 40
+                    } else if (index == 4) {
+                        this.leftValue = 50
+                        this.rightValue = 55
+                    } else if (index == 5) {
+                        this.leftValue = 55
+                        this.rightValue = 60
+                    } else if (index == 6) {
+                        this.leftValue = 60
+                        this.rightValue = 65
+                    } else if (index == 7) {
+                        this.leftValue = 70
+                        this.rightValue = 75
+                    } else if (index == 8) {
+                        this.leftValue = 85
+                        this.rightValue = 90
+                    } else if (index == 9) {
+                        this.leftValue = 90
+                        this.rightValue = 95
+                    } else if (index == 10) {
+                        this.leftValue = 95
+                        this.rightValue = 100
+                    }
+                    window.localStorage.setItem('left', this.leftValue)
+                    window.localStorage.setItem('right', this.rightValue)
+                    // if(window.localStorage.getItem('modle') == 'DEMO'){
+                    //     this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO','',this.leftValue,this.rightValue,0,0] })
+                    // }else if(window.localStorage.getItem('modle') == 'PT'){
+                    //     this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','',this.leftValue,this.rightValue,0,0]  })
+                    // }
+                    if (index == 10 && text == '轨迹模式') {
+                        window.localStorage.setItem('modle', 'LIVE')
+                        this.$router.push({ name: 'live' });
+                    }
+                    else if (index == 11 && text == 'DEMO TEST') {
+                        window.localStorage.setItem('modle', 'DEMO')
+                        this.list.forEach((item, i) => {
+                            if (i == 10) {
+                                item.text = '功能 3 <br/>L4'
+                            } else if (i == 11) {
+                                item.text = '手动模式'
+                            }
+                        })
+                    }
+                    else if (index == 11 && text == '手动模式') {
+                        window.localStorage.setItem('modle', 'PT')
+                        this.list.forEach((item, i) => {
+                            if (i == 10) {
+                                item.text = '轨迹模式'
+                            } else if (i == 11) {
+                                item.text = 'DEMO TEST'
+                            }
+                        })
+                    }
+                    else {
+                        // this.$store.dispatch('setLoginflag', { left: this.leftValue, right: this.rightValue })
+                        this.$router.push({ name: 'SelectTime' });
+                    }
+                    window.localStorage.setItem('level', text)
                 }
-                window.localStorage.setItem('left',this.leftValue)
-                window.localStorage.setItem('right',this.rightValue)
-                // if(window.localStorage.getItem('modle') == 'DEMO'){
-                //     this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO','',this.leftValue,this.rightValue,0,0] })
-                // }else if(window.localStorage.getItem('modle') == 'PT'){
-                //     this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','',this.leftValue,this.rightValue,0,0]  })
-                // }
-                if (index == 10 && text == '轨迹模式') {
-                    window.localStorage.setItem('modle','LIVE')
-                    this.$router.push({ name: 'live' });
-                }
-                else if (index == 11 && text == 'DEMO TEST') {
-                    window.localStorage.setItem('modle', 'DEMO')
-                    this.list.forEach((item, i) => {
-                        if (i == 10) {
-                            item.text = '功能 3 <br/>L4'
-                        } else if (i == 11) {
-                            item.text = '手动模式'
-                        }
-                    })
-                }
-                else if (index == 11 && text == '手动模式') {
-                    window.localStorage.setItem('modle', 'PT')
-                    this.list.forEach((item, i) => {
-                        if (i == 10) {
-                            item.text = '轨迹模式'
-                        } else if (i == 11) {
-                            item.text = 'DEMO TEST'
-                        }
-                    })
-                }
-                else {
-                    // this.$store.dispatch('setLoginflag', { left: this.leftValue, right: this.rightValue })
-                    this.$router.push({ name: 'SelectTime' });
-                }
-                window.localStorage.setItem('level', text)
             },
             godetails(index, text) {
-                
-                // console.log(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag())
-                if (index == 0) {
-                    this.leftValue = 15
-                    this.rightValue = 20
-                } else if (index == 1) {
-                    this.leftValue = 25
-                    this.rightValue = 30
-                } else if (index == 2) {
-                    this.leftValue = 30
-                    this.rightValue = 35
-                } else if (index == 3) {
-                    this.leftValue = 35
-                    this.rightValue = 40
-                } else if (index == 4) {
-                    this.leftValue = 50
-                    this.rightValue = 55
-                } else if (index == 5) {
-                    this.leftValue = 55
-                    this.rightValue = 60
-                } else if (index == 6) {
-                    this.leftValue = 60
-                    this.rightValue = 65
-                } else if (index == 7) {
-                    this.leftValue = 70
-                    this.rightValue = 75
-                } else if (index == 8) {
-                    this.leftValue = 85
-                    this.rightValue = 90
-                } else if (index == 9) {
-                    this.leftValue = 90
-                    this.rightValue = 95
-                }else if (index == 10) {
-                    this.leftValue = 95
-                    this.rightValue = 100
+
+                // if (this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() == false) {
+                if (!this) {
+
+                    if (index == 11 && text == '手动模式') {
+                        window.localStorage.setItem('modle', 'PT')
+                        this.$store.dispatch('setLoginflag', { loginflag: true, index: 2 })
+                    }
+                    this.$toast({
+                        message: '未连接可用设备，请连接后重试。',
+                        position: 'bottom'
+                    });
+                } else {
+                    if (index == 0) {
+                        this.leftValue = 15
+                        this.rightValue = 20
+                    } else if (index == 1) {
+                        this.leftValue = 25
+                        this.rightValue = 30
+                    } else if (index == 2) {
+                        this.leftValue = 30
+                        this.rightValue = 35
+                    } else if (index == 3) {
+                        this.leftValue = 35
+                        this.rightValue = 40
+                    } else if (index == 4) {
+                        this.leftValue = 50
+                        this.rightValue = 55
+                    } else if (index == 5) {
+                        this.leftValue = 55
+                        this.rightValue = 60
+                    } else if (index == 6) {
+                        this.leftValue = 60
+                        this.rightValue = 65
+                    } else if (index == 7) {
+                        this.leftValue = 70
+                        this.rightValue = 75
+                    } else if (index == 8) {
+                        this.leftValue = 85
+                        this.rightValue = 90
+                    } else if (index == 9) {
+                        this.leftValue = 90
+                        this.rightValue = 95
+                    } else if (index == 10) {
+                        this.leftValue = 95
+                        this.rightValue = 100
+                    }
+                    if (index == 11 && text == '手动模式') {
+                        window.localStorage.setItem('modle', 'PT')
+                        this.$store.dispatch('setLoginflag', { loginflag: true, index: 2 })
+                    }
+                    else {
+                        window.localStorage.setItem('modle', 'DEMO')
+                        window.localStorage.setItem('left', this.leftValue)
+                        window.localStorage.setItem('right', this.rightValue)
+                        // this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO','',this.leftValue,this.rightValue,0,0] })
+                        this.$router.push({ name: 'SelectTime' });
+                    }
+                    window.localStorage.setItem('level', text)
+
                 }
-                if (index == 11 && text == '手动模式') {
-                    window.localStorage.setItem('modle', 'PT')
-                    this.$store.dispatch('setLoginflag', { loginflag: true, index: 2 })
-                }
-                else {
-                    window.localStorage.setItem('modle','DEMO')
-                    window.localStorage.setItem('left',this.leftValue)
-                    window.localStorage.setItem('right',this.rightValue)
-                    // this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO','',this.leftValue,this.rightValue,0,0] })
-                    this.$router.push({ name: 'SelectTime' });
-                }
-                window.localStorage.setItem('level', text)
             },
             // 点击使用本次设置进行训练
             clickToTrain(item) {
@@ -844,8 +955,8 @@
                 // })
             },
             // 点击进入页面改变store里面的值
-            changeStoreStatus () {
-              this.$store.dispatch('setLoginflag', { storeStatus: 'success' })
+            changeStoreStatus() {
+                this.$store.dispatch('setLoginflag', { storeStatus: 'success' })
             },
         }
     }
@@ -854,9 +965,134 @@
 </script>
 
 <style scoped lang="less">
-    .van-cell__value--alone{
-        color:#969799
+    .dataIpt {
+        margin: 0 20px; 
+        width: 200px;
+        height: 35px;
+        background: rgba(41, 43, 49, 1);
+        box-shadow: 0px -1px 0px 0px rgba(88, 86, 93, 1);
+        border-radius: 5px;
+        color: #8D8D94;
+        border: 1px solid rgba(88, 86, 93, 1);
     }
+    .selectbox{
+        position: relative;
+    }
+    .select {
+        margin-right: 15px;
+        padding: 5px 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-sizing: border-box;
+        width: 200px;
+        height: 35px;
+        color: #8D8D94;
+        border-radius: 4px;
+        border: 1px solid rgba(98, 101, 118, 1);
+
+        .img {
+            width: 14px;
+
+            img {
+                width: 100%;
+            }
+        }
+    }
+
+    /deep/.van-search,
+    .van-search__content {
+        padding: 0;
+        background: transparent !important;
+    }
+    /deep/ .van-icon-search{
+        font-size: 18px;
+        color: #ccc;
+        padding-left: 5px;
+    }
+    /deep/.van-field__control {
+        color: #D1D5E6 !important;
+    }
+
+    .xialalist {
+        position: absolute;
+        top: 35px;
+        left: 0;
+        width: 200px;
+        height: 150px;
+        background: rgba(41, 43, 49, 1);
+        box-shadow: 0px -1px 0px 0px rgba(88, 86, 93, 1);
+        border-radius: 5px;
+        color: #8D8D94;
+        border: 1px solid rgba(88, 86, 93, 1);
+        border-top: 0;
+        z-index: 999;
+        line-height: 32px;
+        padding: 5px 10px;
+        box-sizing: border-box;
+        overflow: auto;
+
+        li {
+            width: 100%;
+        }
+    }
+
+    .lists {
+        position: absolute;
+        top: 35px;
+        left: 0px;
+        width: 205px;
+        height: 100px;
+        background: rgba(41, 43, 49, 1);
+        box-shadow: 0px -1px 0px 0px rgba(88, 86, 93, 1);
+        border-radius: 5px;
+        border: 1px solid rgba(88, 86, 93, 1);
+        border-top: 0;
+        z-index: 1000;
+        color: #8D8D94;
+        line-height: 32px;
+        /* padding: 5px 0 10px; */
+        box-sizing: border-box;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+
+        li {
+            padding-left:10px;
+            text-align: left;
+            width: 100%;
+        box-sizing: border-box;
+        }
+    }
+
+    .logHead {
+        font-size: 20px;
+        display: flex;
+        margin-bottom: 20px;
+    }
+
+    .search {
+        position: relative;
+        width: 204px;
+        height: 35px;
+        border-radius: 4px;
+        border: 1px solid rgba(98, 101, 118, 1);
+        /* overflow: hidden; */
+
+        input {
+            border: 0;
+            /* line-height: 38px; */
+            padding: 0 10px;
+            box-sizing: border-box;
+            background: transparent;
+            color: rgba(85, 88, 103, 1);
+        }
+    }
+
+    .van-cell__value--alone {
+        color: #969799
+    }
+
     ul {
         display: flex;
         flex-wrap: wrap;
@@ -1033,7 +1269,8 @@
                                     margin-left: 16px;
                                 }
                             }
-                            :last-child{
+
+                            :last-child {
                                 border: 0
                             }
                         }
@@ -1124,6 +1361,7 @@
                         .con {
 
                             width: 200px;
+
                             .name {
                                 color: #979AA9;
                                 font-size: 17px;
@@ -1249,7 +1487,7 @@
     }
 
     .van-field__control {
-        color: #8D8D94!important;
+        color: #8D8D94 !important;
         font-size: 22px;
     }
 </style>
