@@ -126,6 +126,7 @@ export default {
     let that = this
     document.addEventListener("plusready", () => {
       bluetoothTool.turnOnBluetooth()
+      bluetoothTool.windowMeFlag()
       if (bluetoothTool.state.bluetoothEnable) { // 如果蓝牙是开启状态就搜索设备
         that.defaultDevice()
       }
@@ -204,7 +205,9 @@ export default {
       } else {
         return false
       }
-    }
+    },
+    // 页面初始去掉华为底部导航
+
   }
 }
 </script>

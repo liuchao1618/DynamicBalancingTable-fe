@@ -11,6 +11,8 @@ function BluetoothTool() {
     let invoke = plus.android.invoke;
     let btAdapter = BluetoothAdapter.getDefaultAdapter(); //默认适配器
     let activity = plus.android.runtimeMainActivity();
+    var windowMe = main.getWindow();
+
 
     let btSocket = null;
     let btInStream = null;
@@ -91,7 +93,8 @@ function BluetoothTool() {
         disConnDevice: disConnDevice,
         cancelDiscovery: cancelDiscovery,
         readData: readData,
-        sendData: sendData
+        sendData: sendData,
+        windowMeFlag: windowMeFlag
     }
     if (window.bluetoothToolInstance) {
         return window.bluetoothToolInstance;
@@ -108,6 +111,11 @@ function BluetoothTool() {
 
     function shortToast(msg) {
         Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    function windowMeFlag () {
+        windowMe.getDecorView().setSystemUiVisibility(4108);//这里的4108可防止从底部滑动调出底部导航栏
+        windowMe.getDecorView().setSystemUiVisibility(2054);
     }
 
     /**

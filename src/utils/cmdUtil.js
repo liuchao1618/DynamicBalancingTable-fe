@@ -31,7 +31,7 @@
     let HEART_RESPONSE =  [0xCF, 0x01, 0x00, 0x00, 0x00, 0x00, 0xD1, 0x62];
     let HEART_RESPONSE_STR =  HEART_RESPONSE.join(' ');
 
-    let modeCache =  -1;                // 模式缓存
+    let typeCache =  '';                // 行为缓存
     let arrayCache =  [0xCF, 0X01, 0X00, 0X80, 0X00, 0X04, 0xAA, 0xBC];
 
     let STOPPING =  0xAA;   // 急停中 给用户提示 在此期间内无法发送数据
@@ -67,16 +67,26 @@
         switch (getMode(mode)) {
             case MODE_SPEED:
                 if(type === 'ALIGN') {
-                    let ar = createCrc16([FRAME_HEAD, SET_MODE, BLANK, BLANK, BLANK, MODE_ZERO]);
-                    ar.push(false);
-                    return  ar;
+                    let data = createCrc16([FRAME_HEAD, SET_MODE, BLANK, BLANK, BLANK, MODE_ZERO]);
+                    data.push(false);
+                    typeCache = type;
+                    return  data;
                 }
+
                 if (isSpeedMode(responseArray) || isSetSpeed(responseArray)) {
                     data = [FRAME_HEAD, SPEED_DATA];
-                    data.push(...toHexArray(speedConvert(leftPower)));
-                    data.push(...toHexArray(speedConvert(rightPower)));
-                    data = createCrc16(data);
-                    data.push(false);
+                    if (typeCache === 'PAUSE') {
+                        data.push(...toHexArray(speedConvert(leftPower / 2)));
+                        data.push(...toHexArray(speedConvert(rightPower / 2)));
+                        data = createCrc16(data);
+                        data.push(true);
+                    } else {
+                        data.push(...toHexArray(speedConvert(leftPower)));
+                        data.push(...toHexArray(speedConvert(rightPower)));
+                        data = createCrc16(data);
+                        data.push(false);
+                    }
+                    typeCache = type;
                     return data;
                 } else if (isSetMode(responseArray) && !equalsCode(responseArray[5], MODE_SPEED)) {
                     // 需要切换模式 并重新调取
@@ -87,6 +97,7 @@
                     }
                     data = createCrc16([FRAME_HEAD, SET_MODE, BLANK, BLANK, BLANK, MODE_SPEED]);
                     data.push(true);
+                    typeCache = type;
                     return data;
                 } else {
                     throw ILLEGAL;
@@ -98,11 +109,13 @@
                     data.push(...toHexArray(yOffset));
                     data = createCrc16(data);
                     data.push(false);
+                    typeCache = type;
                     return data;
                 } else if (isSetMode(responseArray) && !equalsCode(responseArray[5], MODE_POSITION)) {
                     // 需要切换模式 并重新调取
                     data = createCrc16([FRAME_HEAD, SET_MODE, BLANK, BLANK, BLANK, MODE_POSITION]);
                     data.push(true);
+                    typeCache = type;
                     return data;
                 } else {
                     throw ILLEGAL;
@@ -110,6 +123,7 @@
             case MODE_ZERO:
                 data = createCrc16([FRAME_HEAD, SET_MODE, BLANK, BLANK, BLANK, MODE_ZERO]);
                 data.push(false);
+                typeCache = type;
                 return data;
             default:
                 throw UNKNOWN;
