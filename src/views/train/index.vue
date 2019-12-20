@@ -110,6 +110,7 @@
     },
     methods: {
       start() {
+        clearInterval(this.timer)
         if( this.model == 'LIVE'){
           this.timer = setInterval(() => {
             this.currentTimeNum++;

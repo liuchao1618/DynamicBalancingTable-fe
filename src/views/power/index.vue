@@ -5,8 +5,8 @@
     </div>
     <div class="box">
       <div class="left">
-        <span>POWER</span>
-        <span>LEFT</span>
+        <!-- <span>POWER</span> -->
+        <span>左</span>
         <span>{{100-leftValue}}</span>
       </div>
       <div class="center">
@@ -18,7 +18,7 @@
         <div class="cenCent">
           <div></div>
           <div class="cencenTop">
-            <span>TIMER</span>
+            <span>倒计时</span>
             <span>{{currentTime}}</span>
           </div>
           <div></div>
@@ -34,8 +34,8 @@
         </div>
       </div>
       <div class="right">
-        <span>POWER</span>
-        <span>RIGHT</span>
+        <!-- <span>POWER</span> -->
+        <span>右</span>
         <span>{{100-rightValue}}</span>
       </div>
     </div>
@@ -44,13 +44,18 @@
       <img src="../../assets/image/bottom.png" alt="">
     </div>
     <div class="bottom">
-      <div @click='changepause' :class="[pause=='PAUSE' ? 'pauses' : 'resumes']">{{pause}}</div>
-      <div v-if="pause=='RESUME'" class="none freeze">FREEZE</div>
-      <div v-else @click='changefreeze' :class="[freeze=='FREEZE' ? 'freeze' : 'unfreeze']">{{freeze}}</div>
-      <div v-if="pause=='RESUME'" class="none orange">ALIGN</div>
+      <div @click='changepause' :class="[pause=='暂停' ? 'pauses' : 'resumes']">{{pause}}</div>
+      <div v-if="pause=='继续'" class="none freeze">冻结</div>
+      <div v-else @click='changefreeze' :class="[freeze=='冻结' ? 'freeze' : 'unfreeze']">{{freeze}}</div>
+      <div v-if="pause=='继续'" class="none orange">复位</div>
       <div v-else @click='changealign'>{{align}}</div>
-      <div @click='stop'>STOP</div>
+      <div @click='stop'>结束</div>
     </div>
+    <van-overlay :show="markFlag">
+      <div class="wrapperMark">
+      <img src="../../assets/image/timg.gif" alt=""></div>
+    </van-overlay>
+
   </div>
 </template>
 <script>
@@ -64,12 +69,13 @@
         rightValue: 0,
         bottomValue: 0,
         currentTime: '00:00',
-        pause: 'PAUSE',
-        freeze: 'FREEZE',
-        align: 'ALIGN',
+        pause: '暂停',
+        freeze: '冻结',
+        align: '复位',
         timer: null,
         setTime: 0,
-        watchFlag: false
+        watchFlag: false,
+        markFlag:false
       }
     },
     mounted() {
@@ -197,8 +203,8 @@
       },
 
       changepause() {
-        if (this.pause == 'RESUME') {
-          this.pause = 'PAUSE'
+        if (this.pause == '继续') {
+          this.pause = '暂停'
 
           function s_to_hs(s) {
             //计算分钟
@@ -245,23 +251,27 @@
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','', 100-this.leftValue,100-this.rightValue,0,0] })
         } else {
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','',0,0,0,0] })
-          this.pause = 'RESUME'
+          this.pause = '继续'
           clearInterval(this.timer)
         }
       },
 
       changefreeze() {
-        if (this.freeze == 'FREEZE') {
-          this.freeze = 'UNFREEZE'
+        if (this.freeze == '冻结') {
+          this.freeze = '解冻'
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','',0,0,0,0] })
         } else {
-          this.freeze = 'FREEZE'
+          this.freeze = '冻结'
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','', 100-this.leftValue,100-this.rightValue,0,0] })
         }
       },
 
       changealign() {
-        this.freeze = 'UNFREEZE'
+        this.markFlag = true;
+        setTimeout(()=>{
+          this.markFlag = false;
+        },3000)
+        this.freeze = '解冻'
         this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','ALIGN', 0,0,0,0] })
 
       },
@@ -335,6 +345,12 @@
   }
 </script>
 <style scoped lang="less">
+  .wrapperMark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
   .mark {
     position: absolute;
     left: 0;

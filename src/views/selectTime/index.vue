@@ -15,8 +15,8 @@
       <span class="time">{{timeStr}}</span>
     </div>
     <div class="bottom">
-      <span class="back" @click='back'>BACK</span>
-      <span class="start" @click='start'>START</span>
+      <span class="back" @click='back'>返回</span>
+      <span class="start" @click='start'>开始</span>
       <span></span>
     </div>
   </div>

@@ -18,10 +18,7 @@
                 <div class='img'>
                     <img src="./image/none.png" alt="">未发现可用设备
                 </div>
-                <div style="display: flex;width: 30%;margin: 0 auto">
                     <div @click="discoveryNewDevice()" class='load-button'>重新搜索</div>
-                    <div @click="changeStoreStatus()" class='load-button'>进入页面</div>
-                </div>
                 
             </div>
             <div v-if='statusContent === 3' class='load-loading'>
@@ -48,7 +45,7 @@
                     <div class="name" v-if='identity == "coach"'>教练：{{loginName}}</div>
                     <div class="name" v-else>运动员：{{loginName}}</div>
                     <div class="setup">
-                        <img @click="setup = !setup" id='setup' src="./image/setup.png" />
+                        <img @click="setup = !setup" src="./image/setup.png" />
                         <div class="setupList" v-if='setup'>
                             <div class='setupItem' @click='editPWD'>修改密码</div>
                             <div class='setupItem' @click='exitLogin'>退出登录</div>
@@ -357,7 +354,7 @@
                 rightValue:0,
                 tab: 0,
                 // loginFlag: false,
-                // setup: false,
+                setup: false,
                 status:  'fail',
                 // status: 'success',
                 statusContent: 2,
@@ -369,60 +366,60 @@
                 menuList: [
                     {
                         img: require('./image/banner1.png'),
-                        text: 'FUNTIONAL 1 L1'
+                        text: '功能 1 L1'
                     }, {
                         img: require('./image/banner2.png'),
-                        text: 'FUNTIONAL 2 L1'
+                        text: '功能 2 L1'
                     },
                     {
                         img: require('./image/banner3.png'),
-                        text: 'FUNTIONAL 3 L1'
+                        text: '功能 3 L1'
                     }
                 ],
                 list: [
                     {
                         color: '#55D295',
-                        text: 'FUNTIONAL 1<br/>L2'
+                        text: '功能 1<br/>L2'
                     },
                     {
                         color: '#72C840',
-                        text: 'FUNTIONAL 1<br/>L3'
+                        text: '功能 1<br/>L3'
                     },
                     {
                         color: '#7853EA',
-                        text: 'FUNTIONAL 1<br/>L4'
+                        text: '功能 1<br/>L4'
                     },
                     {
                         color: '#D3C143',
-                        text: 'FUNTIONAL 1<br/>L5'
+                        text: '功能 1<br/>L5'
                     },
                     {
                         color: '#EB9D3A',
-                        text: 'FUNTIONAL 2<br/>L2'
+                        text: '功能 2<br/>L2'
                     },
                     {
                         color: '#38947E',
-                        text: 'FUNTIONAL 2<br/>L3'
+                        text: '功能 2<br/>L3'
                     },
                     {
                         color: '#489696',
-                        text: 'FUNTIONAL 2<br/>L4'
+                        text: '功能 2<br/>L4'
                     },
                     {
                         color: '#3387D6',
-                        text: 'FUNTIONAL 2<br/>L5'
+                        text: '功能 2<br/>L5'
                     },
                     {
                         color: '#58CFDC',
-                        text: 'FUNTIONAL 3<br/>L2'
+                        text: '功能 3<br/>L2'
                     },
                     {
                         color: '#4CD697',
-                        text: 'FUNTIONAL 3<br/>L3'
+                        text: '功能 3<br/>L3'
                     },
                     {
                         color: '#D7C641',
-                        text: 'LIVE'
+                        text: '轨迹模式'
                     },
                     {
                         color: '#5DB035',
@@ -432,57 +429,57 @@
                 touristList: [
                     {
                         color: '#55D295',
-                        text: 'FUNTIONAL 1<br/>L2'
+                        text: '功能 1<br/>L2'
                     },
                     {
                         color: '#72C840',
-                        text: 'FUNTIONAL 1<br/>L3'
+                        text: '功能 1<br/>L3'
                     },
                     {
                         color: '#7853EA',
-                        text: 'FUNTIONAL 1<br/>L4'
+                        text: '功能 1<br/>L4'
                     },
                     {
                         color: '#D3C143',
-                        text: 'FUNTIONAL 1<br/>L5'
+                        text: '功能 1<br/>L5'
                     },
                     {
                         color: '#EB9D3A',
-                        text: 'FUNTIONAL 2<br/>L2'
+                        text: '功能 2<br/>L2'
                     },
                     {
                         color: '#38947E',
-                        text: 'FUNTIONAL 2<br/>L3'
+                        text: '功能 2<br/>L3'
                     },
                     {
                         color: '#489696',
-                        text: 'FUNTIONAL 2<br/>L4'
+                        text: '功能 2<br/>L4'
                     },
                     {
                         color: '#3387D6',
-                        text: 'FUNTIONAL 2<br/>L5'
+                        text: '功能 2<br/>L5'
                     },
                     {
                         color: '#58CFDC',
-                        text: 'FUNTIONAL 3<br/>L2'
+                        text: '功能 3<br/>L2'
                     },
                     {
                         color: '#4CD697',
-                        text: 'FUNTIONAL 3<br/>L3'
+                        text: '功能 3<br/>L3'
                     },
                     {
                         color: '#D7C641',
-                        text: 'FUNTIONAL 3<br/>L4'
+                        text: '功能 3<br/>L4'
                     },
                     {
                         color: '#5DB035',
-                        text: 'PT'
+                        text: '手动模式'
                     }
                 ]
             }
         },
         updated() {
-            this.recordList.forEach((item, index) => {
+            this.recordList && this.recordList.forEach((item, index) => {
                 var c = document.getElementById(index);
                 var ctx = c.getContext("2d");
                 var arr = item.expands
@@ -636,7 +633,7 @@
                 memberExercise(data).then((res) => {
                     this.recordList = res.data.data;
                     this.collectList = [];
-                    res.data.data.forEach((item, index) => {
+                    res.data.data && res.data.data.forEach((item, index) => {
                         item.memberList = item.memberList.join('、')
                         item.expands = []
                         if (JSON.parse(item.expand) != null) {
@@ -661,7 +658,7 @@
                     userCode: window.localStorage.getItem('userCode')
                 }
                 memberMessage(data).then((res) => {
-                    res.data.data.forEach((item, i) => {
+                    res.data.data && res.data.data.forEach((item, i) => {
                         if (item.sex == 0) {
                             item.sex = '女'
                         } else {
@@ -738,7 +735,7 @@
                 // }else if(window.localStorage.getItem('modle') == 'PT'){
                 //     this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','',this.leftValue,this.rightValue,0,0]  })
                 // }
-                if (index == 10 && text == 'LIVE') {
+                if (index == 10 && text == '轨迹模式') {
                     window.localStorage.setItem('modle','LIVE')
                     this.$router.push({ name: 'live' });
                 }
@@ -746,17 +743,17 @@
                     window.localStorage.setItem('modle', 'DEMO')
                     this.list.forEach((item, i) => {
                         if (i == 10) {
-                            item.text = 'FUNTIONAL 3 <br/>L4'
+                            item.text = '功能 3 <br/>L4'
                         } else if (i == 11) {
-                            item.text = 'PT'
+                            item.text = '手动模式'
                         }
                     })
                 }
-                else if (index == 11 && text == 'PT') {
+                else if (index == 11 && text == '手动模式') {
                     window.localStorage.setItem('modle', 'PT')
                     this.list.forEach((item, i) => {
                         if (i == 10) {
-                            item.text = 'LIVE'
+                            item.text = '轨迹模式'
                         } else if (i == 11) {
                             item.text = 'DEMO TEST'
                         }
@@ -769,6 +766,8 @@
                 window.localStorage.setItem('level', text)
             },
             godetails(index, text) {
+                
+                // console.log(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag())
                 if (index == 0) {
                     this.leftValue = 15
                     this.rightValue = 20
@@ -803,7 +802,7 @@
                     this.leftValue = 95
                     this.rightValue = 100
                 }
-                if (index == 11 && text == 'PT') {
+                if (index == 11 && text == '手动模式') {
                     window.localStorage.setItem('modle', 'PT')
                     this.$store.dispatch('setLoginflag', { loginflag: true, index: 2 })
                 }
@@ -1124,7 +1123,7 @@
 
                         .con {
 
-                            /* width: 235px; */
+                            width: 200px;
                             .name {
                                 color: #979AA9;
                                 font-size: 17px;
