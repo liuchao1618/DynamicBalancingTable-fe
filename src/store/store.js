@@ -47,7 +47,7 @@ const mutations = {
     window.localStorage.setItem('login', data.login)
     window.localStorage.setItem('loginflag', data.loginflag)
  
-}
+  }
 }
 
 export default new vuex.Store({
