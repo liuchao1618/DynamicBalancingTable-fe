@@ -126,7 +126,7 @@ export default {
     let that = this
     document.addEventListener("plusready", () => {
       bluetoothTool.turnOnBluetooth()
-      // bluetoothTool.windowMeFlag()
+      bluetoothTool.windowMeFlag()
       if (bluetoothTool.state.bluetoothEnable) { // 如果蓝牙是开启状态就搜索设备
         that.defaultDevice()
       }

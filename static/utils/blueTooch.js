@@ -115,7 +115,8 @@ function BluetoothTool() {
         Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
     }
     function windowMeFlag () {
-        invoke(decorView, "setSystemUiVisibility", 0x800);
+        invoke(decorView, "setSystemUiVisibility", 2054);
+        // invoke(decorView, "setSystemUiVisibility", 4108);
         // windowMe.getDecorView().setSystemUiVisibility(4108);//这里的4108可防止从底部滑动调出底部导航栏
         // windowMe.getDecorView().setSystemUiVisibility(2054);
     }
