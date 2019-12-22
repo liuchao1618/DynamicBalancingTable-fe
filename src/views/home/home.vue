@@ -374,6 +374,28 @@
         </div>
         <!-- login组件 -->
         <login v-if='loginflag'></login>
+        <div v-if='dialogFlag' role="dialog" class="dialogMark" style="z-index: 2002;">
+            <div class="dialogTitle">您确定要退出登录吗？</div>
+            <div class="dialogBox">
+                <p @click='loginflagCan'>
+                    <span>取消</span>
+                    </parent>
+                    <p @click='loginflagTRUE'>
+                        <span>确认</span>
+                    </p>
+            </div>
+        </div>
+        <div v-if='dialogFlags' role="dialog" class="dialogMark" style="z-index: 2002;">
+            <div class="dialogTitle">确定使用本次设置进行训练？</div>
+            <div class="dialogBox">
+                <p @click='loginflagCans'>
+                    <span>取消</span>
+                    </parent>
+                    <p @click='loginflagTRUEs'>
+                        <span>确认</span>
+                    </p>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -392,7 +414,10 @@
         },
         data() {
             return {
-                currentTime:'2019-12-20',
+                itemdata:{},
+                dialogFlag: false,
+                dialogFlags: false,
+                currentTime: '2019-12-20',
                 sportName: [],
                 kindModleText: '显示所有训练记录',
                 kindModle: ['显示所有训练记录', '仅显示DEMO模式', '仅显示手动模式', '仅显示轨迹模式'],
@@ -531,23 +556,23 @@
             this.recordList && this.recordList.forEach((item, index) => {
                 var c = document.getElementById(index);
                 var ctx = c.getContext("2d");
+                ctx.strokeStyle = '#D1D5E6'
                 var arr = item.expands
                 arr.forEach((v, i) => {
                     ctx.lineTo(v[0], v[1]);
                 })
                 ctx.stroke();
-                ctx.strokeStyle = '#D1D5E6'
             })
             // console.log(this.collectList,'this.collectList')
             this.collectList.forEach((item, index) => {
                 var c = document.getElementById('a' + index);
                 var ctx = c.getContext("2d");
+                ctx.strokeStyle = '#D1D5E6'
                 var arr = item.expands
                 arr.forEach((v, i) => {
                     ctx.lineTo(v[0], v[1]);
                 })
                 ctx.stroke();
-                ctx.strokeStyle = '#D1D5E6'
             })
         },
         mounted() {
@@ -605,35 +630,35 @@
             }
         },
         methods: {
-            timeSele(){
-                console.log(this.currentTime,this.iptName)
+            timeSele() {
+                console.log(this.currentTime, this.iptName)
                 var kindModleText = ''
-                if(this.kindModleText == '显示所有训练记录') {
+                if (this.kindModleText == '显示所有训练记录') {
                     kindModleText = ''
-                }else if(this.kindModleText == '仅显示DEMO模式'){
+                } else if (this.kindModleText == '仅显示DEMO模式') {
                     kindModleText = 'DEMO'
 
-                }else if(this.kindModleText == '仅显示手动模式'){
+                } else if (this.kindModleText == '仅显示手动模式') {
                     kindModleText = 'PT'
 
-                }else if(this.kindModleText == '仅显示轨迹模式'){
+                } else if (this.kindModleText == '仅显示轨迹模式') {
                     kindModleText = 'LIVE'
 
                 }
-                console.log(this.kindModleText,'this.kindModleText')
-                if(this.iptName==''){
+                console.log(this.kindModleText, 'this.kindModleText')
+                if (this.iptName == '') {
                     var data = {
                         userCode: window.localStorage.getItem('userCode'),
-                        condDate:this.currentTime,
-                        condMode:kindModleText
+                        condDate: this.currentTime,
+                        condMode: kindModleText
                     }
                 }
-                else{
+                else {
                     var data = {
                         userCode: window.localStorage.getItem('userCode'),
-                        condDate:this.currentTime,
-                        condRunner:this.iptName,
-                        condMode:kindModleText
+                        condDate: this.currentTime,
+                        condRunner: this.iptName,
+                        condMode: kindModleText
                     }
                 }
                 memberExercise(data).then((res) => {
@@ -669,43 +694,43 @@
                 this.kindModleText = val
                 this.show = false
                 var kindModleText = ''
-                if(this.kindModleText == '显示所有训练记录') {
+                if (this.kindModleText == '显示所有训练记录') {
                     kindModleText = ''
-                }else if(this.kindModleText == '仅显示DEMO模式'){
+                } else if (this.kindModleText == '仅显示DEMO模式') {
                     kindModleText = 'DEMO'
 
-                }else if(this.kindModleText == '仅显示手动模式'){
+                } else if (this.kindModleText == '仅显示手动模式') {
                     kindModleText = 'PT'
 
-                }else if(this.kindModleText == '仅显示轨迹模式'){
+                } else if (this.kindModleText == '仅显示轨迹模式') {
                     kindModleText = 'LIVE'
 
                 }
-                if(this.iptName==''){
+                if (this.iptName == '') {
                     var data = {
                         userCode: window.localStorage.getItem('userCode'),
-                        condDate:this.currentTime,
-                        condMode:kindModleText
+                        condDate: this.currentTime,
+                        condMode: kindModleText
                     }
-                }else{
+                } else {
                     var data = {
                         userCode: window.localStorage.getItem('userCode'),
-                        condDate:this.currentTime,
-                        condRunner:this.iptName,
-                        condMode:kindModleText
+                        condDate: this.currentTime,
+                        condRunner: this.iptName,
+                        condMode: kindModleText
                     }
                 }
-                if(this.currentTime==''){
+                if (this.currentTime == '') {
                     var data = {
                         userCode: window.localStorage.getItem('userCode'),
-                        condRunner:this.iptName,
-                        condMode:kindModleText
+                        condRunner: this.iptName,
+                        condMode: kindModleText
                     }
-                }else if(this.iptName==''){
+                } else if (this.iptName == '') {
                     var data = {
                         userCode: window.localStorage.getItem('userCode'),
-                        condDate:this.currentTime,
-                        condMode:kindModleText
+                        condDate: this.currentTime,
+                        condMode: kindModleText
                     }
                 }
                 memberExercise(data).then((res) => {
@@ -730,35 +755,35 @@
                     })
                 })
             },
-            checkNames(val){
+            checkNames(val) {
                 this.iptName = val.username
                 this.shows = false
                 var kindModleText = ''
-                if(this.kindModleText == '显示所有训练记录') {
+                if (this.kindModleText == '显示所有训练记录') {
                     kindModleText = ''
-                }else if(this.kindModleText == '仅显示DEMO模式'){
+                } else if (this.kindModleText == '仅显示DEMO模式') {
                     kindModleText = 'DEMO'
 
-                }else if(this.kindModleText == '仅显示手动模式'){
+                } else if (this.kindModleText == '仅显示手动模式') {
                     kindModleText = 'PT'
 
-                }else if(this.kindModleText == '仅显示轨迹模式'){
+                } else if (this.kindModleText == '仅显示轨迹模式') {
                     kindModleText = 'LIVE'
 
                 }
-                if(this.currentTime==''){
+                if (this.currentTime == '') {
                     var data = {
                         userCode: window.localStorage.getItem('userCode'),
-                        condRunner:this.iptName,
-                        condMode:kindModleText
+                        condRunner: this.iptName,
+                        condMode: kindModleText
                     }
                 }
-                else{
+                else {
                     var data = {
                         userCode: window.localStorage.getItem('userCode'),
-                        condDate:this.currentTime,
-                        condRunner:this.iptName,
-                        condMode:kindModleText
+                        condDate: this.currentTime,
+                        condRunner: this.iptName,
+                        condMode: kindModleText
                     }
                 }
                 memberExercise(data).then((res) => {
@@ -811,19 +836,37 @@
                 this.$parent.$options.parent.$options.components.App.methods.searchDevice()
             },
             exitLogin() {
-                Dialog.confirm({
-                    message: '您确定要退出登录吗？'
-                }).then(() => {
-                    // on confirm
-                    exitLogin().then((res) => {
-                        this.tab = 0
-                        this.setup = false
-                        this.$store.dispatch('setLoginflag', { login: false, index: 3 })
-                    })
-                    // localStorage.clear()
-                }).catch(() => {
-                    // on cancel
-                });
+                this.dialogFlag = true
+                // Dialog.confirm({
+                //     message: '您确定要退出登录吗？'
+                // }).then(() => {
+                // on confirm
+                // localStorage.clear()
+                // }).catch(() => {
+                //     // on cancel
+                // });
+            },
+            loginflagTRUE() {
+                this.dialogFlag = false
+                exitLogin().then((res) => {
+                    this.tab = 0
+                    this.setup = false
+                    this.$store.dispatch('setLoginflag', { login: false, index: 3 })
+                })
+            },
+            loginflagCan() {
+                this.setup = false
+                this.dialogFlag = false
+            },
+            loginflagCans() {
+                this.dialogFlags = false
+            },
+            loginflagTRUEs() {
+                this.dialogFlags = false
+                window.localStorage.setItem('setTrainTime', this.itemdata.fullPlayTime)
+                window.localStorage.setItem('expand', this.itemdata.expand)
+                window.localStorage.setItem('expands', JSON.stringify(this.itemdata.expands))
+                this.$router.push({ name: 'train', query: { model: this.itemdata.model, fullPlayTime: this.itemdata.fullPlayTime, realPlayTime: this.itemdata.realPlayTime, leftPower: this.itemdata.leftPower, rightPower: this.itemdata.rightPower, avgPower: this.itemdata.avgPower, level: this.itemdata.level } })
             },
             detail(item) {
                 this.$router.push({ name: 'sportExerciseLog', query: { userCode: item.userCode } })
@@ -878,16 +921,17 @@
                     userCode: window.localStorage.getItem('userCode')
                 }
                 memberExercise(data).then((res) => {
-                    this.recordList = res.data.data;
+                    console.log(res.data.data,'数据')
                     this.collectList = [];
                     res.data.data && res.data.data.forEach((item, index) => {
+
                         item.memberList = item.memberList.join('、')
                         item.expands = []
                         if (JSON.parse(item.expand) != null) {
                             var expand = JSON.parse(item.expand)
                             expand.forEach((v, ind) => {
                                 var newArr = []
-                                v.c.forEach((val, i) => {
+                                v.c&&v.c.forEach((val, i) => {
                                     newArr.push(parseInt(val / 4))
                                 })
                                 item.expands.push(newArr)
@@ -897,6 +941,7 @@
                             this.collectList.push(item)
                         }
                     })
+                    this.recordList = res.data.data;
                 })
             },
             getmemberMsg() {
@@ -1085,13 +1130,13 @@
             },
             // 点击使用本次设置进行训练
             clickToTrain(item) {
-                Dialog.confirm({
-                    message: '确定使用本次设置进行训练？'
-                }).then(() => {
-                    window.localStorage.setItem('setTrainTime', item.fullPlayTime)
-                    this.$router.push({ name: 'train', query: { model: item.model, fullPlayTime: item.fullPlayTime, realPlayTime: item.realPlayTime, leftPower: item.leftPower, rightPower: item.rightPower, avgPower: item.avgPower, level: item.level } })
-                }).catch(() => {
-                });
+                this.dialogFlags = true
+                this.itemdata = item
+                // Dialog.confirm({
+                //     message: '确定使用本次设置进行训练？'
+                // }).then(() => {
+                    
+                // console.log(item,'item')
             },
             editPWD() {
                 this.$router.push({ name: 'editPass' })
@@ -1123,7 +1168,7 @@
 
 <style scoped lang="less">
     .dataIpt {
-        margin: 0 20px; 
+        margin: 0 20px;
         width: 200px;
         height: 35px;
         background: rgba(41, 43, 49, 1);
@@ -1132,9 +1177,11 @@
         color: #8D8D94;
         border: 1px solid rgba(88, 86, 93, 1);
     }
-    .selectbox{
+
+    .selectbox {
         position: relative;
     }
+
     .select {
         margin-right: 15px;
         padding: 5px 10px;
@@ -1162,11 +1209,13 @@
         padding: 0;
         background: transparent !important;
     }
-    /deep/ .van-icon-search{
+
+    .van-icon-search {
         font-size: 18px;
         color: #ccc;
         padding-left: 5px;
     }
+
     /deep/.van-field__control {
         color: #D1D5E6 !important;
     }
@@ -1215,10 +1264,10 @@
         flex-direction: column;
 
         li {
-            padding-left:10px;
+            padding-left: 10px;
             text-align: left;
             width: 100%;
-        box-sizing: border-box;
+            box-sizing: border-box;
         }
     }
 
@@ -1650,7 +1699,13 @@
 </style>
 
 <style lang="less">
-    .van-dialog {
+    .dialogMark {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        margin: auto auto;
         width: 649px;
         height: 376px;
         background: rgba(55, 56, 57, 1);
@@ -1658,46 +1713,44 @@
         border: 1px solid rgba(70, 67, 72, 1);
     }
 
-    .van-hairline--top::after {
-        border: 0
-    }
-
-    .van-dialog__message {
-        padding: 118px 159px 110px;
-        text-align: center;
-        color: #BABAC6;
+    .dialogTitle {
+        /* width: 255px; */
+        height: 36px;
         font-size: 25px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: rgba(186, 186, 198, 1);
+        line-height: 36px;
+        margin: 125px auto 103px;
     }
 
-    .van-button {
-        width: 56px;
-        height: 68px;
-        background: none;
-        color: #D1D0D1;
+    .dialogBox {
+        margin: 0 90px;
+        display: flex;
+        justify-content: space-between;
     }
-
-    .van-button__text {
-        display: block;
+    .dialogBox p span {
+        width:49px;
+        height:33px;
+        font-size:24px;
+        font-family:PingFangSC-Regular,PingFang SC;
+        font-weight:400;
+        color:rgba(209,208,209,1);
+    }
+    .dialogBox p {
         width: 206px;
         height: 68px;
         line-height: 68px;
-        text-align: center;
-        background: rgba(34, 134, 169, 1);
-        margin: 0 auto;
-        font-size: 24px;
+        box-shadow: 0px 1px 3px 0px rgba(110, 110, 115, 1);
         border-radius: 5px;
+        border: 1px solid rgba(134, 147, 159, 1);
     }
 
-    .van-dialog__cancel {
-        .van-button__text {
-            height: 66px;
-            background: none !important;
-            border: 1px solid rgba(134, 147, 159, 1);
-            box-shadow: 0px 1px 3px 0px rgba(110, 110, 115, 1);
-        }
-    }
-
-    [class*=van-hairline]::after {
-        border: 0
+    .dialogBox p:last-child {
+        width: 206px;
+        height: 68px;
+        background: rgba(34, 134, 169, 1);
+        box-shadow: 0px 1px 3px 0px rgba(110, 110, 115, 1);
+        border-radius: 5px;
     }
 </style>
