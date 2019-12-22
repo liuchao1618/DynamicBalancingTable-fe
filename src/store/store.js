@@ -11,7 +11,7 @@ const state = {
   loginName: '',
   identity:'',
   storeStatusContent: 0, // home页面蓝牙状态切换展示
-  storeStatus: 'fail', // 未连接成功的状态
+  storeStatus: 'success', // 未连接成功的状态
   readData: [], // 接收到的数据
   transmitType: 'normal', // 传给操作界面，用来判断该显示的状态和提示 normal：正常,stopping:急停
   BluetoothDataArr:['','',0,0,0,0]
@@ -47,7 +47,7 @@ const mutations = {
     window.localStorage.setItem('login', data.login)
     window.localStorage.setItem('loginflag', data.loginflag)
  
-}
+  }
 }
 
 export default new vuex.Store({
