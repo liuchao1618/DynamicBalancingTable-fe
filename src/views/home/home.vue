@@ -211,7 +211,7 @@
             </div>
             <!-- 收藏 -->
             <div v-show='tab === 2' class='list'>
-                <!-- <div class="logHead">
+                <div class="logHead">
                         <div class="search">
                             <van-search placeholder="请输入运动员姓名" @input='changeIpt' v-model="iptName" />
                             <ul class="lists" v-if='shows'>
@@ -230,7 +230,7 @@
                             </ul>
     
                         </div>
-                    </div> -->
+                    </div>
                 <div class='item' v-for='(item,i) in collectList'>
                     <div v-if='item.model=="PT"'>
                         <div class='itemTitle'>{{item.createTime}} PT模式 </div>
@@ -581,6 +581,7 @@
         ]),
         watch: {
             tab(now, old) {
+                this.iptName = ''
                 if (now == 1) {
                     this.getExercise();
                 } else if (now == 2) {
