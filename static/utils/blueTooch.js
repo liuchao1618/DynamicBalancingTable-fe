@@ -11,13 +11,9 @@ function BluetoothTool() {
     let invoke = plus.android.invoke;
     let btAdapter = BluetoothAdapter.getDefaultAdapter(); //默认适配器
     let activity = plus.android.runtimeMainActivity();
-<<<<<<< HEAD
-    // let windowMe = activity.getWindow().getDecorView();
-    // plus.android.importClass(windowMe);
-=======
-    let windowMe = activity.getWindow();
-    plus.android.importClass(windowMe);
->>>>>>> f5ef125cd3cd71bdd8bc0ad3d1652abf7d5866be
+    let windowMe = invoke(activity, "getWindow");
+
+    let decorView = invoke(windowMe, "getDecorView");
 
 
     let btSocket = null;
@@ -100,7 +96,7 @@ function BluetoothTool() {
         cancelDiscovery: cancelDiscovery,
         readData: readData,
         sendData: sendData,
-        // windowMeFlag: windowMeFlag
+        windowMeFlag: windowMeFlag
     }
     if (window.bluetoothToolInstance) {
         return window.bluetoothToolInstance;
@@ -118,11 +114,12 @@ function BluetoothTool() {
     function shortToast(msg) {
         Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
     }
-
-    // function windowMeFlag () {
-    //     windowMe.getDecorView().setSystemUiVisibility(4108);//这里的4108可防止从底部滑动调出底部导航栏
-    //     windowMe.setSystemUiVisibility(2054);
-    // }
+    function windowMeFlag () {
+        invoke(decorView, "setSystemUiVisibility", 2054);
+        // invoke(decorView, "setSystemUiVisibility", 4108);
+        // windowMe.getDecorView().setSystemUiVisibility(4108);//这里的4108可防止从底部滑动调出底部导航栏
+        // windowMe.getDecorView().setSystemUiVisibility(2054);
+    }
 
     /**
      * 是否支持蓝牙

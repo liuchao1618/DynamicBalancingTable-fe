@@ -209,6 +209,26 @@
             </div>
             <!-- 收藏 -->
             <div v-show='tab === 2' class='list'>
+                <!-- <div class="logHead">
+                        <div class="search">
+                            <van-search placeholder="请输入运动员姓名" @input='changeIpt' v-model="iptName" />
+                            <ul class="lists" v-if='shows'>
+                                <li v-for='(item,i) in sportName' @click='checkNames(item)'>{{item.username}}</li>
+                            </ul>
+                        </div>
+                        <input class="dataIpt" type="date" @change='timeSele' v-model="currentTime" />
+                        <div class="selectbox">
+                            <div class="select" @click='tabShow'>
+                                <span>{{kindModleText}}</span>
+                                <span class="img"><img src="../../assets/image/xiala.png" alt=""></span>
+                            </div>
+                            <ul class="xialalist" v-if='show'>
+                                <li v-for='(item,i) in kindModle' @click='changekindModleText(item)'>{{item}}
+                                </li>
+                            </ul>
+    
+                        </div>
+                    </div> -->
                 <div class='item' v-for='(item,i) in collectList'>
                     <div v-if='item.model=="PT"'>
                         <div class='itemTitle'>{{item.createTime}} PT模式 </div>
