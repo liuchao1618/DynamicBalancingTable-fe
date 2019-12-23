@@ -190,6 +190,7 @@
       this.model = this.$route.query.model
       this.locus = JSON.parse(window.localStorage.getItem('locus'))
       this.devices = JSON.parse(window.localStorage.getItem('devices'))
+      console.log(this.locus,'this.locus')
       this.getcheckMember()
       var c = document.getElementById('mycanvas');
       var ctx = c.getContext("2d");
