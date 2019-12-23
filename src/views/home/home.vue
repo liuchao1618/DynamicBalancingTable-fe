@@ -18,9 +18,9 @@
                 <div class='img'>
                     <img src="./image/none.png" alt="">未发现可用设备
                 </div>
-                <div style="display: flex; width: 30%;margin: 0 auto">
+                <div style="display: flex; width: 20%;margin: 0 auto">
                     <div @click="discoveryNewDevice()" class='load-button'>重新搜索</div>
-                    <div @click="changeStoreStatus()" class='load-button'>进入页面</div>
+                    <div @click="changeStoreStatus()" class='load-button'>进入系统</div>
                 </div>
             </div>
             <div v-if='statusContent === 3' class='load-loading'>
@@ -1646,7 +1646,9 @@
 
     .van-field__control {
         color: #8D8D94 !important;
-        font-size: 22px;
+        font-size: 20px;
+        line-height: 30px;
+        // height: 35px;
     }
 </style>
 

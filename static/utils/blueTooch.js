@@ -148,6 +148,7 @@ function BluetoothTool() {
      * @param requestCode
      */
     function turnOnBluetooth() {
+        // alert('打开蓝牙')
         if (btAdapter == null) {
             shortToast("没有蓝牙");
             return;
@@ -205,6 +206,7 @@ function BluetoothTool() {
      * @return {Array} connetedDevices
      */
     function getPairedDevices(discoveryAddress) {
+        // alert('获取默认设备')
         state.statusContent = 1
         options.getPairedDevicescallback && options.getPairedDevicescallback(state.stateContent)
         // alert('获取已经配对的设备')
@@ -372,7 +374,7 @@ function BluetoothTool() {
      * @return {Boolean}
      */
     function connDevice(address) {
-        // alert('开始连接了')
+        // alert('连接设备')
         let InputStream = plus.android.importClass("java.io.InputStream");
         let OutputStream = plus.android.importClass("java.io.OutputStream");
         let BluetoothSocket = plus.android.importClass("android.bluetooth.BluetoothSocket");
@@ -447,6 +449,7 @@ function BluetoothTool() {
      * 取消发现
      */
     function cancelDiscovery() {
+        // alert('取消发现')
         if (btAdapter.isDiscovering()) {
             btAdapter.cancelDiscovery();
         }
