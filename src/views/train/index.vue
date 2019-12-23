@@ -81,12 +81,12 @@
         timer: null,
         expand: [],
         expands: [],
-        interval1:null,
-        timeNode:0,
+        interval1: null,
+        timeNode: 0,
         intervalCount: 0, // 结束要置零  偶数运动 奇数停止
         interva: null,
         closeFlag: false,
-        markFlag:false
+        markFlag: false
       }
     },
     mounted() {
@@ -116,6 +116,7 @@
       this.avgPower = this.$route.query.avgPower;
       if (this.model == 'LIVE') {
         this.setTime = 1
+        this.realPlayTime = this.$route.query.realPlayTime;
         this.currentTimeNum = 0
       } else {
         this.currentTimeNum = this.fullPlayTime - this.$route.query.realPlayTime
@@ -136,7 +137,7 @@
        * 10-15 ~ 90-95 差值位0-80
        * @param this.left
        */
-       randomFuture() {
+      randomFuture() {
         try {
           if (this.intervalCount % 2 === 0) {
             let random0 = Math.floor(this.randomScope(0, this.leftPower, 0) / 5) * 5;
@@ -150,34 +151,58 @@
         }
       },
 
-       a() {
+      a() {
         clearTimeout(this.interva);
         if (this.closeFlag) {
           return;
         }
-        let future = this.randomFuture(this.leftPower,this.rightPower);
+        let future = this.randomFuture(this.leftPower, this.rightPower);
         console.log(future);
-        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO', this.intervalCount, future[0],future[1], 0, 0] })
-        
-        this.interva = setTimeout(()=> {
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO', this.intervalCount, future[0], future[1], 0, 0] })
+
+        this.interva = setTimeout(() => {
           this.a();
         }, future[2])
       },
       start() {
-       
         clearInterval(this.timer)
         if (this.model == 'LIVE') {
           this.timer = setInterval(() => {
+          if(this.currentTimeNum>=this.realPlayTime){
+            clearInterval(this.timer)
+            var data = {
+            model: 'LIVE',
+            devices: [{ deviceId: 1, deviceAlias: '设备1' }],
+            fullPlayTime: this.fullPlayTime * 1,
+            realPlayTime: this.currentTimeNum,
+            leftPower: this.leftPower,
+            rightPower: this.rightPower,
+            avgPower: parseInt((this.leftPower + this.rightPower) / 2),
+            userCode: window.localStorage.getItem('userCode'),
+            level: this.level,
+            locus: this.expand
+          }
+          window.localStorage.setItem('locus', JSON.stringify(this.expand))
+
+          saveRecord(data).then((res) => {
+            console.log(res,'保存记录')
+          if (res.data.code == 200) {
+            window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
+            this.$router.push({ name: 'finish', query: {  realPlayTime: this.currentTimeNum, id: res.data.data.id, model: 'LIVE' } })
+          }
+        })
+          }else{
             this.currentTimeNum++;
             this.currentTime = s_to_hs(this.currentTimeNum)
+          }
           }, 1000);
           this.f(this.expand)
         } else {
-          if(this.model == 'PT'){
-            this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','', this.leftPower,this.rightPower, 0,0] })
+          if (this.model == 'PT') {
+            this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', '', this.leftPower, this.rightPower, 0, 0] })
 
-          }else{
-           this.a()
+          } else {
+            this.a()
           }
           this.timer = setInterval(() => {
             if (this.currentTimeNum > 0) {
@@ -209,35 +234,51 @@
 
       },
       f(array) {
-          clearTimeout(this.interval1);
-          if (this.timeNode >= array.length) {
-            this.timeNode = 0;
-            return;
-          }
-          let temp = this.timeNode;
-          this.interval1 = setTimeout(() => {
-            // 发送数据
-          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['LIVE','', 0,0,array[this.timeNode++].c[0], array[this.timeNode++].c[1]] })
-
-            console.log(array[this.timeNode++]);
-            this.f(array);
-          }, temp <= 0 ? array[temp].t : array[temp].t - array[temp - 1].t);
-        },
-      stop() {
-        clearInterval(this.timer)
-
-        let data = {
-          model: this.$route.query.model,
-          devices: [{ deviceId: 1, deviceAlias: '设备1' }],
-          fullPlayTime: this.fullPlayTime * 1,
-          realPlayTime: window.localStorage.getItem('setTrainTime') - this.currentTimeNum,
-          leftPower: this.leftPower,
-          rightPower: this.rightPower,
-          avgPower: parseInt((this.leftPower + this.rightPower) / 2),
-          userCode: window.localStorage.getItem('userCode'),
-          level: this.level,
-          locus: this.expands
+        clearTimeout(this.interval1);
+        if (this.timeNode >= array.length) {
+          this.timeNode = 0;
+          return;
         }
+        let temp = this.timeNode;
+        this.interval1 = setTimeout(() => {
+          // 发送数据
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['LIVE', '', 0, 0, array[this.timeNode++].c[0], array[this.timeNode++].c[1]] })
+          this.f(array);
+        }, temp <= 0 ? array[temp].t : array[temp].t - array[temp - 1].t);
+      },
+      stop() {
+        console.log(this.model)
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: [this.model, '', 0, 0, 0, 0] })
+        clearInterval(this.timer)
+        if (this.model == 'LIVE') {
+          var data = {
+            model: this.$route.query.model,
+            devices: [{ deviceId: 1, deviceAlias: '设备1' }],
+            fullPlayTime: this.fullPlayTime * 1,
+            realPlayTime: this.currentTimeNum,
+            leftPower: this.leftPower,
+            rightPower: this.rightPower,
+            avgPower: parseInt((this.leftPower + this.rightPower) / 2),
+            userCode: window.localStorage.getItem('userCode'),
+            level: this.level,
+            locus: this.expand
+          }
+        } else {
+          var data = {
+            model: this.$route.query.model,
+            devices: [{ deviceId: 1, deviceAlias: '设备1' }],
+            fullPlayTime: this.fullPlayTime * 1,
+            realPlayTime: window.localStorage.getItem('setTrainTime') - this.currentTimeNum,
+            leftPower: this.leftPower,
+            rightPower: this.rightPower,
+            avgPower: parseInt((this.leftPower + this.rightPower) / 2),
+            userCode: window.localStorage.getItem('userCode'),
+            level: this.level,
+            locus: this.expand
+          }
+        }
+        window.localStorage.setItem('locus', JSON.stringify(this.expand))
+
         saveRecord(data).then((res) => {
           if (res.data.code == 200) {
             window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));

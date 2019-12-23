@@ -371,6 +371,7 @@
                     </van-col>
                 </van-row>
             </div>
+            <div class="refreSearchbox" v-if='refreSearch' @click='refreEvent'>重新搜索设备</div>
         </div>
         <!-- login组件 -->
         <login v-if='loginflag'></login>
@@ -576,6 +577,10 @@
             })
         },
         mounted() {
+            console.log(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag()+'aaaaaaaaaaaaaaaaaaaaaaaaa')
+            if(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() == false){
+                this.refreSearch = true
+            }
             // alert(this.statusContent)
             // alert(this.status)
             // 在其他页面监听蓝牙与设备的连接状态
@@ -602,6 +607,7 @@
             'loginName',
             'text',
             'storeStatusContent',
+            'refreSearch',
             'storeStatus'
         ]),
         watch: {
@@ -631,6 +637,9 @@
             }
         },
         methods: {
+            refreEvent(){
+                this.$store.dispatch('setLoginflag', { storeStatus: 'fail' })
+            },
             timeSele() {
                 console.log(this.currentTime, this.iptName)
                 var kindModleText = ''
@@ -987,8 +996,8 @@
                 this.$router.push({ name: 'SelectTime' });
             },
             godetail(index, text) {
-                // if(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() ==false){
-                if (!this) {
+                if(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() ==false){
+                // if (!this) {
                     this.$toast({
                         message: '未连接可用设备，请连接后重试。',
                         position: 'bottom'
@@ -1068,8 +1077,8 @@
             },
             godetails(index, text) {
 
-                // if (this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() == false) {
-                if (!this) {
+                if (this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() == false) {
+                // if (!this) {
 
                     if (index == 11 && text == '手动模式') {
                         window.localStorage.setItem('modle', 'PT')
@@ -1168,6 +1177,18 @@
 </script>
 
 <style scoped lang="less">
+    .refreSearchbox{
+        width:135px;
+        height:30px;
+        font-size:22px;
+        font-family:PingFangSC-Regular,PingFang SC;
+        font-weight:400;
+        color:rgba(156,160,177,1);
+        line-height:30px;
+        padding: 10px 20px;
+        border:1px solid rgba(156,160,177,1);
+        margin: 0 auto;
+    }
     .dataIpt {
         margin: 0 20px;
         width: 200px;
@@ -1488,7 +1509,7 @@
             .menu {
                 display: flex;
                 padding-top: 20px;
-
+                margin-left: 37px;
                 .menuLeft {
                     .menuItem {
                         width: 450px;
