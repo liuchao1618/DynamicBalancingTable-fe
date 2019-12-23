@@ -163,6 +163,7 @@ function BluetoothTool() {
                 return;
             }
         } else {
+            shortToast(new Date())
             shortToast("蓝牙已经打开");
             state.statusContent = 1;
             options.turnOnBluetoothCallback && options.turnOnBluetoothCallback(state.statusContent)
@@ -226,7 +227,7 @@ function BluetoothTool() {
         while (invoke(it, "hasNext")) {
             let device = invoke(it, "next");
             let address = String(plus.android.invoke(device, "getAddress"))
-            if (discoveryAddress.indexOf(address) > -1) {
+            if (discoveryAddress.indexOf(address) > -1 ) {
                 connDevice(address)
                 cancelDiscovery();
             }

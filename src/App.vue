@@ -66,7 +66,7 @@ export default {
          // 如果蓝牙是开启状态就搜索已配对设备
           if (bluetoothTool.state.bluetoothEnable) {
             that.$store.dispatch('setLoginflag', { storeStatusContent: 1 })
-            that.defaultDevice()
+            // that.defaultDevice()
           } else {
             if (that.$route.name != 'Home') {
               that.$router.push({name: 'Home', query: {urlContent: Number(Content)}})
@@ -83,9 +83,9 @@ export default {
           // alert('搜索设备回调')
           that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
         },
-        getPairedDevicescallback: function (Content) { // 搜索默认蓝牙回调
-          that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
-        },
+        // getPairedDevicescallback: function (Content) { // 搜索默认蓝牙回调
+        //   that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
+        // },
         connDeviceCallback: function (Content) { // 连接设备回调
           // alert('连接设备回调')
           // alert(bluetoothTool.state.readThreadState)
@@ -127,9 +127,9 @@ export default {
     document.addEventListener("plusready", () => {
       bluetoothTool.turnOnBluetooth()
       bluetoothTool.windowMeFlag()
-      if (bluetoothTool.state.bluetoothEnable) { // 如果蓝牙是开启状态就搜索设备
-        that.defaultDevice()
-      }
+      // if (bluetoothTool.state.bluetoothEnable) { // 如果蓝牙是开启状态就搜索设备
+      //   that.defaultDevice()
+      // }
       if (bluetoothTool.state.bluetoothEnable && !bluetoothTool.state.readThreadState) {
         that.searchDevice()
       }
