@@ -19,6 +19,7 @@
   </div>
 </template>
 <script>
+  import { mapState } from 'vuex'
   import { saveRecord } from '@/api/index'
   export default {
     mounted() {
@@ -160,7 +161,20 @@
         this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['LIVE', '', 0, 0, 0, 0] })
       },
     },
+    
+    computed: mapState({
+      transmitType: state => state.transmitType,
+    }),
     watch: {
+      transmitType() {
+        if (this.transmitType == 'stopping') {
+          this.$toast({
+            message: '设备已急停',
+            position: 'bottom'
+          });
+          this.$router.push({ name: 'Home', index: 0 })
+        }
+      },
       flags(now, old) {
         function coordinateTransform(site) {
           const xRatio = 1.22;
@@ -174,9 +188,9 @@
           this.timers = setInterval(() => {
             this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['LIVE', '', 0, 0, coordinateTransform([this.xPum, this.yPum])[0], coordinateTransform([this.xPum, this.yPum])[1]] })
             this.dataArr.push(
-              { t: new Date() * 1 + this.setTime * 1000 - this.startStr, c: [this.xPum, this.yPum] }
+              { t: new Date() * 1 + this.setTime * 1000 - this.startStr, c: [parseInt(this.xPum), parseInt(this.yPum)] }
             )
-          }, 500);
+          }, 1000);
         } else {
           clearInterval(this.timers)
         }

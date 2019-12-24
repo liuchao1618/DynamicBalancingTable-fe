@@ -19,11 +19,13 @@
     </div>
     <van-overlay :show="markFlag">
         <div class="wrapperMark">
-        <img src="../../assets/image/timg.gif" alt=""></div>
+        <img src="../../assets/image/timg.gif" alt="">
+        <p>设备复位中...</p></div>
       </van-overlay>
   </div>
 </template>
 <script>
+  import { mapState } from 'vuex'
   import { saveRecord } from '@/api/index'
   const minLeftPower = 10;
   const minRightPower = 15;
@@ -98,6 +100,20 @@
       }, 1000);
       this.a();
       
+    },
+    computed: mapState({
+      transmitType: state => state.transmitType,
+    }),
+    watch: {
+      transmitType() {
+        if (this.transmitType == 'stopping') {
+          this.$toast({
+            message: '设备已急停',
+            position: 'bottom'
+          });
+          this.$router.push({ name: 'Home', index: 0 })
+        }
+      },
     },
     methods: {
       randomScope(min, max, decimal) {
@@ -210,7 +226,7 @@
         this.markFlag = true;
         setTimeout(()=>{
           this.markFlag = false;
-        },3000)
+        },11000)
         clearTimeout(this.interva)
         this.intervalCount = 0
         this.freeze = '解冻'
@@ -222,10 +238,20 @@
 </script>
 <style scoped lang="less">
   .wrapperMark {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100%;
+  img{
+      width: 60px;
+      height: 60px;
+    }
+    p{
+      margin-top: 10px;
+      font-size: 20px;
+      color:#abafbd;
+    }
 }
   .none {
     pointer-events: none;

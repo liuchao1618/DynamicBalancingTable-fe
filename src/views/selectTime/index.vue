@@ -17,7 +17,6 @@
     <div class="bottom">
       <span class="back" @click='back'>返回</span>
       <span class="start" @click='start'>开始</span>
-      <span></span>
     </div>
   </div>
 </template>
@@ -147,7 +146,6 @@
     width: 90%;
     margin: 50px auto 0;
     height: auto;
-    justify-content: space-between;
     align-items: flex-end;
 
     .back {
@@ -171,6 +169,7 @@
       font-weight: 400;
       color: rgba(255, 255, 255, 1);
       line-height: 252px;
+      margin-left: 420px;
     }
   }
 </style>

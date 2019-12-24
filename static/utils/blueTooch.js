@@ -145,6 +145,7 @@ function BluetoothTool() {
      * @param requestCode
      */
     function turnOnBluetooth() {
+        shortToast(new Date())
         if (btAdapter == null) {
             shortToast("没有蓝牙");
             return;

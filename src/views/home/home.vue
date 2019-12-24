@@ -51,9 +51,9 @@
                         <div class="setupList" v-if='setup'>
                             <div class='setupItem' @click='editPWD'>修改密码</div>
                             <div class='setupItem' @click='exitLogin'>退出登录</div>
-                            <div class='setupItem'>自动登录 <van-switch class='switch' size='24px' v-model="loginSwitch"
+                            <!-- <div class='setupItem'>自动登录 <van-switch class='switch' size='24px' v-model="loginSwitch"
                                     active-color="#299AC1" inactive-color="#4E4F50"></van-switch>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -87,7 +87,7 @@
                             <li v-for='(item,i) in sportName' @click='checkNames(item)'>{{item.username}}</li>
                         </ul>
                     </div>
-                    <input class="dataIpt" type="date" @change='timeSele' v-model="currentTime" />
+                    <input class="dataIpt" type="date" @change='timeSele' v-model="currentTime" placeholder="请选择训练时间" />
                     <div class="selectbox">
                         <div class="select" @click='tabShow'>
                             <span>{{kindModleText}}</span>
@@ -97,8 +97,8 @@
                             <li v-for='(item,i) in kindModle' @click='changekindModleText(item)'>{{item}}
                             </li>
                         </ul>
-
                     </div>
+                    <div class='searchbtn' @click='searchbtnEvent'>查询</div>
                 </div>
                 <div class='item' v-for='(item,i) in recordList'>
                     <div v-show='item.model=="PT"'>
@@ -212,25 +212,27 @@
             <!-- 收藏 -->
             <div v-show='tab === 2' class='list'>
                 <div class="logHead">
-                        <div class="search">
-                            <van-search placeholder="请输入运动员姓名" @input='changeIpt' v-model="iptName" />
-                            <ul class="lists" v-if='shows'>
-                                <li v-for='(item,i) in sportName' @click='checkNames(item)'>{{item.username}}</li>
-                            </ul>
-                        </div>
-                        <input class="dataIpt" type="date" @change='timeSele' v-model="currentTime" />
-                        <div class="selectbox">
-                            <div class="select" @click='tabShow'>
-                                <span>{{kindModleText}}</span>
-                                <span class="img"><img src="../../assets/image/xiala.png" alt=""></span>
-                            </div>
-                            <ul class="xialalist" v-if='show'>
-                                <li v-for='(item,i) in kindModle' @click='changekindModleText(item)'>{{item}}
-                                </li>
-                            </ul>
-    
-                        </div>
+                    <div class="search">
+                        <van-search placeholder="请输入运动员姓名" @input='changeIpt' v-model="iptName" />
+                        <ul class="lists" v-if='shows'>
+                            <li v-for='(item,i) in sportName' @click='checkNames(item)'>{{item.username}}</li>
+                        </ul>
                     </div>
+                    <input class="dataIpt" type="date" @change='timeSele' v-model="currentTime" />
+                    <div class="selectbox">
+                        <div class="select" @click='tabShow'>
+                            <span>{{kindModleText}}</span>
+                            <span class="img"><img src="../../assets/image/xiala.png" alt=""></span>
+                        </div>
+                        <ul class="xialalist" v-if='show'>
+                            <li v-for='(item,i) in kindModle' @click='changekindModleText(item)'>{{item}}
+                            </li>
+                        </ul>
+
+                    </div>
+                    <div class='searchbtn' @click='searchbtnEvent'>查询</div>
+
+                </div>
                 <div class='item' v-for='(item,i) in collectList'>
                     <div v-if='item.model=="PT"'>
                         <div class='itemTitle'>{{item.createTime}} PT模式 </div>
@@ -415,10 +417,10 @@
         },
         data() {
             return {
-                itemdata:{},
+                itemdata: {},
                 dialogFlag: false,
                 dialogFlags: false,
-                currentTime: '2019-12-20',
+                currentTime: '',
                 sportName: [],
                 kindModleText: '显示所有训练记录',
                 kindModle: ['显示所有训练记录', '仅显示DEMO模式', '仅显示手动模式', '仅显示轨迹模式'],
@@ -564,7 +566,7 @@
                 })
                 ctx.stroke();
             })
-            // console.log(this.collectList,'this.collectList')
+            console.log(this.collectList,'this.collectList')
             this.collectList.forEach((item, index) => {
                 var c = document.getElementById('a' + index);
                 var ctx = c.getContext("2d");
@@ -577,10 +579,6 @@
             })
         },
         mounted() {
-            console.log(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag()+'aaaaaaaaaaaaaaaaaaaaaaaaa')
-            if(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() == false){
-                this.refreSearch = true
-            }
             // alert(this.statusContent)
             // alert(this.status)
             // 在其他页面监听蓝牙与设备的连接状态
@@ -608,11 +606,23 @@
             'text',
             'storeStatusContent',
             'refreSearch',
+            'transmitType',
             'storeStatus'
         ]),
         watch: {
+            transmitType() {
+                if (this.transmitType == 'stopping') {
+                    this.$toast({
+                        message: '设备已急停',
+                        position: 'bottom'
+                    });
+                    this.$router.query.push({ name: 'Home', index: 0 })
+                }
+            },
             tab(now, old) {
+                this.kindModleText = '显示所有训练记录'
                 this.iptName = ''
+                this.currentTime = ''
                 if (now == 1) {
                     this.getExercise();
                 } else if (now == 2) {
@@ -637,11 +647,18 @@
             }
         },
         methods: {
-            refreEvent(){
-                this.$store.dispatch('setLoginflag', { storeStatus: 'fail' })
-            },
-            timeSele() {
-                console.log(this.currentTime, this.iptName)
+            searchbtnEvent() {
+                console.log(this.collectList,'this.collectList')
+            //     this.collectList.forEach((item, index) => {
+            //     var c = document.getElementById('a' + index);
+            //     var ctx = c.getContext("2d");
+            //     ctx.strokeStyle = '#D1D5E6'
+            //     var arr = item.expands
+            //     arr.forEach((v, i) => {
+            //         ctx.lineTo(v[0], v[1]);
+            //     })
+            //     ctx.stroke();
+            // })
                 var kindModleText = ''
                 if (this.kindModleText == '显示所有训练记录') {
                     kindModleText = ''
@@ -655,21 +672,11 @@
                     kindModleText = 'LIVE'
 
                 }
-                console.log(this.kindModleText, 'this.kindModleText')
-                if (this.iptName == '') {
-                    var data = {
-                        userCode: window.localStorage.getItem('userCode'),
-                        condDate: this.currentTime,
-                        condMode: kindModleText
-                    }
-                }
-                else {
-                    var data = {
-                        userCode: window.localStorage.getItem('userCode'),
-                        condDate: this.currentTime,
-                        condRunner: this.iptName,
-                        condMode: kindModleText
-                    }
+                var data = {
+                    userCode: window.localStorage.getItem('userCode'),
+                    condDate: this.currentTime,
+                    condRunner: this.iptName,
+                    condMode: kindModleText
                 }
                 memberExercise(data).then((res) => {
                     this.recordList = res.data.data;
@@ -692,6 +699,62 @@
                         }
                     })
                 })
+            },
+            refreEvent() {
+                this.$store.dispatch('setLoginflag', { storeStatus: 'fail' })
+            },
+            timeSele() {
+                // console.log(this.currentTime, this.iptName)
+                // var kindModleText = ''
+                // if (this.kindModleText == '显示所有训练记录') {
+                //     kindModleText = ''
+                // } else if (this.kindModleText == '仅显示DEMO模式') {
+                //     kindModleText = 'DEMO'
+
+                // } else if (this.kindModleText == '仅显示手动模式') {
+                //     kindModleText = 'PT'
+
+                // } else if (this.kindModleText == '仅显示轨迹模式') {
+                //     kindModleText = 'LIVE'
+
+                // }
+                // console.log(this.kindModleText, 'this.kindModleText')
+                // if (this.iptName == '') {
+                //     var data = {
+                //         userCode: window.localStorage.getItem('userCode'),
+                //         condDate: this.currentTime,
+                //         condMode: kindModleText
+                //     }
+                // }
+                // else {
+                //     var data = {
+                //         userCode: window.localStorage.getItem('userCode'),
+                //         condDate: this.currentTime,
+                //         condRunner: this.iptName,
+                //         condMode: kindModleText
+                //     }
+                // }
+                // memberExercise(data).then((res) => {
+                //     this.recordList = res.data.data;
+                //     this.collectList = [];
+                //     res.data.data && res.data.data.forEach((item, index) => {
+                //         item.memberList = item.memberList.join('、')
+                //         item.expands = []
+                //         if (JSON.parse(item.expand) != null) {
+                //             var expand = JSON.parse(item.expand)
+                //             expand.forEach((v, ind) => {
+                //                 var newArr = []
+                //                 v.c.forEach((val, i) => {
+                //                     newArr.push(parseInt(val / 4))
+                //                 })
+                //                 item.expands.push(newArr)
+                //             })
+                //         }
+                //         if (item.favored) {
+                //             this.collectList.push(item)
+                //         }
+                //     })
+                // })
             },
             tabShow() {
                 if (this.show == false) {
@@ -703,120 +766,120 @@
             changekindModleText(val) {
                 this.kindModleText = val
                 this.show = false
-                var kindModleText = ''
-                if (this.kindModleText == '显示所有训练记录') {
-                    kindModleText = ''
-                } else if (this.kindModleText == '仅显示DEMO模式') {
-                    kindModleText = 'DEMO'
+                // var kindModleText = ''
+                // if (this.kindModleText == '显示所有训练记录') {
+                //     kindModleText = ''
+                // } else if (this.kindModleText == '仅显示DEMO模式') {
+                //     kindModleText = 'DEMO'
 
-                } else if (this.kindModleText == '仅显示手动模式') {
-                    kindModleText = 'PT'
+                // } else if (this.kindModleText == '仅显示手动模式') {
+                //     kindModleText = 'PT'
 
-                } else if (this.kindModleText == '仅显示轨迹模式') {
-                    kindModleText = 'LIVE'
+                // } else if (this.kindModleText == '仅显示轨迹模式') {
+                //     kindModleText = 'LIVE'
 
-                }
-                if (this.iptName == '') {
-                    var data = {
-                        userCode: window.localStorage.getItem('userCode'),
-                        condDate: this.currentTime,
-                        condMode: kindModleText
-                    }
-                } else {
-                    var data = {
-                        userCode: window.localStorage.getItem('userCode'),
-                        condDate: this.currentTime,
-                        condRunner: this.iptName,
-                        condMode: kindModleText
-                    }
-                }
-                if (this.currentTime == '') {
-                    var data = {
-                        userCode: window.localStorage.getItem('userCode'),
-                        condRunner: this.iptName,
-                        condMode: kindModleText
-                    }
-                } else if (this.iptName == '') {
-                    var data = {
-                        userCode: window.localStorage.getItem('userCode'),
-                        condDate: this.currentTime,
-                        condMode: kindModleText
-                    }
-                }
-                memberExercise(data).then((res) => {
-                    this.recordList = res.data.data;
-                    this.collectList = [];
-                    res.data.data && res.data.data.forEach((item, index) => {
-                        item.memberList = item.memberList.join('、')
-                        item.expands = []
-                        if (JSON.parse(item.expand) != null) {
-                            var expand = JSON.parse(item.expand)
-                            expand.forEach((v, ind) => {
-                                var newArr = []
-                                v.c.forEach((val, i) => {
-                                    newArr.push(parseInt(val / 4))
-                                })
-                                item.expands.push(newArr)
-                            })
-                        }
-                        if (item.favored) {
-                            this.collectList.push(item)
-                        }
-                    })
-                })
+                // }
+                // if (this.iptName == '') {
+                //     var data = {
+                //         userCode: window.localStorage.getItem('userCode'),
+                //         condDate: this.currentTime,
+                //         condMode: kindModleText
+                //     }
+                // } else {
+                //     var data = {
+                //         userCode: window.localStorage.getItem('userCode'),
+                //         condDate: this.currentTime,
+                //         condRunner: this.iptName,
+                //         condMode: kindModleText
+                //     }
+                // }
+                // if (this.currentTime == '') {
+                //     var data = {
+                //         userCode: window.localStorage.getItem('userCode'),
+                //         condRunner: this.iptName,
+                //         condMode: kindModleText
+                //     }
+                // } else if (this.iptName == '') {
+                //     var data = {
+                //         userCode: window.localStorage.getItem('userCode'),
+                //         condDate: this.currentTime,
+                //         condMode: kindModleText
+                //     }
+                // }
+                // memberExercise(data).then((res) => {
+                //     this.recordList = res.data.data;
+                //     this.collectList = [];
+                //     res.data.data && res.data.data.forEach((item, index) => {
+                //         item.memberList = item.memberList.join('、')
+                //         item.expands = []
+                //         if (JSON.parse(item.expand) != null) {
+                //             var expand = JSON.parse(item.expand)
+                //             expand.forEach((v, ind) => {
+                //                 var newArr = []
+                //                 v.c.forEach((val, i) => {
+                //                     newArr.push(parseInt(val / 4))
+                //                 })
+                //                 item.expands.push(newArr)
+                //             })
+                //         }
+                //         if (item.favored) {
+                //             this.collectList.push(item)
+                //         }
+                //     })
+                // })
             },
             checkNames(val) {
                 this.iptName = val.username
                 this.shows = false
-                var kindModleText = ''
-                if (this.kindModleText == '显示所有训练记录') {
-                    kindModleText = ''
-                } else if (this.kindModleText == '仅显示DEMO模式') {
-                    kindModleText = 'DEMO'
+                // var kindModleText = ''
+                // if (this.kindModleText == '显示所有训练记录') {
+                //     kindModleText = ''
+                // } else if (this.kindModleText == '仅显示DEMO模式') {
+                //     kindModleText = 'DEMO'
 
-                } else if (this.kindModleText == '仅显示手动模式') {
-                    kindModleText = 'PT'
+                // } else if (this.kindModleText == '仅显示手动模式') {
+                //     kindModleText = 'PT'
 
-                } else if (this.kindModleText == '仅显示轨迹模式') {
-                    kindModleText = 'LIVE'
+                // } else if (this.kindModleText == '仅显示轨迹模式') {
+                //     kindModleText = 'LIVE'
 
-                }
-                if (this.currentTime == '') {
-                    var data = {
-                        userCode: window.localStorage.getItem('userCode'),
-                        condRunner: this.iptName,
-                        condMode: kindModleText
-                    }
-                }
-                else {
-                    var data = {
-                        userCode: window.localStorage.getItem('userCode'),
-                        condDate: this.currentTime,
-                        condRunner: this.iptName,
-                        condMode: kindModleText
-                    }
-                }
-                memberExercise(data).then((res) => {
-                    this.recordList = res.data.data;
-                    this.collectList = [];
-                    res.data.data && res.data.data.forEach((item, index) => {
-                        item.memberList = item.memberList.join('、')
-                        item.expands = []
-                        if (JSON.parse(item.expand) != null) {
-                            var expand = JSON.parse(item.expand)
-                            expand.forEach((v, ind) => {
-                                var newArr = []
-                                v.c.forEach((val, i) => {
-                                    newArr.push(parseInt(val / 4))
-                                })
-                                item.expands.push(newArr)
-                            })
-                        }
-                        if (item.favored) {
-                            this.collectList.push(item)
-                        }
-                    })
-                })
+                // }
+                // if (this.currentTime == '') {
+                //     var data = {
+                //         userCode: window.localStorage.getItem('userCode'),
+                //         condRunner: this.iptName,
+                //         condMode: kindModleText
+                //     }
+                // }
+                // else {
+                //     var data = {
+                //         userCode: window.localStorage.getItem('userCode'),
+                //         condDate: this.currentTime,
+                //         condRunner: this.iptName,
+                //         condMode: kindModleText
+                //     }
+                // }
+                // memberExercise(data).then((res) => {
+                //     this.recordList = res.data.data;
+                //     this.collectList = [];
+                //     res.data.data && res.data.data.forEach((item, index) => {
+                //         item.memberList = item.memberList.join('、')
+                //         item.expands = []
+                //         if (JSON.parse(item.expand) != null) {
+                //             var expand = JSON.parse(item.expand)
+                //             expand.forEach((v, ind) => {
+                //                 var newArr = []
+                //                 v.c.forEach((val, i) => {
+                //                     newArr.push(parseInt(val / 4))
+                //                 })
+                //                 item.expands.push(newArr)
+                //             })
+                //         }
+                //         if (item.favored) {
+                //             this.collectList.push(item)
+                //         }
+                //     })
+                // })
             },
             changeIpt() {
                 runnersName().then((res) => {
@@ -931,7 +994,6 @@
                     userCode: window.localStorage.getItem('userCode')
                 }
                 memberExercise(data).then((res) => {
-                    console.log(res.data.data,'数据')
                     this.collectList = [];
                     res.data.data && res.data.data.forEach((item, index) => {
 
@@ -941,7 +1003,7 @@
                             var expand = JSON.parse(item.expand)
                             expand.forEach((v, ind) => {
                                 var newArr = []
-                                v.c&&v.c.forEach((val, i) => {
+                                v.c && v.c.forEach((val, i) => {
                                     newArr.push(parseInt(val / 4))
                                 })
                                 item.expands.push(newArr)
@@ -976,166 +1038,196 @@
                 this.tab = index
             },
             leftgoDetail(item, index) {
-                let modle = window.localStorage.getItem('modle')
-                if (modle == 'DEMO') {
-                    window.localStorage.setItem('level', item)
-                } else if (modle == 'PT') {
+                if (this.transmitType == 'stopping') {
+                    this.$toast({
+                        message: '设备急停中，无法执行该操作',
+                        position: 'bottom'
+                    });
+                } else if (this.transmitType == 'normal') {
+                    let modle = window.localStorage.getItem('modle')
+                    if (modle == 'DEMO') {
+                        window.localStorage.setItem('level', item)
+                    } else if (modle == 'PT') {
+                        if(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() ==false){
+                        // if (!this) {
+                            this.$toast({
+                                message: '未连接可用设备，请连接后重试。',
+                                position: 'bottom'
+                            });
+                        } else {
+                            if (index == 0) {
+                                this.leftValue = 10
+                                this.rightValue = 15
+                            } else if (index == 1) {
+                                this.leftValue = 40
+                                this.rightValue = 45
+                            } else if (index == 2) {
+                                this.leftValue = 80
+                                this.rightValue = 85
+                            }
+                            window.localStorage.setItem('leftValue', this.leftValue)
+                            window.localStorage.setItem('rightValue', this.rightValue)
+                            this.$router.push({ name: 'SelectTime' });
+                        }
+                    }
                 }
-                if (index == 0) {
-                    this.leftValue = 10
-                    this.rightValue = 15
-                } else if (index == 1) {
-                    this.leftValue = 40
-                    this.rightValue = 45
-                } else if (index == 2) {
-                    this.leftValue = 80
-                    this.rightValue = 85
-                }
-                window.localStorage.setItem('leftValue', this.leftValue)
-                window.localStorage.setItem('rightValue', this.rightValue)
-                this.$router.push({ name: 'SelectTime' });
             },
             godetail(index, text) {
-                if(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() ==false){
-                // if (!this) {
+                if (this.transmitType == 'stopping') {
                     this.$toast({
-                        message: '未连接可用设备，请连接后重试。',
+                        message: '设备急停中，无法执行该操作',
                         position: 'bottom'
                     });
-                } else {
-                    if (index == 0) {
-                        this.leftValue = 15
-                        this.rightValue = 20
-                    } else if (index == 1) {
-                        this.leftValue = 25
-                        this.rightValue = 30
-                    } else if (index == 2) {
-                        this.leftValue = 30
-                        this.rightValue = 35
-                    } else if (index == 3) {
-                        this.leftValue = 35
-                        this.rightValue = 40
-                    } else if (index == 4) {
-                        this.leftValue = 50
-                        this.rightValue = 55
-                    } else if (index == 5) {
-                        this.leftValue = 55
-                        this.rightValue = 60
-                    } else if (index == 6) {
-                        this.leftValue = 60
-                        this.rightValue = 65
-                    } else if (index == 7) {
-                        this.leftValue = 70
-                        this.rightValue = 75
-                    } else if (index == 8) {
-                        this.leftValue = 85
-                        this.rightValue = 90
-                    } else if (index == 9) {
-                        this.leftValue = 90
-                        this.rightValue = 95
-                    } else if (index == 10) {
-                        this.leftValue = 95
-                        this.rightValue = 100
-                    }
-                    window.localStorage.setItem('left', this.leftValue)
-                    window.localStorage.setItem('right', this.rightValue)
-                    // if(window.localStorage.getItem('modle') == 'DEMO'){
-                    //     this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO','',this.leftValue,this.rightValue,0,0] })
-                    // }else if(window.localStorage.getItem('modle') == 'PT'){
-                    //     this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','',this.leftValue,this.rightValue,0,0]  })
-                    // }
-                    if (index == 10 && text == '轨迹模式') {
-                        window.localStorage.setItem('modle', 'LIVE')
-                        this.$router.push({ name: 'live' });
-                    }
-                    else if (index == 11 && text == 'DEMO TEST') {
-                        window.localStorage.setItem('modle', 'DEMO')
-                        this.list.forEach((item, i) => {
-                            if (i == 10) {
-                                item.text = '功能 3 <br/>L4'
-                            } else if (i == 11) {
-                                item.text = '手动模式'
-                            }
-                        })
-                    }
-                    else if (index == 11 && text == '手动模式') {
-                        window.localStorage.setItem('modle', 'PT')
-                        this.list.forEach((item, i) => {
-                            if (i == 10) {
-                                item.text = '轨迹模式'
-                            } else if (i == 11) {
-                                item.text = 'DEMO TEST'
-                            }
-                        })
-                    }
-                    else {
-                        // this.$store.dispatch('setLoginflag', { left: this.leftValue, right: this.rightValue })
-                        this.$router.push({ name: 'SelectTime' });
-                    }
-                    window.localStorage.setItem('level', text)
-                }
-            },
-            godetails(index, text) {
-
-                if (this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() == false) {
-                // if (!this) {
-
-                    if (index == 11 && text == '手动模式') {
-                        window.localStorage.setItem('modle', 'PT')
-                        this.$store.dispatch('setLoginflag', { loginflag: true, index: 2 })
-                    }
-                    this.$toast({
-                        message: '未连接可用设备，请连接后重试。',
-                        position: 'bottom'
-                    });
-                } else {
-                    if (index == 0) {
-                        this.leftValue = 15
-                        this.rightValue = 20
-                    } else if (index == 1) {
-                        this.leftValue = 25
-                        this.rightValue = 30
-                    } else if (index == 2) {
-                        this.leftValue = 30
-                        this.rightValue = 35
-                    } else if (index == 3) {
-                        this.leftValue = 35
-                        this.rightValue = 40
-                    } else if (index == 4) {
-                        this.leftValue = 50
-                        this.rightValue = 55
-                    } else if (index == 5) {
-                        this.leftValue = 55
-                        this.rightValue = 60
-                    } else if (index == 6) {
-                        this.leftValue = 60
-                        this.rightValue = 65
-                    } else if (index == 7) {
-                        this.leftValue = 70
-                        this.rightValue = 75
-                    } else if (index == 8) {
-                        this.leftValue = 85
-                        this.rightValue = 90
-                    } else if (index == 9) {
-                        this.leftValue = 90
-                        this.rightValue = 95
-                    } else if (index == 10) {
-                        this.leftValue = 95
-                        this.rightValue = 100
-                    }
-                    if (index == 11 && text == '手动模式') {
-                        window.localStorage.setItem('modle', 'PT')
-                        this.$store.dispatch('setLoginflag', { loginflag: true, index: 2 })
-                    }
-                    else {
-                        window.localStorage.setItem('modle', 'DEMO')
+                } else if (this.transmitType == 'normal') {
+                    if(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() ==false){
+                    // if (!this) {
+                        this.$toast({
+                            message: '未连接可用设备，请连接后重试。',
+                            position: 'bottom'
+                        });
+                    } else {
+                        if (index == 0) {
+                            this.leftValue = 15
+                            this.rightValue = 20
+                        } else if (index == 1) {
+                            this.leftValue = 25
+                            this.rightValue = 30
+                        } else if (index == 2) {
+                            this.leftValue = 30
+                            this.rightValue = 35
+                        } else if (index == 3) {
+                            this.leftValue = 35
+                            this.rightValue = 40
+                        } else if (index == 4) {
+                            this.leftValue = 50
+                            this.rightValue = 55
+                        } else if (index == 5) {
+                            this.leftValue = 55
+                            this.rightValue = 60
+                        } else if (index == 6) {
+                            this.leftValue = 60
+                            this.rightValue = 65
+                        } else if (index == 7) {
+                            this.leftValue = 70
+                            this.rightValue = 75
+                        } else if (index == 8) {
+                            this.leftValue = 85
+                            this.rightValue = 90
+                        } else if (index == 9) {
+                            this.leftValue = 90
+                            this.rightValue = 95
+                        } else if (index == 10) {
+                            this.leftValue = 95
+                            this.rightValue = 100
+                        }
                         window.localStorage.setItem('left', this.leftValue)
                         window.localStorage.setItem('right', this.rightValue)
-                        // this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO','',this.leftValue,this.rightValue,0,0] })
-                        this.$router.push({ name: 'SelectTime' });
+                        // if(window.localStorage.getItem('modle') == 'DEMO'){
+                        //     this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO','',this.leftValue,this.rightValue,0,0] })
+                        // }else if(window.localStorage.getItem('modle') == 'PT'){
+                        //     this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','',this.leftValue,this.rightValue,0,0]  })
+                        // }
+                        if (index == 10 && text == '轨迹模式') {
+                            window.localStorage.setItem('modle', 'LIVE')
+                            this.$router.push({ name: 'live' });
+                        }
+                        else if (index == 11 && text == 'DEMO TEST') {
+                            window.localStorage.setItem('modle', 'DEMO')
+                            this.list.forEach((item, i) => {
+                                if (i == 10) {
+                                    item.text = '功能 3 <br/>L4'
+                                } else if (i == 11) {
+                                    item.text = '手动模式'
+                                }
+                            })
+                        }
+                        else if (index == 11 && text == '手动模式') {
+                            window.localStorage.setItem('modle', 'PT')
+                            this.list.forEach((item, i) => {
+                                if (i == 10) {
+                                    item.text = '轨迹模式'
+                                } else if (i == 11) {
+                                    item.text = 'DEMO TEST'
+                                }
+                            })
+                        }
+                        else {
+                            // this.$store.dispatch('setLoginflag', { left: this.leftValue, right: this.rightValue })
+                            this.$router.push({ name: 'SelectTime' });
+                        }
+                        window.localStorage.setItem('level', text)
                     }
-                    window.localStorage.setItem('level', text)
 
+                }
+
+            },
+            godetails(index, text) {
+                if (this.transmitType == 'stopping') {
+                    this.$toast({
+                        message: '设备急停中，无法执行该操作',
+                        position: 'bottom'
+                    });
+                } else if (this.transmitType == 'normal') {
+                    if (this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() == false) {
+                    // if (!this) {
+
+                        if (index == 11 && text == '手动模式') {
+                            window.localStorage.setItem('modle', 'PT')
+                            this.$store.dispatch('setLoginflag', { loginflag: true, index: 2 })
+                        }
+                        this.$toast({
+                            message: '未连接可用设备，请连接后重试。',
+                            position: 'bottom'
+                        });
+                    } else {
+                        if (index == 0) {
+                            this.leftValue = 15
+                            this.rightValue = 20
+                        } else if (index == 1) {
+                            this.leftValue = 25
+                            this.rightValue = 30
+                        } else if (index == 2) {
+                            this.leftValue = 30
+                            this.rightValue = 35
+                        } else if (index == 3) {
+                            this.leftValue = 35
+                            this.rightValue = 40
+                        } else if (index == 4) {
+                            this.leftValue = 50
+                            this.rightValue = 55
+                        } else if (index == 5) {
+                            this.leftValue = 55
+                            this.rightValue = 60
+                        } else if (index == 6) {
+                            this.leftValue = 60
+                            this.rightValue = 65
+                        } else if (index == 7) {
+                            this.leftValue = 70
+                            this.rightValue = 75
+                        } else if (index == 8) {
+                            this.leftValue = 85
+                            this.rightValue = 90
+                        } else if (index == 9) {
+                            this.leftValue = 90
+                            this.rightValue = 95
+                        } else if (index == 10) {
+                            this.leftValue = 95
+                            this.rightValue = 100
+                        }
+                        if (index == 11 && text == '手动模式') {
+                            window.localStorage.setItem('modle', 'PT')
+                            this.$store.dispatch('setLoginflag', { loginflag: true, index: 2 })
+                        }
+                        else {
+                            window.localStorage.setItem('modle', 'DEMO')
+                            window.localStorage.setItem('left', this.leftValue)
+                            window.localStorage.setItem('right', this.rightValue)
+                            // this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO','',this.leftValue,this.rightValue,0,0] })
+                            this.$router.push({ name: 'SelectTime' });
+                        }
+                        window.localStorage.setItem('level', text)
+
+                    }
                 }
             },
             // 点击使用本次设置进行训练
@@ -1145,7 +1237,7 @@
                 // Dialog.confirm({
                 //     message: '确定使用本次设置进行训练？'
                 // }).then(() => {
-                    
+
                 // console.log(item,'item')
             },
             editPWD() {
@@ -1177,22 +1269,25 @@
 </script>
 
 <style scoped lang="less">
-    .refreSearchbox{
-        width:135px;
-        height:30px;
-        font-size:22px;
-        font-family:PingFangSC-Regular,PingFang SC;
-        font-weight:400;
-        color:rgba(156,160,177,1);
-        line-height:30px;
+    .refreSearchbox {
+        width: 135px;
+        height: 30px;
+        font-size: 22px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: rgba(156, 160, 177, 1);
+        line-height: 30px;
         padding: 10px 20px;
-        border:1px solid rgba(156,160,177,1);
+        border: 1px solid rgba(156, 160, 177, 1);
         margin: 0 auto;
     }
+
     .dataIpt {
+        padding-left: 10px;
+        box-sizing: border-box;
         margin: 0 20px;
-        width: 200px;
-        height: 35px;
+        width: 210px;
+        height: 50px;
         background: rgba(41, 43, 49, 1);
         box-shadow: 0px -1px 0px 0px rgba(88, 86, 93, 1);
         border-radius: 5px;
@@ -1211,8 +1306,8 @@
         justify-content: space-between;
         align-items: center;
         box-sizing: border-box;
-        width: 200px;
-        height: 35px;
+        width: 210px;
+        height: 50px;
         color: #8D8D94;
         border-radius: 4px;
         border: 1px solid rgba(98, 101, 118, 1);
@@ -1242,12 +1337,22 @@
         color: #D1D5E6 !important;
     }
 
+    .searchbtn {
+        width: 100px;
+        height: 50px;
+        color: #8D8D94;
+        line-height: 50px;
+        border-radius: 4px;
+        margin-left: 50px;
+        border: 1px solid rgba(98, 101, 118, 1);
+    }
+
     .xialalist {
         position: absolute;
-        top: 35px;
+        top: 51px;
         left: 0;
-        width: 200px;
-        height: 150px;
+        width: 210px;
+        /* height: 150px; */
         background: rgba(41, 43, 49, 1);
         box-shadow: 0px -1px 0px 0px rgba(88, 86, 93, 1);
         border-radius: 5px;
@@ -1255,22 +1360,23 @@
         border: 1px solid rgba(88, 86, 93, 1);
         border-top: 0;
         z-index: 999;
-        line-height: 32px;
         padding: 5px 10px;
         box-sizing: border-box;
         overflow: auto;
 
         li {
+
+            line-height: 45px;
             width: 100%;
         }
     }
 
     .lists {
         position: absolute;
-        top: 35px;
+        top: 51px;
         left: 0px;
-        width: 205px;
-        height: 100px;
+        width: 212px;
+        /* height: 100px; */
         background: rgba(41, 43, 49, 1);
         box-shadow: 0px -1px 0px 0px rgba(88, 86, 93, 1);
         border-radius: 5px;
@@ -1278,7 +1384,6 @@
         border-top: 0;
         z-index: 1000;
         color: #8D8D94;
-        line-height: 32px;
         /* padding: 5px 0 10px; */
         box-sizing: border-box;
         overflow: auto;
@@ -1286,6 +1391,7 @@
         flex-direction: column;
 
         li {
+            line-height: 45px;
             padding-left: 10px;
             text-align: left;
             width: 100%;
@@ -1301,8 +1407,8 @@
 
     .search {
         position: relative;
-        width: 204px;
-        height: 35px;
+        width: 212px;
+        height: 50px;
         border-radius: 4px;
         border: 1px solid rgba(98, 101, 118, 1);
         /* overflow: hidden; */
@@ -1362,7 +1468,7 @@
         min-height: 100vh;
         padding: 30px 30px 0;
         box-sizing: border-box;
-        background: url("./image/bg.png") no-repeat left top;
+        background: url('../../assets/image/bg.png') repeat;
         background-size: cover;
 
         .loading {
@@ -1473,10 +1579,9 @@
 
                         .setupList {
                             position: absolute;
-                            bottom: -250px;
+                            top: 70px;
                             left: -200px;
                             width: 245px;
-                            height: 245px;
                             z-index: 3;
                             background-color: #373839;
                             border: 1px solid #464348;
@@ -1510,6 +1615,7 @@
                 display: flex;
                 padding-top: 20px;
                 margin-left: 37px;
+
                 .menuLeft {
                     .menuItem {
                         width: 450px;
@@ -1751,14 +1857,16 @@
         display: flex;
         justify-content: space-between;
     }
+
     .dialogBox p span {
-        width:49px;
-        height:33px;
-        font-size:24px;
-        font-family:PingFangSC-Regular,PingFang SC;
-        font-weight:400;
-        color:rgba(209,208,209,1);
+        width: 49px;
+        height: 33px;
+        font-size: 24px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: rgba(209, 208, 209, 1);
     }
+
     .dialogBox p {
         width: 206px;
         height: 68px;

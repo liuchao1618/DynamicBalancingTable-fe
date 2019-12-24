@@ -11,8 +11,7 @@
       </div>
       <div class="center">
         <div class="cenLeft">
-          <van-slider :step="5" class="leftLine" v-model="leftValue" bar-height='32px;' vertical
-          @change='changeleft' />
+          <van-slider :step="5" class="leftLine" v-model="leftValue" bar-height='32px;' vertical @change='changeleft' />
           <img src="../../assets/image/left.png" alt="">
         </div>
         <div class="cenCent">
@@ -29,7 +28,7 @@
         </div>
         <div class="cenRight">
           <van-slider :step="5" class="rightValue" v-model="rightValue" bar-height='38px;' vertical
-          @change='changeright' />
+            @change='changeright' />
           <img src="../../assets/image/right.png" alt="">
         </div>
       </div>
@@ -40,7 +39,8 @@
       </div>
     </div>
     <div class="centBottom">
-      <van-slider :step="5" class="bottomLine" @drag-end='botEnd' v-model="bottomValue" bar-height='23px' @change="changeBottom" />
+      <van-slider :step="5" class="bottomLine" @drag-end='botEnd' v-model="bottomValue" bar-height='23px'
+        @change="changeBottom" />
       <img src="../../assets/image/bottom.png" alt="">
     </div>
     <div class="bottom">
@@ -53,14 +53,16 @@
     </div>
     <van-overlay :show="markFlag">
       <div class="wrapperMark">
-      <img src="../../assets/image/timg.gif" alt=""></div>
+        <img src="../../assets/image/timg.gif" alt="">
+        <p>设备复位中...</p>
+      </div>
     </van-overlay>
 
   </div>
 </template>
 <script>
   import { saveRecord } from '@/api/index'
-
+  import { mapState } from 'vuex'
   export default {
     data() {
       return {
@@ -75,7 +77,7 @@
         timer: null,
         setTime: 0,
         watchFlag: false,
-        markFlag:false
+        markFlag: false
       }
     },
     mounted() {
@@ -83,7 +85,7 @@
       var right = this.$store.state.BluetoothDataArr[3]
       this.leftValue = 100 - left
       this.rightValue = 100 - right
-      this.bottomValue = parseInt((left*1 + right*1)/2)
+      this.bottomValue = parseInt((left * 1 + right * 1) / 2)
       /**
        * 将秒转换为 分:秒
        * s int 秒数
@@ -145,15 +147,37 @@
         }
       }, 1000);
     },
+    computed: mapState({
+      transmitType: state => state.transmitType,
+    }),
+    watch: {
+      transmitType() {
+        if (this.transmitType == 'stopping') {
+          this.$toast({
+            message: '设备已急停',
+            position: 'bottom'
+          });
+          this.$router.push({ name: 'Home', index: 0 })
+        }
+      },
+      bottomValue(now, old) {
+        setTimeout(() => {
+          if (this.watchFlag) {
+            this.calculateBottomValue(now, old);
+          }
+        }, 500);
+      }
+
+    },
     methods: {
       l(...obj) {
         console.log(obj);
       },
-      botEnd(){
-        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','', 100-this.leftValue,100-this.rightValue,0,0] })
+      botEnd() {
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', '', 100 - this.leftValue, 100 - this.rightValue, 0, 0] })
       },
       stop() {
-        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null','',0,0,0,0] })
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', '', 0, 0, 0, 0] })
         clearInterval(this.timer)
         let data = {
           model: 'PT',
@@ -190,12 +214,12 @@
       changeleft(event) {
         this.watchFlag = false
         this.bottomValue = parseInt((100 - event + 100 - this.rightValue) / 2)
-        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','', 100-this.leftValue,100-this.rightValue,0,0] })
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', '', 100 - this.leftValue, 100 - this.rightValue, 0, 0] })
       },
       changeright(event) {
         this.watchFlag = false
         this.bottomValue = parseInt((100 - event + 100 - this.leftValue) / 2)
-        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','', 100-this.leftValue,100-this.rightValue,0,0] })
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', '', 100 - this.leftValue, 100 - this.rightValue, 0, 0] })
       },
 
       changeBottom() {
@@ -248,9 +272,9 @@
               });
             }
           }, 1000);
-          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','', 100-this.leftValue,100-this.rightValue,0,0] })
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', '', 100 - this.leftValue, 100 - this.rightValue, 0, 0] })
         } else {
-          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','PAUSE',0,0,0,0] })
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', 'PAUSE', 0, 0, 0, 0] })
           this.pause = '继续'
           clearInterval(this.timer)
         }
@@ -259,20 +283,20 @@
       changefreeze() {
         if (this.freeze == '冻结') {
           this.freeze = '解冻'
-          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','PAUSE',0,0,0,0] })
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', 'PAUSE', 0, 0, 0, 0] })
         } else {
           this.freeze = '冻结'
-          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','', 100-this.leftValue,100-this.rightValue,0,0] })
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', '', 100 - this.leftValue, 100 - this.rightValue, 0, 0] })
         }
       },
 
       changealign() {
         this.markFlag = true;
-        setTimeout(()=>{
+        setTimeout(() => {
           this.markFlag = false;
-        },3000)
+        }, 11000)
         this.freeze = '解冻'
-        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','ALIGN', 0,0,0,0] })
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', 'ALIGN', 0, 0, 0, 0] })
 
       },
 
@@ -333,24 +357,30 @@
       }
     },
 
-    watch: {
-      bottomValue(now, old) {
-        setTimeout(() => {
-        if (this.watchFlag) {
-          this.calculateBottomValue(now, old);
-        }
-        }, 500);
-      }
-    }
+
+
   }
 </script>
 <style scoped lang="less">
   .wrapperMark {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100%;
+
+    img {
+      width: 60px;
+      height: 60px;
+    }
+
+    p {
+      margin-top: 10px;
+      font-size: 20px;
+      color: #abafbd;
+    }
+  }
+
   .mark {
     position: absolute;
     left: 0;
