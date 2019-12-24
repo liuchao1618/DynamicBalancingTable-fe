@@ -9,7 +9,9 @@
     </div>
     <div class="box">
       <div class="left">
-        <h3>{{dataTime}} {{model}}模式</h3>
+        <h3 v-if='model == "PT"'>{{dataTime}} 手动模式</h3>
+        <h3 v-if='model == "DEMO"'>{{dataTime}} demo模式</h3>
+        <h3 v-if='model == "LIVE"'>{{dataTime}} 轨迹模式</h3>
         <div class="livebox" v-if='locus'>
           <div class="liveL">
             <div class="exerciseTime">
@@ -48,7 +50,7 @@
               <div class="usedevicebox">
                 <dl>
                   <dt>{{leftValue}}</dt>
-                  <dd>POWER LEFT</dd>
+                  <dd>左</dd>
                 </dl>
                 <dl>
                   <dt>{{parseInt(( leftValue*1 + rightValue*1) / 2)}}</dt>
@@ -56,7 +58,7 @@
                 </dl>
                 <dl>
                   <dt>{{rightValue}}</dt>
-                  <dd>POWER RIGHT</dd>
+                  <dd>右</dd>
                 </dl>
               </div>
             </div>

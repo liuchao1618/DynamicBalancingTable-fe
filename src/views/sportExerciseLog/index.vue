@@ -9,7 +9,7 @@
     </div>
     <div v-else class='item' v-for='(item,i) in recordList'>
       <div v-if='item.model=="PT"'>
-        <div class='itemTitle'>{{item.createTime}} PT模式 </div>
+        <div class='itemTitle'>{{item.createTime}} 手动模式 </div>
         <div class='itemCon'>
           <div class='con'>
             <div class='name'>设置运动时间</div>
@@ -27,7 +27,7 @@
               <div class='detail'>
                 <div class='detailItem'>
                   <div class='detailUp'>{{item.leftPower}}</div>
-                  <div class='detailDown'>POWER LEFT</div>
+                  <div class='detailDown'>左</div>
                 </div>
                 <div class='detailItem'>
                   <div class='detailUp'>{{item.avgPower}}</div>
@@ -35,7 +35,7 @@
                 </div>
                 <div class='detailItem'>
                   <div class='detailUp'>{{item.rightPower}}</div>
-                  <div class='detailDown'>POWER RIGHT</div>
+                  <div class='detailDown'>右</div>
                 </div>
               </div>
             </div>
@@ -91,7 +91,7 @@
         </div>
       </div>
       <div v-else>
-        <div class='itemTitle'>{{item.createTime}} LIVE模式 </div>
+        <div class='itemTitle'>{{item.createTime}} 轨迹模式 </div>
         <div class='itemCon'>
           <div class='con'>
             <div class='name'>实际运动时间</div>

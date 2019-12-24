@@ -11,10 +11,10 @@
       <img src="../../assets/image/base@2x.png" alt="">
     </div>
     <div class="live_operation">
-      <div class="operation_bcak" @click='back'>BACK</div>
+      <div class="operation_bcak" @click='back'>返回</div>
       <div class="operation_time">{{currentTime}}</div>
-      <div class="operation_blue operation_but" @click='start'>START</div>
-      <div class="operation_red operation_but" @click='stop'>STOP</div>
+      <div class="operation_blue operation_but" :style="{ opacity : startFlag  }" @click='start'>开始</div>
+      <div class="operation_red operation_but" @click='stop'>停止</div>
     </div>
   </div>
 </template>
@@ -27,6 +27,7 @@
     },
     data() {
       return {
+        startFlag: '1',
         flags: false,
         currentTime: '00:00',
         setTime: 0,
@@ -77,6 +78,8 @@
         })
       },
       start() {
+        this.startFlag = '0.6'
+        console.log(this.startFlag)
         clearInterval(this.timer)
         this.startStr = new Date() * 1
         this.flag = true

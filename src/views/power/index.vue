@@ -174,7 +174,9 @@
         console.log(obj);
       },
       botEnd() {
-        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', '', 100 - this.leftValue, 100 - this.rightValue, 0, 0] })
+        setTimeout(()=>{
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', '', 100 - this.leftValue, 100 - this.rightValue, 0, 0] })
+        },500)
       },
       stop() {
         this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', '', 0, 0, 0, 0] })

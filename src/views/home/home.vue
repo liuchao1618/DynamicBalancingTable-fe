@@ -81,13 +81,16 @@
             <!-- 记录 -->
             <div v-show='tab === 1' class='list'>
                 <div class="logHead">
+                    <p>运动员姓名 :</p>
                     <div class="search">
-                        <van-search placeholder="请输入运动员姓名" @input='changeIpt' v-model="iptName" />
+                        <van-search placeholder="" @input='changeIpt' v-model="iptName" />
                         <ul class="lists" v-if='shows'>
                             <li v-for='(item,i) in sportName' @click='checkNames(item)'>{{item.username}}</li>
                         </ul>
                     </div>
-                    <input class="dataIpt" type="date" @change='timeSele' v-model="currentTime" placeholder="请选择训练时间" />
+                    <p>训练日期 :</p>
+                    <input class="dataIpt" type="date" @change='timeSele' v-model="currentTime" placeholder="请选择" />
+                    <p>训练模式 :</p>
                     <div class="selectbox">
                         <div class="select" @click='tabShow'>
                             <span>{{kindModleText}}</span>
@@ -211,28 +214,29 @@
             </div>
             <!-- 收藏 -->
             <div v-show='tab === 2' class='list'>
-                <div class="logHead">
-                    <div class="search">
-                        <van-search placeholder="请输入运动员姓名" @input='changeIpt' v-model="iptName" />
-                        <ul class="lists" v-if='shows'>
-                            <li v-for='(item,i) in sportName' @click='checkNames(item)'>{{item.username}}</li>
-                        </ul>
-                    </div>
-                    <input class="dataIpt" type="date" @change='timeSele' v-model="currentTime" />
-                    <div class="selectbox">
-                        <div class="select" @click='tabShow'>
-                            <span>{{kindModleText}}</span>
-                            <span class="img"><img src="../../assets/image/xiala.png" alt=""></span>
+                    <div class="logHead">
+                            <p>运动员姓名 :</p>
+                            <div class="search">
+                                <van-search placeholder="" @input='changeIpt' v-model="iptName" />
+                                <ul class="lists" v-if='shows'>
+                                    <li v-for='(item,i) in sportName' @click='checkNames(item)'>{{item.username}}</li>
+                                </ul>
+                            </div>
+                            <p>训练日期 :</p>
+                            <input class="dataIpt" type="date" @change='timeSele' v-model="currentTime" placeholder="请选择" />
+                            <p>训练模式 :</p>
+                            <div class="selectbox">
+                                <div class="select" @click='tabShow'>
+                                    <span>{{kindModleText}}</span>
+                                    <span class="img"><img src="../../assets/image/xiala.png" alt=""></span>
+                                </div>
+                                <ul class="xialalist" v-if='show'>
+                                    <li v-for='(item,i) in kindModle' @click='changekindModleText(item)'>{{item}}
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class='searchbtn' @click='searchbtnEvent'>查询</div>
                         </div>
-                        <ul class="xialalist" v-if='show'>
-                            <li v-for='(item,i) in kindModle' @click='changekindModleText(item)'>{{item}}
-                            </li>
-                        </ul>
-
-                    </div>
-                    <div class='searchbtn' @click='searchbtnEvent'>查询</div>
-
-                </div>
                 <div class='item' v-for='(item,i) in collectList'>
                     <div v-if='item.model=="PT"'>
                         <div class='itemTitle'>{{item.createTime}} PT模式 </div>
@@ -1162,7 +1166,6 @@
 
             },
             godetails(index, text) {
-                alert('弹出来')
                 if (this.transmitType == 'stopping') {
                     this.$toast({
                         message: '设备急停中，无法执行该操作',
@@ -1286,7 +1289,7 @@
     .dataIpt {
         padding-left: 10px;
         box-sizing: border-box;
-        margin: 0 20px;
+        /* margin: 0 20px; */
         width: 210px;
         height: 50px;
         background: rgba(41, 43, 49, 1);
@@ -1402,8 +1405,16 @@
 
     .logHead {
         font-size: 20px;
+        align-items: center;
         display: flex;
         margin-bottom: 20px;
+        p{
+            color: #969799;
+            margin: 0 20px;
+        }
+        p:first-child{
+            margin-left: 0;
+        }
     }
 
     .search {
@@ -1824,8 +1835,10 @@
     .van-field__control {
         color: #8D8D94 !important;
         font-size: 20px;
-        line-height: 30px;
-        // height: 35px;
+        line-height: 40px;
+        height: 40px;
+        padding-top: 0;
+        margin-top: 0;
     }
 </style>
 

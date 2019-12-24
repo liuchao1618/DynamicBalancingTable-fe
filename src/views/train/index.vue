@@ -1,7 +1,9 @@
 <template>
   <div class="train">
     <div class="patternWapper">
-      <p>{{model}}</p>
+      <p v-if='model == PT'>手动模式</p>
+      <p v-if='model == DEMO'>demo模式</p>
+      <p v-if='model == LIVE'>轨迹模式</p>
       <div class="pattern">
         <div class="pattern_left">
           <p>设置运动时间</p>
@@ -17,7 +19,7 @@
           <div class="right_box">
             <div class="box_list">
               <div class="box_num">{{leftPower}}</div>
-              <div class="box_name">POWER LEFT</div>
+              <div class="box_name">左</div>
             </div>
             <div class="box_list">
               <div class="box_num">{{avgPower}}</div>
@@ -25,7 +27,7 @@
             </div>
             <div class="box_list">
               <div class="box_num">{{rightPower}}</div>
-              <div class="box_name">POWER RIGHT</div>
+              <div class="box_name">右</div>
             </div>
           </div>
         </div>
@@ -43,12 +45,12 @@
       </div>
     </div>
     <div class="timerWapper">
-      <div class="time_title">TIMER</div>
+      <div class="time_title">时间</div>
       <div class="time_num">{{currentTime}}</div>
     </div>
     <div class="buttonWapper">
-      <div class="but_blue but" @click='start'>START</div>
-      <div class="but_red but" @click='stop'>STOP</div>
+      <div class="but_blue but" @click='start'>开始</div>
+      <div class="but_red but" @click='stop'>停止</div>
       <div></div>
     </div>
   </div>
