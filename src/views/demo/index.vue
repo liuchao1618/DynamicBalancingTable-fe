@@ -78,7 +78,7 @@
           this.currentTime = s_to_hs(this.setTime)
         } else {
           clearInterval(this.timer)
-          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', '', 0, 0, 0, 0] })
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
           clearTimeout(this.interva)
 
           let level = window.localStorage.getItem('level').split('<br/>').join('-')
@@ -156,7 +156,7 @@
         }, future[2])
       },
       stop() {
-        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', '', 0, 0, 0, 0] })
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
         clearTimeout(this.interva)
 
         let level = window.localStorage.getItem('level').split('<br/>').join('-')
@@ -230,7 +230,7 @@
         clearTimeout(this.interva)
         this.intervalCount = 0
         this.freeze = '解冻'
-        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', 'ALIGN',0,0, 0, 0] })
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO', 'STOP',0,0, 0, 0] })
 
       }
     }

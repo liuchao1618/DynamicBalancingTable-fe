@@ -31,6 +31,7 @@
     let HEART_RESPONSE =  [0xCF, 0x01, 0x00, 0x00, 0x00, 0x00, 0xD1, 0x62];
     let HEART_RESPONSE_STR =  HEART_RESPONSE.join(' ');
 
+    let modelCache = '';                // 模式缓存
     let typeCache =  '';                // 行为缓存
     let arrayCache =  [0xCF, 0X01, 0X00, 0X80, 0X00, 0X04, 0xAA, 0xBC];
 
@@ -49,6 +50,7 @@
     };
 
     function invoke0(mode, type, leftPower, rightPower, xOffset, yOffset, responseArray) {
+        // console.log(type+'jfsdddddddddddddddddd ')
         let data;
         // 判断是否需要复位
         if (equalsCode(responseArray[2], DEVICE_EXC)) {
@@ -64,15 +66,25 @@
         // 现在为正常处理 先判断是否为模式执行成功 当速度模式、位置模式执行成功后 要通知蓝牙再次发送当前请求
         // 暂停模式成功、复位成功、故障复位成功、急停解成通知 不需要做处理
 
+        if(typeCache === 'ALIGN') {
+            // console.log(type+'22222222222222222')
+            let data = createCrc16([FRAME_HEAD, SET_MODE, BLANK, BLANK, BLANK, MODE_ZERO]);
+            data.push(false);
+            typeCache = '';
+            return  data;
+        }
+
+        if(type === 'STOP') {
+            // console.log(type+'1111111111111111111111')
+            let data = createCrc16([FRAME_HEAD, arrayCache[1], BLANK, 0x64, BLANK, 0x64]);
+            data.push(true);
+            typeCache = 'ALIGN';
+            return data;
+        }
+
+        
         switch (getMode(mode)) {
             case MODE_SPEED:
-                if(type === 'ALIGN') {
-                    let data = createCrc16([FRAME_HEAD, SET_MODE, BLANK, BLANK, BLANK, MODE_ZERO]);
-                    data.push(false);
-                    typeCache = type;
-                    return  data;
-                }
-
                 if (isSpeedMode(responseArray) || isSetSpeed(responseArray)) {
                     data = [FRAME_HEAD, SPEED_DATA];
                     if (typeCache === 'PAUSE') {
@@ -273,6 +285,11 @@
     function isSetMode(responseArray) {
         return equalsCode(responseArray[1], SET_MODE);
     }
+
+    function isStopCommand(responseArray) {
+        return equalsCode(responseArray[1], SET_MODE) && equalsCode(responseArray[5], MODE_ZERO);
+    }
+
     function equalsCode(code, target) {
         return !(code ^ target);
     }

@@ -66,7 +66,7 @@ export default {
          // 如果蓝牙是开启状态就搜索已配对设备
           if (bluetoothTool.state.bluetoothEnable) {
             that.$store.dispatch('setLoginflag', { storeStatusContent: 1 })
-            that.defaultDevice()
+            // that.defaultDevice()
           } else {
             if (that.$route.name != 'Home') {
               that.$router.push({name: 'Home', query: {urlContent: Number(Content)}})
@@ -76,6 +76,7 @@ export default {
           // 如果蓝牙开启并且处于未连接状态 再去搜索设备
           if (bluetoothTool.state.bluetoothEnable && !bluetoothTool.state.readThreadState) {
             that.searchDevice()
+            that.$store.dispatch('setLoginflag', { refreSearch: true })
           }
           that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
         },
@@ -88,7 +89,6 @@ export default {
         // },
         connDeviceCallback: function (Content) { // 连接设备回调
           // alert('连接设备回调')
-          // alert(bluetoothTool.state.readThreadState)
           if(bluetoothTool.state.readThreadState) {
             that.sendHeard()
             that.$store.dispatch('setLoginflag', { storeStatus: 'success' })
@@ -110,6 +110,7 @@ export default {
           }
           if (!bluetoothTool.state.readThreadState) {
             clearInterval(timerHeard)
+            that.$store.dispatch('setLoginflag', { refreSearch: false })
           }
           that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
           that.$store.dispatch('setLoginflag', { storeStatus: 'fail' })
@@ -127,9 +128,9 @@ export default {
     document.addEventListener("plusready", () => {
       bluetoothTool.turnOnBluetooth()
       bluetoothTool.windowMeFlag()
-      if (bluetoothTool.state.bluetoothEnable) { // 如果蓝牙是开启状态就搜索设备
-        that.defaultDevice()
-      }
+      // if (bluetoothTool.state.bluetoothEnable) { // 如果蓝牙是开启状态就搜索设备
+      //   that.defaultDevice()
+      // }
       if (bluetoothTool.state.bluetoothEnable && !bluetoothTool.state.readThreadState) {
         that.searchDevice()
       }
@@ -155,9 +156,10 @@ export default {
     },
     sendHeard () { //  发送心跳
         let that = this
+        clearInterval(timerHeard)
         timerHeard = setInterval (() => {
           bluetoothTool.sendData(pluginFub.sendHeart())
-        },4000)
+        },3500)
     },
     // 发送复位
     sendReset () {
@@ -194,6 +196,7 @@ export default {
     },
     loopSend () {
       let that = this
+      clearTimeout(flagFalse)
       flagFalse = setTimeout(() => {
         that.sendDataTime()
       }, 1000)

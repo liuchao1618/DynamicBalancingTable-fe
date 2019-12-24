@@ -1162,7 +1162,6 @@
 
             },
             godetails(index, text) {
-                alert('弹出来')
                 if (this.transmitType == 'stopping') {
                     this.$toast({
                         message: '设备急停中，无法执行该操作',
