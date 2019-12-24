@@ -174,11 +174,7 @@ export function trainDetail(data) {
   })
 }
 
-<<<<<<< HEAD
 // // 登录
-=======
-// 登录
->>>>>>> cf92b0c7dd5f1c46721884c96648cfc5e4cb588d
 // export function login(params) {
 //   return request({
 //     url: 'http://www.xnnre.com/balance-web/api/login',
