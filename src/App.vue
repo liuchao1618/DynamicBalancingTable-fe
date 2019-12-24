@@ -17,6 +17,7 @@ export default {
     let that = this;
     return {
       flag: false,
+      judgementState: false,
       originResponse : {
         success: function (res) {
           // that.sendDataTime()
@@ -66,18 +67,16 @@ export default {
          // 如果蓝牙是开启状态就搜索已配对设备
           if (bluetoothTool.state.bluetoothEnable) {
             that.$store.dispatch('setLoginflag', { storeStatusContent: 1 })
-            // that.defaultDevice()
+            that.defaultDevice()
           } else {
             if (that.$route.name != 'Home') {
               that.$router.push({name: 'Home', query: {urlContent: Number(Content)}})
-              that.$store.dispatch('setLoginflag', { refreSearch: true })
             }
             that.$store.dispatch('setLoginflag', { storeStatus: 'fail' })
           }
           // 如果蓝牙开启并且处于未连接状态 再去搜索设备
-          if (bluetoothTool.state.bluetoothEnable && !bluetoothTool.state.readThreadState) {
+          if (bluetoothTool.state.bluetoothEnable && !that.judgementState) {
             that.searchDevice()
-            that.$store.dispatch('setLoginflag', { refreSearch: true })
           }
           that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
         },
@@ -88,12 +87,13 @@ export default {
         // getPairedDevicescallback: function (Content) { // 搜索默认蓝牙回调
         //   that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
         // },
-        connDeviceCallback: function (Content) { // 连接设备回调
-          // alert('连接设备回调')
+        connDeviceCallback: function (Content, judgementState) { // 连接设备回调
+          alert('连接设备回调'+judgementState)
+          that.judgementState = judgementState
           if(bluetoothTool.state.readThreadState) {
+            alert('弹窗出现')
             that.sendHeard()
             that.$store.dispatch('setLoginflag', { storeStatus: 'success' })
-            that.$store.dispatch('setLoginflag', { refreSearch: false })
           }
           that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
         },
@@ -111,7 +111,6 @@ export default {
           }
           if (!bluetoothTool.state.readThreadState) {
             clearInterval(timerHeard)
-            that.$store.dispatch('setLoginflag', { refreSearch: false })
           }
           that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
           that.$store.dispatch('setLoginflag', { storeStatus: 'fail' })
@@ -129,10 +128,12 @@ export default {
     document.addEventListener("plusready", () => {
       bluetoothTool.turnOnBluetooth()
       bluetoothTool.windowMeFlag()
-      // if (bluetoothTool.state.bluetoothEnable) { // 如果蓝牙是开启状态就搜索设备
-      //   that.defaultDevice()
-      // }
-      if (bluetoothTool.state.bluetoothEnable && !bluetoothTool.state.readThreadState) {
+      if (bluetoothTool.state.bluetoothEnable) { // 如果蓝牙是开启状态就搜索设备
+      alert('judgementState存在')
+        that.defaultDevice()
+      }
+      if (bluetoothTool.state.bluetoothEnable && !that.judgementState) {
+        alert('judgementState不存在')
         that.searchDevice()
       }
     }, false)
@@ -154,6 +155,14 @@ export default {
     defaultDevice () { // 搜索已经配对的设备
       let address = ['00:15:A6:00:1E:36', '00:15:A6:00:44:2A', '00:19:09:01:1D:B0']
       bluetoothTool.getPairedDevices(address)
+    },
+    connectionState () {
+      console.log('judgementState1111111111111111111111'+this.judgementState)
+      if (this.judgementState) {
+        this.defaultDevice()
+      } else {
+        this.searchDevice()
+      }
     },
     sendHeard () { //  发送心跳
         let that = this
