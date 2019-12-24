@@ -616,7 +616,7 @@
                         message: '设备已急停',
                         position: 'bottom'
                     });
-                    this.$router.query.push({ name: 'Home', index: 0 })
+                    this.$router.push({ name: 'Home', query:{index: 0} })
                 }
             },
             tab(now, old) {

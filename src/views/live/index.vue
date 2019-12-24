@@ -172,7 +172,7 @@
             message: '设备已急停',
             position: 'bottom'
           });
-          this.$router.push({ name: 'Home', index: 0 })
+          this.$router.push({ name: 'Home', query:{index: 0} })
         }
       },
       flags(now, old) {
