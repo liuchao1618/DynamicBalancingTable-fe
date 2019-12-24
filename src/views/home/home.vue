@@ -2,7 +2,10 @@
     <div class="box">
         <!-- 蓝牙加载状态 -->
         <div v-if='status === "fail"' class='loading'>
-            <img class='loadingImg' src="./image/title.png" alt="">
+            <img v-if="statusContent != 6" class='loadingImg' src="./image/title.png" alt="">
+            <div v-if='statusContent === 6' class='load-loading'>
+                <img class='loading-img' src="./image/title.png" alt="">
+            </div>
             <div v-if='statusContent === 0' class='load-loading'>
                 <div class='img'>
                     <img src="./image/bluetooth.png" alt="">蓝牙未开启
@@ -583,6 +586,7 @@
             })
         },
         mounted() {
+            console.log(this.refreSearch+'哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈')
             // alert(this.statusContent)
             // alert(this.status)
             // 在其他页面监听蓝牙与设备的连接状态
@@ -1480,8 +1484,9 @@
         min-height: 100vh;
         padding: 30px 30px 0;
         box-sizing: border-box;
-        background: url('../../assets/image/bg.png') repeat;
-        background-size: cover;
+        background: url('../../assets/image/bg.png') no-repeat;
+        background-size: 100% 100%;
+        // background-size: cover;
 
         .loading {
             padding-top: 197px;
@@ -1494,7 +1499,11 @@
 
             .load-loading {
                 text-align: center;
-
+                .loading-img {
+                    width: 750px;
+                    height: 164px;
+                    margin-top: 100px;
+                }
                 .img {
                     height: 50px;
                     color: #EAEEF8;

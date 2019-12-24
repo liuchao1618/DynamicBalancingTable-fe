@@ -70,6 +70,7 @@ export default {
           } else {
             if (that.$route.name != 'Home') {
               that.$router.push({name: 'Home', query: {urlContent: Number(Content)}})
+              that.$store.dispatch('setLoginflag', { refreSearch: true })
             }
             that.$store.dispatch('setLoginflag', { storeStatus: 'fail' })
           }
@@ -92,6 +93,7 @@ export default {
           if(bluetoothTool.state.readThreadState) {
             that.sendHeard()
             that.$store.dispatch('setLoginflag', { storeStatus: 'success' })
+            that.$store.dispatch('setLoginflag', { refreSearch: false })
           }
           that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
         },
@@ -104,7 +106,6 @@ export default {
           that.$store.dispatch('setLoginflag', { storeStatus: 'fail' })
         },
         sendDataback: function (Content) { // 发送数据 失败
-          alert('发送数据 失败')
           if (that.$route.name != 'Home') {
             that.$router.push({name: 'Home', query: {urlContent: Number(Content)}})
           }

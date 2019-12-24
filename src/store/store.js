@@ -10,17 +10,17 @@ const state = {
   login: false,
   loginName: '',
   identity:'',
-  storeStatusContent: 0, // home页面蓝牙状态切换展示
-  storeStatus: 'success', // 未连接成功的状态
+  storeStatusContent: 6, // home页面蓝牙状态切换展示
+  storeStatus: 'fail', // 未连接成功的状态
   readData: [], // 接收到的数据
   transmitType: 'normal', // 传给操作界面，用来判断该显示的状态和提示 normal：正常,stopping:急停
   BluetoothDataArr:['','',0,0,0,0],
-  refreSearch:false, //蓝牙未连接 重新搜索
+  refreSearch:true, //蓝牙未连接 重新搜索
 }
 // 所需要定义的mutations
 const mutations = {
   SETLOGINFLAG: (state, data) => {
-    state.refreSearch = data.refreSearch
+    state.refreSearch = data.refreSearch || state.refreSearch
     console.log(state,data)
     state.storeStatusContent = data.storeStatusContent || state.storeStatusContent
     state.storeStatus = data.storeStatus || state.storeStatus
