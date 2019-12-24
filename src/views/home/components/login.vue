@@ -80,6 +80,15 @@
                 this.$store.dispatch('setLoginflag', { loginflag: false, login: false,index:1 })
             },
             login() {
+                if (navigator.onLine) {
+                    console.log('联网状态')
+                } else {
+                    this.$toast({
+                        message: '请连接网络',
+                        position: 'bottom'
+                    });
+                    return false
+                }
                 let data = {
                     username: this.tel,
                     password: this.pwd

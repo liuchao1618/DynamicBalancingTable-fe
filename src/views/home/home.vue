@@ -18,9 +18,9 @@
                 <div class='img'>
                     <img src="./image/none.png" alt="">未发现可用设备
                 </div>
-                <div style="display: flex; width: 30%;margin: 0 auto">
+                <div style="display: flex; width: 20%;margin: 0 auto">
                     <div @click="discoveryNewDevice()" class='load-button'>重新搜索</div>
-                    <div @click="changeStoreStatus()" class='load-button'>进入页面</div>
+                    <div @click="changeStoreStatus()" class='load-button'>进入系统</div>
                 </div>
             </div>
             <div v-if='statusContent === 3' class='load-loading'>
@@ -1048,8 +1048,8 @@
                     if (modle == 'DEMO') {
                         window.localStorage.setItem('level', item)
                     } else if (modle == 'PT') {
-                        if(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() ==false){
-                        // if (!this) {
+                        // if(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() ==false){
+                        if (!this) {
                             this.$toast({
                                 message: '未连接可用设备，请连接后重试。',
                                 position: 'bottom'
@@ -1079,8 +1079,8 @@
                         position: 'bottom'
                     });
                 } else if (this.transmitType == 'normal') {
-                    if(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() ==false){
-                    // if (!this) {
+                    // if(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() ==false){
+                    if (!this) {
                         this.$toast({
                             message: '未连接可用设备，请连接后重试。',
                             position: 'bottom'
@@ -1162,14 +1162,15 @@
 
             },
             godetails(index, text) {
+                alert('弹出来')
                 if (this.transmitType == 'stopping') {
                     this.$toast({
                         message: '设备急停中，无法执行该操作',
                         position: 'bottom'
                     });
                 } else if (this.transmitType == 'normal') {
-                    if (this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() == false) {
-                    // if (!this) {
+                    // if (this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() == false) {
+                    if (!this) {
 
                         if (index == 11 && text == '手动模式') {
                             window.localStorage.setItem('modle', 'PT')
@@ -1822,7 +1823,9 @@
 
     .van-field__control {
         color: #8D8D94 !important;
-        font-size: 22px;
+        font-size: 20px;
+        line-height: 30px;
+        // height: 35px;
     }
 </style>
 
