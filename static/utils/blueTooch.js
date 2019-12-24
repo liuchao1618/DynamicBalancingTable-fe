@@ -162,7 +162,6 @@ function BluetoothTool() {
                 return;
             }
         } else {
-            shortToast(new Date())
             shortToast("蓝牙已经打开");
             state.statusContent = 1;
             options.turnOnBluetoothCallback && options.turnOnBluetoothCallback(state.statusContent)
@@ -527,7 +526,6 @@ function BluetoothTool() {
      * @return {Boolean}
      */
     function sendData(dataStr) {
-        console.log('发送111111111的数据' + dataStr.map(v => (v.toString(16))))
         if (!btOutStream) {
             shortToast("创建输出流失败！");
             return;
