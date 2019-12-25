@@ -150,10 +150,10 @@ export default {
       bluetoothTool.getPairedDevices(address)
     },
     connectionState () {
-      console.log('judgementState1111111111111111111111'+this.judgementState)
-      if (this.judgementState) {
-        this.defaultDevice()
-      } else {
+      console.log(this.judgementState+'点击重新搜索judgementStatejudgementState')
+      
+      this.defaultDevice()
+      if (!this.judgementState) {
         this.searchDevice()
       }
     },
@@ -169,6 +169,7 @@ export default {
       if (!bluetoothTool.state.readThreadState) {
           return false
       }
+      alert('sendReset f\大夫为')
       bluetoothTool.sendData(pluginFub.reset())
     },
     // 发送数据

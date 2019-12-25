@@ -76,8 +76,8 @@
 
         if(type === 'STOP') {
             // console.log(type+'1111111111111111111111')
-            let data = createCrc16([FRAME_HEAD, arrayCache[1], BLANK, 0x64, BLANK, 0x64]);
-            data.push(200, true);
+            let data = createCrc16([FRAME_HEAD, SPEED_DATA, BLANK, BLANK, BLANK, BLANK]);
+            data.push(700, true);
             typeCache = 'ALIGN';
             return data;
         }
@@ -85,6 +85,11 @@
 
         switch (getMode(mode)) {
             case MODE_SPEED:
+                // console.log("------------------------")
+                // console.log(isSetMode(responseArray) + "setModel")
+                // console.log(isSetSpeed(responseArray) + "setSpeed")
+                // console.log(isSpeedMode(responseArray) + "inSpeedModel")
+                // console.log("------------------------")
                 if (isSpeedMode(responseArray) || isSetSpeed(responseArray)) {
                     data = [FRAME_HEAD, SPEED_DATA];
                     if (typeCache === 'PAUSE') {

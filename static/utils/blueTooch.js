@@ -543,7 +543,7 @@ function BluetoothTool() {
             statusContent = 2
             state.readThreadState = false;
             options.sendDataback && options.sendDataback(statusContent)
-            alert('发送失败')
+            shortToast('发送失败')
             return false;
         }
         // alert('发送成功')
