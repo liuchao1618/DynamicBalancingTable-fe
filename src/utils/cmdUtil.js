@@ -69,7 +69,7 @@
         if(typeCache === 'ALIGN') {
             // console.log(type+'22222222222222222')
             let data = createCrc16([FRAME_HEAD, SET_MODE, BLANK, BLANK, BLANK, MODE_ZERO]);
-            data.push(false);
+            data.push(0, false);
             typeCache = '';
             return  data;
         }
@@ -77,12 +77,12 @@
         if(type === 'STOP') {
             // console.log(type+'1111111111111111111111')
             let data = createCrc16([FRAME_HEAD, arrayCache[1], BLANK, 0x64, BLANK, 0x64]);
-            data.push(true);
+            data.push(200, true);
             typeCache = 'ALIGN';
             return data;
         }
 
-        
+
         switch (getMode(mode)) {
             case MODE_SPEED:
                 if (isSpeedMode(responseArray) || isSetSpeed(responseArray)) {
@@ -91,12 +91,12 @@
                         data.push(...toHexArray(speedConvert(leftPower / 2)));
                         data.push(...toHexArray(speedConvert(rightPower / 2)));
                         data = createCrc16(data);
-                        data.push(true);
+                        data.push(500, true);
                     } else {
                         data.push(...toHexArray(speedConvert(leftPower)));
                         data.push(...toHexArray(speedConvert(rightPower)));
                         data = createCrc16(data);
-                        data.push(false);
+                        data.push(0, false);
                     }
                     typeCache = type;
                     return data;
@@ -108,7 +108,7 @@
                         }
                     }
                     data = createCrc16([FRAME_HEAD, SET_MODE, BLANK, BLANK, BLANK, MODE_SPEED]);
-                    data.push(true);
+                    data.push(1000, true);
                     typeCache = type;
                     return data;
                 } else {
@@ -120,13 +120,13 @@
                     data.push(...toHexArray(xOffset));
                     data.push(...toHexArray(yOffset));
                     data = createCrc16(data);
-                    data.push(false);
+                    data.push(0, false);
                     typeCache = type;
                     return data;
                 } else if (isSetMode(responseArray) && !equalsCode(responseArray[5], MODE_POSITION)) {
                     // 需要切换模式 并重新调取
                     data = createCrc16([FRAME_HEAD, SET_MODE, BLANK, BLANK, BLANK, MODE_POSITION]);
-                    data.push(true);
+                    data.push(1000, true);
                     typeCache = type;
                     return data;
                 } else {
@@ -134,7 +134,7 @@
                 }
             case MODE_ZERO:
                 data = createCrc16([FRAME_HEAD, SET_MODE, BLANK, BLANK, BLANK, MODE_ZERO]);
-                data.push(false);
+                data.push(0, false);
                 typeCache = type;
                 return data;
             default:
