@@ -1470,7 +1470,7 @@
         padding: 30px 30px 0;
         box-sizing: border-box;
         background: url('../../assets/image/bg.png') no-repeat;
-        /* background-size: 100% 100%; */
+        background-size: 100% 100%;
         .loading {
             padding-top: 197px;
 
