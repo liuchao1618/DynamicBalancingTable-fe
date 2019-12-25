@@ -11,7 +11,7 @@
       </div>
       <div class="center">
         <div class="cenLeft">
-          <van-slider :step="5" class="leftLine" v-model="leftValue" bar-height='32px;' vertical @change='changeleft' />
+          <van-slider :disabled='barFalg' :step="5" class="leftLine" v-model="leftValue" bar-height='32px;' vertical @change='changeleft' />
           <img src="../../assets/image/left.png" alt="">
         </div>
         <div class="cenCent">
@@ -27,7 +27,7 @@
           </div>
         </div>
         <div class="cenRight">
-          <van-slider :step="5" class="rightValue" v-model="rightValue" bar-height='38px;' vertical
+          <van-slider :disabled='barFalg' :step="5" class="rightValue" v-model="rightValue" bar-height='38px;' vertical
             @change='changeright' />
           <img src="../../assets/image/right.png" alt="">
         </div>
@@ -39,7 +39,7 @@
       </div>
     </div>
     <div class="centBottom">
-      <van-slider :step="5" class="bottomLine" @drag-end='botEnd' v-model="bottomValue" bar-height='23px'
+      <van-slider :disabled='barFalg' :step="5" class="bottomLine" @drag-end='botEnd' v-model="bottomValue" bar-height='23px'
         @change="changeBottom" />
       <img src="../../assets/image/bottom.png" alt="">
     </div>
@@ -77,7 +77,8 @@
         timer: null,
         setTime: 0,
         watchFlag: false,
-        markFlag: false
+        markFlag: false,
+        barFalg:false,
       }
     },
     mounted() {
@@ -275,7 +276,10 @@
             }
           }, 1000);
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', '', 100 - this.leftValue, 100 - this.rightValue, 0, 0] })
+          this.barFalg = false
+          
         } else {
+          this.barFalg = true
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', 'PAUSE', 0, 0, 0, 0] })
           this.pause = '继续'
           clearInterval(this.timer)
@@ -284,9 +288,12 @@
 
       changefreeze() {
         if (this.freeze == '冻结') {
+          this.barFalg = true
+
           this.freeze = '解冻'
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', 'PAUSE', 0, 0, 0, 0] })
         } else {
+          this.barFalg = false
           this.freeze = '冻结'
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', '', 100 - this.leftValue, 100 - this.rightValue, 0, 0] })
         }

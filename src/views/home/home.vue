@@ -1031,6 +1031,16 @@
                 this.tab = index
             },
             leftgoDetail(item, index) {
+                if (index == 0) {
+                    this.leftValue = 10
+                    this.rightValue = 15
+                } else if (index == 1) {
+                    this.leftValue = 40
+                    this.rightValue = 45
+                } else if (index == 2) {
+                    this.leftValue = 80
+                    this.rightValue = 85
+                }
                 if (this.transmitType == 'stopping') {
                     this.$toast({
                         message: '设备急停中，无法执行该操作',
@@ -1048,18 +1058,8 @@
                                 position: 'bottom'
                             });
                         } else {
-                            if (index == 0) {
-                                this.leftValue = 10
-                                this.rightValue = 15
-                            } else if (index == 1) {
-                                this.leftValue = 40
-                                this.rightValue = 45
-                            } else if (index == 2) {
-                                this.leftValue = 80
-                                this.rightValue = 85
-                            }
-                            window.localStorage.setItem('leftValue', this.leftValue)
-                            window.localStorage.setItem('rightValue', this.rightValue)
+                            window.localStorage.setItem('left', this.leftValue)
+                            window.localStorage.setItem('right', this.rightValue)
                             this.$router.push({ name: 'SelectTime' });
                         }
                     }
@@ -1469,8 +1469,7 @@
         min-height: 100vh;
         padding: 30px 30px 0;
         box-sizing: border-box;
-        background: url('../../assets/image/bg.png') no-repeat;
-        background-size: 100% 100%;
+        background:linear-gradient(180deg,rgba(60,62,73,1) 0%,rgba(33,35,40,1) 100%);
         .loading {
             padding-top: 197px;
 
