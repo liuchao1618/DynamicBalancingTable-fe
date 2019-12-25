@@ -1469,7 +1469,8 @@
         min-height: 100vh;
         padding: 30px 30px 0;
         box-sizing: border-box;
-        background: url('../../assets/image/bg.png') no-repeat;
+        background:linear-gradient(180deg,rgba(60,62,73,1) 0%,rgba(33,35,40,1) 100%);
+        // background: url('../../assets/image/bg.png') no-repeat;
         /* background-size: 100% 100%; */
         .loading {
             padding-top: 197px;
