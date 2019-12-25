@@ -10,7 +10,7 @@ const state = {
   login: false,
   loginName: '',
   identity:'',
-  storeStatusContent: 6, // home页面蓝牙状态切换展示
+  storeStatusContent: 1, // home页面蓝牙状态切换展示
   storeStatus: 'fail', // 未连接成功的状态
   readData: [], // 接收到的数据y
   transmitType: 'normal', // 传给操作界面，用来判断该显示的状态和提示 normal：正常,stopping:急停

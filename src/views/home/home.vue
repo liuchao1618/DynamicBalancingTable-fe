@@ -614,15 +614,6 @@
             'storeStatus'
         ]),
         watch: {
-            // transmitType() {
-            //     if (this.transmitType == 'stopping') {
-            //         this.$toast({
-            //             message: '设备已急停',
-            //             position: 'bottom'
-            //         });
-            //         this.$router.push({ name: 'Home', query:{index: 0} })
-            //     }
-            // },
             tab(now, old) {
                 this.kindModleText = '显示所有训练记录'
                 this.iptName = ''
@@ -1046,16 +1037,12 @@
                         position: 'bottom'
                     });
                 } else if (this.transmitType == 'normal') {
-                    this.$toast({
-                        message: '设备已解除急停',
-                        position: 'bottom'
-                    });
                     let modle = window.localStorage.getItem('modle')
                     if (modle == 'DEMO') {
                         window.localStorage.setItem('level', item)
                     } else if (modle == 'PT') {
-                        // if(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() ==false){
-                        if (!this) {
+                        if(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() ==false){
+                        // if (!this) {
                             this.$toast({
                                 message: '未连接可用设备，请连接后重试。',
                                 position: 'bottom'
@@ -1085,8 +1072,8 @@
                         position: 'bottom'
                     });
                 } else if (this.transmitType == 'normal') {
-                    // if(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() ==false){
-                    if (!this) {
+                    if(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() ==false){
+                    // if (!this) {
                         this.$toast({
                             message: '未连接可用设备，请连接后重试。',
                             position: 'bottom'
@@ -1174,8 +1161,8 @@
                         position: 'bottom'
                     });
                 } else if (this.transmitType == 'normal') {
-                    // if (this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() == false) {
-                    if (!this) {
+                    if (this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() == false) {
+                    // if (!this) {
 
                         if (index == 11 && text == '手动模式') {
                             window.localStorage.setItem('modle', 'PT')
@@ -1483,7 +1470,7 @@
         padding: 30px 30px 0;
         box-sizing: border-box;
         background: url('../../assets/image/bg.png') no-repeat;
-        background-size: 100% 100%;
+        /* background-size: 100% 100%; */
         .loading {
             padding-top: 197px;
 
