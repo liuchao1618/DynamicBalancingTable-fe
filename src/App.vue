@@ -181,9 +181,10 @@ export default {
       try {
         data = pluginFub.invoke(this.BluetoothDataArr[0],this.BluetoothDataArr[1],responseArray,this.BluetoothDataArr[2],this.BluetoothDataArr[3],this.BluetoothDataArr[4],this.BluetoothDataArr[5])
         let loopFlag = data.pop()
+        let timeSecond = data.pop()
         bluetoothTool.sendData(data)
         if(loopFlag) {
-          this.loopSend(loopFlag)
+          this.loopSend(timeSecond)
         } else {
           return false
         }
@@ -196,12 +197,12 @@ export default {
         }
       }
     },
-    loopSend () {
+    loopSend (timeSecond) {
       let that = this
       clearTimeout(flagFalse)
       flagFalse = setTimeout(() => {
         that.sendDataTime()
-      }, 1000)
+      }, timeSecond)
     },
     // home页面需要判断的蓝牙状态
     readThreadFlag () {
