@@ -180,7 +180,7 @@
         },500)
       },
       stop() {
-        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', '', 0, 0, 0, 0] })
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
         clearInterval(this.timer)
         let data = {
           model: 'PT',

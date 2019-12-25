@@ -217,29 +217,29 @@
             </div>
             <!-- 收藏 -->
             <div v-show='tab === 2' class='list'>
-                    <div class="logHead">
-                            <p>运动员姓名 :</p>
-                            <div class="search">
-                                <van-search placeholder="" @input='changeIpt' v-model="iptName" />
-                                <ul class="lists" v-if='shows'>
-                                    <li v-for='(item,i) in sportName' @click='checkNames(item)'>{{item.username}}</li>
-                                </ul>
-                            </div>
-                            <p>训练日期 :</p>
-                            <input class="dataIpt" type="date" @change='timeSele' v-model="currentTime" placeholder="请选择" />
-                            <p>训练模式 :</p>
-                            <div class="selectbox">
-                                <div class="select" @click='tabShow'>
-                                    <span>{{kindModleText}}</span>
-                                    <span class="img"><img src="../../assets/image/xiala.png" alt=""></span>
-                                </div>
-                                <ul class="xialalist" v-if='show'>
-                                    <li v-for='(item,i) in kindModle' @click='changekindModleText(item)'>{{item}}
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class='searchbtn' @click='searchbtnEvent'>查询</div>
+                <div class="logHead">
+                    <p>运动员姓名 :</p>
+                    <div class="search">
+                        <van-search placeholder="" @input='changeIpt' v-model="iptName" />
+                        <ul class="lists" v-if='shows'>
+                            <li v-for='(item,i) in sportName' @click='checkNames(item)'>{{item.username}}</li>
+                        </ul>
+                    </div>
+                    <p>训练日期 :</p>
+                    <input class="dataIpt" type="date" @change='timeSele' v-model="currentTime" placeholder="请选择" />
+                    <p>训练模式 :</p>
+                    <div class="selectbox">
+                        <div class="select" @click='tabShow'>
+                            <span>{{kindModleText}}</span>
+                            <span class="img"><img src="../../assets/image/xiala.png" alt=""></span>
                         </div>
+                        <ul class="xialalist" v-if='show'>
+                            <li v-for='(item,i) in kindModle' @click='changekindModleText(item)'>{{item}}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class='searchbtn' @click='searchbtnEvent'>查询</div>
+                </div>
                 <div class='item' v-for='(item,i) in collectList'>
                     <div v-if='item.model=="PT"'>
                         <div class='itemTitle'>{{item.createTime}} PT模式 </div>
@@ -573,7 +573,7 @@
                 })
                 ctx.stroke();
             })
-            console.log(this.collectList,'this.collectList')
+            console.log(this.collectList, 'this.collectList')
             this.collectList.forEach((item, index) => {
                 var c = document.getElementById('a' + index);
                 var ctx = c.getContext("2d");
@@ -596,11 +596,15 @@
             this.status = this.storeStatus
             // this.loginflag = localStorage.getItem('loginflag')
             // this.login = localStorage.getItem('login')
-            // console.log('  this.loginflag',  this.loginflag,'this.login',this.login)
+            console.log('  this.loginflag', this.loginflag, 'this.login', this.login)
             this.getExercise(); //所有记录
             this.getmemberMsg(); //我的运动员
             this.tab = this.$route.query.index * 1 || 0;
-            window.localStorage.setItem('modle', 'PT')
+            if (this.login) {
+                window.localStorage.setItem('modle', 'PT')
+            } else {
+                window.localStorage.setItem('modle', 'DEMO')
+            }
         },
         computed: mapState([
             // 映射 this.loginflag 为 store.state.loginflag
@@ -641,16 +645,16 @@
         },
         methods: {
             searchbtnEvent() {
-            //     this.collectList.forEach((item, index) => {
-            //     var c = document.getElementById('a' + index);
-            //     var ctx = c.getContext("2d");
-            //     ctx.strokeStyle = '#D1D5E6'
-            //     var arr = item.expands
-            //     arr.forEach((v, i) => {
-            //         ctx.lineTo(v[0], v[1]);
-            //     })
-            //     ctx.stroke();
-            // })
+                //     this.collectList.forEach((item, index) => {
+                //     var c = document.getElementById('a' + index);
+                //     var ctx = c.getContext("2d");
+                //     ctx.strokeStyle = '#D1D5E6'
+                //     var arr = item.expands
+                //     arr.forEach((v, i) => {
+                //         ctx.lineTo(v[0], v[1]);
+                //     })
+                //     ctx.stroke();
+                // })
                 var kindModleText = ''
                 if (this.kindModleText == '显示所有训练记录') {
                     kindModleText = ''
@@ -1049,21 +1053,25 @@
                         position: 'bottom'
                     });
                 } else if (this.transmitType == 'normal') {
-                    let modle = window.localStorage.getItem('modle')
-                    if (modle == 'DEMO') {
-                        window.localStorage.setItem('level', item)
-                    } else if (modle == 'PT') {
-                        if(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() ==false){
-                        // if (!this) {
-                            this.$toast({
-                                message: '未连接可用设备，请连接后重试。',
-                                position: 'bottom'
-                            });
-                        } else {
+                    if(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() ==false){
+                    // if (!this) {
+                        this.$toast({
+                            message: '未连接可用设备，请连接后重试。',
+                            position: 'bottom'
+                        });
+                    }else{
+                        let modle = window.localStorage.getItem('modle')
+                        console.log(modle, '点图片')
+                        if (modle == 'DEMO') {
+                            window.localStorage.setItem('level', item)
+                        } else if (modle == 'PT') {
+                            window.localStorage.setItem('level', item)
                             window.localStorage.setItem('left', this.leftValue)
                             window.localStorage.setItem('right', this.rightValue)
-                            this.$router.push({ name: 'SelectTime' });
+
                         }
+                        window.localStorage.setItem('leftbox', 1)
+                        this.$router.push({ name: 'SelectTime' });
                     }
                 }
             },
@@ -1399,11 +1407,13 @@
         align-items: center;
         display: flex;
         margin-bottom: 20px;
-        p{
+
+        p {
             color: #969799;
             margin: 0 20px;
         }
-        p:first-child{
+
+        p:first-child {
             margin-left: 0;
         }
     }
@@ -1471,7 +1481,8 @@
         min-height: 100vh;
         padding: 30px 30px 0;
         box-sizing: border-box;
-        background:linear-gradient(180deg,rgba(60,62,73,1) 0%,rgba(33,35,40,1) 100%);
+        background: linear-gradient(180deg, rgba(60, 62, 73, 1) 0%, rgba(33, 35, 40, 1) 100%);
+
         .loading {
             padding-top: 197px;
 
@@ -1483,11 +1494,13 @@
 
             .load-loading {
                 text-align: center;
+
                 .loading-img {
                     width: 750px;
                     height: 164px;
                     margin-top: 100px;
                 }
+
                 .img {
                     height: 50px;
                     color: #EAEEF8;
