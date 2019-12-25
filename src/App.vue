@@ -27,8 +27,6 @@ export default {
           }
         },
         error: function (e) {
-          // alert('error')
-          // alert(e)
           switch (e) {
             case pluginFub.resetting: 
               that.sendReset() // 发送复位
@@ -46,7 +44,6 @@ export default {
         },
         complete: function (arrayCache) {
           localStorage.setItem('arrayCache', arrayCache)
-          // alert('complete')
         }
       }
     }
@@ -60,7 +57,6 @@ export default {
       bluetoothTool = BluetoothTool();
       bluetoothTool.init({
         turnOnBluetoothCallback: function (Content) { // 打开蓝牙回调
-          // alert('打开蓝牙回调')
           that.$store.dispatch('setLoginflag', { storeStatusContent: Number(Content) })
           if (!bluetoothTool.state.readThreadState) {
             that.$store.dispatch('setLoginflag', { refreSearch: false })            
@@ -84,24 +80,20 @@ export default {
           that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
         },
         discoveryFinishedCallback: function (Content) { // 搜索设备回调
-          // alert('搜索设备回调')
           that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
         },
         // getPairedDevicescallback: function (Content) { // 搜索默认蓝牙回调
         //   that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
         // },
         connDeviceCallback: function (Content, judgementState) { // 连接设备回调
-          alert('连接设备回调'+judgementState)
           that.judgementState = judgementState
           if(bluetoothTool.state.readThreadState) {
-            alert('弹窗出现')
             that.sendHeard()
             that.$store.dispatch('setLoginflag', { storeStatus: 'success' })
           }
           that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
         },
         connExceptionCallback: function (Content) {
-          // alert('设备中断回调')
           if (that.$route.name != 'Home') {
             that.$router.push({name: 'Home', query: {urlContent: Number(Content)}})
           }
@@ -132,11 +124,9 @@ export default {
       bluetoothTool.turnOnBluetooth()
       bluetoothTool.windowMeFlag()
       if (bluetoothTool.state.bluetoothEnable) { // 如果蓝牙是开启状态就搜索设备
-      alert('judgementState存在')
         that.defaultDevice()
       }
       if (bluetoothTool.state.bluetoothEnable && !that.judgementState) {
-        alert('judgementState不存在')
         that.searchDevice()
       }
     }, false)
@@ -190,7 +180,6 @@ export default {
       let data = '';
       try {
         data = pluginFub.invoke(this.BluetoothDataArr[0],this.BluetoothDataArr[1],responseArray,this.BluetoothDataArr[2],this.BluetoothDataArr[3],this.BluetoothDataArr[4],this.BluetoothDataArr[5])
-        // alert(data)
         let loopFlag = data.pop()
         bluetoothTool.sendData(data)
         if(loopFlag) {
