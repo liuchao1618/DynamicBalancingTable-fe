@@ -298,7 +298,7 @@
           this.markFlag = false;
         }, 11000)
         this.freeze = '解冻'
-        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', 'ALIGN', 0, 0, 0, 0] })
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', 'STOP', 0, 0, 0, 0] })
 
       },
 

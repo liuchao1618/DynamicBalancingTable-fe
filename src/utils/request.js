@@ -7,8 +7,8 @@ const request = axios.create({
 // 添加请求拦截器
 request.interceptors.request.use(function (config) {
   // 在发送请求之前做些什么
-  // if(config.url == 'http://www.xnnre.com/balance-web/api/login'){
-    if(config.url == '/api/login'){
+  if(config.url == 'http://www.xnnre.com/balance-web/api/login'){
+    // if(config.url == '/api/login'){
     config.headers.AppletSource =  'APP'
   }else{
     config.headers.Authorization = window.localStorage.getItem('AuthorizationStr')
@@ -23,8 +23,8 @@ request.interceptors.request.use(function (config) {
 request.interceptors.response.use(function (response) {
 
   // 对响应数据做点什么
-  // if(response.config.url== 'http://www.xnnre.com/balance-web/api/login'){
-    if(response.config.url== '/api/login'){
+  if(response.config.url== 'http://www.xnnre.com/balance-web/api/login'){
+    // if(response.config.url== '/api/login'){
     window.localStorage.setItem('AuthorizationStr',response.headers.setauthorization)
   }
   return response

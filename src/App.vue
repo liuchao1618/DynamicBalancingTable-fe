@@ -61,6 +61,9 @@ export default {
         turnOnBluetoothCallback: function (Content) { // 打开蓝牙回调
           // alert('打开蓝牙回调')
           that.$store.dispatch('setLoginflag', { storeStatusContent: Number(Content) })
+          if (!bluetoothTool.state.readThreadState) {
+            that.$store.dispatch('setLoginflag', { refreSearch: false })            
+          }
         },
         listenBTStatusCallback: function (Content) { // 监听蓝牙回调
          // 如果蓝牙是开启状态就搜索已配对设备
@@ -76,7 +79,7 @@ export default {
           // 如果蓝牙开启并且处于未连接状态 再去搜索设备
           if (bluetoothTool.state.bluetoothEnable && !bluetoothTool.state.readThreadState) {
             that.searchDevice()
-            that.$store.dispatch('setLoginflag', { refreSearch: true })
+            that.$store.dispatch('setLoginflag', { refreSearch: false })
           }
           that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
         },
@@ -110,7 +113,7 @@ export default {
           }
           if (!bluetoothTool.state.readThreadState) {
             clearInterval(timerHeard)
-            that.$store.dispatch('setLoginflag', { refreSearch: false })
+            that.$store.dispatch('setLoginflag', { refreSearch: true })
           }
           that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
           that.$store.dispatch('setLoginflag', { storeStatus: 'fail' })
