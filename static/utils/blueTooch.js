@@ -31,6 +31,7 @@ function BluetoothTool() {
         readThreadState: false, //数据读取线程状态
     };
     let statusContent = 0 // 页面初始化显示蓝牙未开启
+    let judgementState = false // 连接已经配对过的设备是否成功
 
     let options = {
         /*
@@ -157,14 +158,14 @@ function BluetoothTool() {
                 let intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 let requestCode = 1;
                 activity.startActivityForResult(intent, requestCode);
-                // state.statusContent = 1; // 蓝牙已经打开展示搜索状态
-                // options.turnOnBluetoothCallback && options.turnOnBluetoothCallback(state.statusContent)
+                // statusContent = 1; // 蓝牙已经打开展示搜索状态
+                // options.turnOnBluetoothCallback && options.turnOnBluetoothCallback(statusContent)
                 return;
             }
         } else {
             shortToast("蓝牙已经打开");
-            state.statusContent = 1;
-            options.turnOnBluetoothCallback && options.turnOnBluetoothCallback(state.statusContent)
+            statusContent = 1;
+            options.turnOnBluetoothCallback && options.turnOnBluetoothCallback(statusContent)
         }
     }
 
@@ -189,10 +190,10 @@ function BluetoothTool() {
 
         if (btAdapter != null && btAdapter.isEnabled()) {
             btAdapter.disable();
-            state.statusContent = 0;
+            statusContent = 0;
             shortToast("蓝牙关闭成功");
         } else {
-            state.statusContent = 0;
+            statusContent = 0;
             shortToast("蓝牙已经关闭");
         }
     }
@@ -203,7 +204,7 @@ function BluetoothTool() {
      */
     function getPairedDevices(discoveryAddress) {
         // alert('获取默认设备')
-        state.statusContent = 1
+        statusContent = 1
         options.getPairedDevicescallback && options.getPairedDevicescallback(state.stateContent)
         // alert('获取已经配对的设备')
         let pairedDevices = [];
@@ -237,14 +238,14 @@ function BluetoothTool() {
      */
     function discoveryNewDevice(discoveryAddress) {
         // alert('发现设备')
-        state.statusContent = 1
-        options.discoveryFinishedCallback && options.discoveryFinishedCallback(state.statusContent);
+        statusContent = 1
+        options.discoveryFinishedCallback && options.discoveryFinishedCallback(statusContent);
 
         if (discoveryAddress.length == 0) {
             shortToast('未提供可配对设备地址')
             cancelDiscovery(); // 取消发现
-            state.statusContent = 2
-            options.discoveryFinishedCallback && options.discoveryFinishedCallback(state.statusContent);
+            statusContent = 2
+            options.discoveryFinishedCallback && options.discoveryFinishedCallback(statusContent);
             return
         }
         if (btFindReceiver != null) {
@@ -296,10 +297,10 @@ function BluetoothTool() {
                 if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED == action) { // 搜索完成
                     if (!state.readThreadState) {
                         shortToast('未发现可用设备')
-                        state.statusContent = 2;
+                        statusContent = 2;
                     }
                     cancelDiscovery();
-                    options.discoveryFinishedCallback && options.discoveryFinishedCallback(state.statusContent);
+                    options.discoveryFinishedCallback && options.discoveryFinishedCallback(statusContent);
                 }
             }
         });
@@ -353,8 +354,8 @@ function BluetoothTool() {
                                 state.bluetoothEnable = false;
                                 break;
                         }
-                        state.statusContent = content;
-                        options.listenBTStatusCallback && options.listenBTStatusCallback(state.statusContent);
+                        statusContent = content;
+                        options.listenBTStatusCallback && options.listenBTStatusCallback(statusContent);
                         break;
                 }
             }
@@ -401,12 +402,14 @@ function BluetoothTool() {
             } catch (e1) {
                 console.error(e1);
             }
-            state.statusContent = 2;
-            options.connDeviceCallback && options.connDeviceCallback(state.statusContent)
+            statusContent = 2;
+            judgementState = false
+            options.connDeviceCallback && options.connDeviceCallback(statusContent, judgementState)
             return false;
         }
-        state.statusContent = 3;
-        options.connDeviceCallback && options.connDeviceCallback(state.statusContent)
+        statusContent = 3;
+        judgementState = true
+        options.connDeviceCallback && options.connDeviceCallback(statusContent, judgementState)
         return true;
     }
 
@@ -498,8 +501,8 @@ function BluetoothTool() {
                         } catch (e) {
                             state.readThreadState = false;
                             shortToast('设备已断开连接')
-                            state.statusContent = 2
-                            options.connExceptionCallback && options.connExceptionCallback(state.statusContent);
+                            statusContent = 2
+                            options.connExceptionCallback && options.connExceptionCallback(statusContent);
                         }
                     }
                     let dataArr = [];
@@ -537,9 +540,9 @@ function BluetoothTool() {
                 btOutStream.write(dataStr[i])
             }
         } catch (e) {
-            state.statusContent = 2
+            statusContent = 2
             state.readThreadState = false;
-            options.sendDataback && options.sendDataback(state.statusContent)
+            options.sendDataback && options.sendDataback(statusContent)
             alert('发送失败')
             return false;
         }
