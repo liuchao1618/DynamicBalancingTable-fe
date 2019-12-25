@@ -27,8 +27,6 @@ export default {
           }
         },
         error: function (e) {
-          // alert('error')
-          // alert(e)
           switch (e) {
             case pluginFub.resetting: 
               that.sendReset() // 发送复位
@@ -46,7 +44,6 @@ export default {
         },
         complete: function (arrayCache) {
           localStorage.setItem('arrayCache', arrayCache)
-          // alert('complete')
         }
       }
     }
@@ -60,7 +57,6 @@ export default {
       bluetoothTool = BluetoothTool();
       bluetoothTool.init({
         turnOnBluetoothCallback: function (Content) { // 打开蓝牙回调
-          // alert('打开蓝牙回调')
           that.$store.dispatch('setLoginflag', { storeStatusContent: Number(Content) })
           if (!bluetoothTool.state.readThreadState) {
             that.$store.dispatch('setLoginflag', { refreSearch: false })            
@@ -84,7 +80,6 @@ export default {
           that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
         },
         discoveryFinishedCallback: function (Content) { // 搜索设备回调
-          // alert('搜索设备回调')
           that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
         },
         // getPairedDevicescallback: function (Content) { // 搜索默认蓝牙回调
@@ -99,7 +94,6 @@ export default {
           that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
         },
         connExceptionCallback: function (Content) {
-          // alert('设备中断回调')
           if (that.$route.name != 'Home') {
             that.$router.push({name: 'Home', query: {urlContent: Number(Content)}})
           }
