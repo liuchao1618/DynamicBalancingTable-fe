@@ -80,7 +80,6 @@
           clearInterval(this.timer)
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
           clearTimeout(this.interva)
-
           let level = window.localStorage.getItem('level').split('<br/>').join('-')
           let data = {
             userCode: window.localStorage.getItem('userCode'),
@@ -148,7 +147,6 @@
           return;
         }
         let future = this.randomFuture(this.left,this.right);
-        console.log(future);
         this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO', this.intervalCount, future[0],future[1], 0, 0] })
         
         this.interva = setTimeout(()=> {
@@ -158,9 +156,12 @@
       stop() {
         this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
         clearTimeout(this.interva)
-
-        let level = window.localStorage.getItem('level').split('<br/>').join('-')
-        this.$router.push({ name: 'Home' })
+        if( window.localStorage.getItem('leftbox')  != 1){
+          var level = window.localStorage.getItem('level').split('<br/>').join('-')
+        }else{
+          var level = window.localStorage.getItem('level')
+        }
+        console.log(level,'等级')
         let data = {
           userCode: window.localStorage.getItem('userCode'),
           model: 'DEMO',
@@ -174,7 +175,7 @@
             window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
             this.$router.push({ name: 'finish', query: { fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, level: level, id: res.data.data.id, model: 'PT' } });
           } else if (res.data.code == 401) {
-            this.$router.push({ name: 'Home' })
+            this.$router.push({ name: 'Home' ,query:{index:0}})
           }
         })
       },
