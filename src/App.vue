@@ -23,6 +23,7 @@ export default {
           // that.sendDataTime()
           if(pluginFub.equals(res, pluginFub.STOP_OVER)) {
             that.$store.dispatch('setLoginflag', { transmitType:  'normal'})
+            that.$store.dispatch('setLoginflag', { resetType:  'normal'})
             // 传值给操作界面
           }
         },
