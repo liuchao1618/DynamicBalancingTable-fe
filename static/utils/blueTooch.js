@@ -163,7 +163,7 @@ function BluetoothTool() {
                 return;
             }
         } else {
-            shortToast("蓝牙已经打开");
+            // shortToast("蓝牙已经打开");
             statusContent = 1;
             options.turnOnBluetoothCallback && options.turnOnBluetoothCallback(statusContent)
         }
@@ -205,7 +205,7 @@ function BluetoothTool() {
     function getPairedDevices(discoveryAddress) {
         // alert('获取默认设备')
         statusContent = 1
-        options.getPairedDevicescallback && options.getPairedDevicescallback(state.stateContent)
+        options.getPairedDevicescallback && options.getPairedDevicescallback(statusContent)
         // alert('获取已经配对的设备')
         let pairedDevices = [];
 
@@ -296,7 +296,7 @@ function BluetoothTool() {
                 }
                 if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED == action) { // 搜索完成
                     if (!state.readThreadState) {
-                        shortToast('未发现可用设备')
+                        // shortToast('未发现可用设备')
                         statusContent = 2;
                     }
                     cancelDiscovery();
@@ -343,7 +343,7 @@ function BluetoothTool() {
                             case BluetoothAdapter.STATE_ON:
                                 state.bluetoothEnable = true;
                                 content = 1;
-                                shortToast('蓝牙已开启')
+                                // shortToast('蓝牙已开启')
                                 break;
                             case BluetoothAdapter.STATE_TURNING_OFF:
                                 state.bluetoothEnable = false;
@@ -386,16 +386,16 @@ function BluetoothTool() {
             let device = invoke(btAdapter, "getRemoteDevice", address);
             btSocket = invoke(device, "createRfcommSocketToServiceRecord", MY_UUID);
         } catch (e) {
-            shortToast("连接失败，获取Socket失败！");
+            // shortToast("连接失败，获取Socket失败！");
             return false;
         }
         try {
             invoke(btSocket, "connect");
             readData(); //读数据
-            shortToast("连接成功");
+            // shortToast("连接成功");
         } catch (e) {
             console.error(e);
-            shortToast("连接失败");
+            // shortToast("连接失败");
             try {
                 btSocket.close();
                 btSocket = null;
