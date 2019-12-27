@@ -1307,6 +1307,7 @@
             },
             // 点击进入页面改变store里面的值
             changeStoreStatus() {
+                this.$store.dispatch('setLoginflag', { resetType:  'normal',transmitType:'normal'})
                 this.$store.dispatch('setLoginflag', { storeStatus: 'success' })
             },
         }
