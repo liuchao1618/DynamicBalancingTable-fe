@@ -80,7 +80,8 @@
                     <div class='rightItem' v-for='(item,index) in touristList' :key='index' v-html='item.text'
                         :style='{"background-color": item.color}' @click='godetails(index,item.text)'></div>
                 </div>
-                <button class="aliginBtn" @click='alignBtn'>重置</button>
+                <button class="aliginBtn" v-if='statusContent == 3' @click='alignBtn'>重置</button>
+                <div class="refreSearchbox" v-if='statusContent == 2' @click='refreEvent'>重新搜索设备</div>
             </div>
             <!-- 记录 -->
             <div v-show='tab === 1' class='list'>
@@ -381,7 +382,6 @@
                     </van-col>
                 </van-row>
             </div>
-            <div class="refreSearchbox" v-if='statusContent == 2' @click='refreEvent'>重新搜索设备</div>
         </div>
         <!-- login组件 -->
         <login v-if='loginflag'></login>
@@ -1320,7 +1320,7 @@
         padding: 10px 20px;
         background: transparent;
         position: fixed;
-        bottom: 105px;
+        bottom: 100px;
         right: 90px;
         border: 1px solid rgba(156, 160, 177, 1);
         width: 135px;
@@ -1329,6 +1329,11 @@
         color: rgba(156, 160, 177, 1);
     }
     .refreSearchbox {
+        position: fixed;
+        bottom: 100px;
+        right: 0;
+        left: 0;
+        margin: 0 auto;
         width: 135px;
         height: 30px;
         font-size: 22px;
@@ -1338,7 +1343,6 @@
         line-height: 30px;
         padding: 10px 20px;
         border: 1px solid rgba(156, 160, 177, 1);
-        margin: 0 auto;
     }
 
     .dataIpt {
