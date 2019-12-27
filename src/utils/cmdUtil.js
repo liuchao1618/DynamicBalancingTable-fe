@@ -21,7 +21,7 @@
 
     let MODE_STOP =  0x0A;         // 响应急停
     let STOP_RUNNING =  0x1B;      // 急停复位中
-    let STOP_OVER =  0x0B;         // 急停恢复正常
+    let STOP_OVER =  0x0B;         // 复位恢复
 
     let BLANK =  0;                // 置空位
 
@@ -30,6 +30,9 @@
 // 心let 跳响应
     let HEART_RESPONSE =  [0xCF, 0x01, 0x00, 0x00, 0x00, 0x00, 0xD1, 0x62];
     let HEART_RESPONSE_STR =  HEART_RESPONSE.join(' ');
+    // 恢复响应
+    let STOP_OVER_RESPONSE = [0xCF, 0x01, 0x00, 0x80, 0x00, 0x0B, 0x5B, 0x53];
+    let STOP_OVER_RESPONSE_STR = STOP_OVER_RESPONSE.join(' ');
 
     let modelCache = '';                // 模式缓存
     let typeCache =  '';                // 行为缓存
@@ -63,6 +66,13 @@
             throw STOPPING;
         }
 
+        // 强制复位
+        if (type === 'RESET') {
+            let data = createCrc16([FRAME_HEAD, SET_MODE, BLANK, BLANK, BLANK, MODE_ZERO]);
+            data.push(0, false);
+            return data;
+        }
+
         // 现在为正常处理 先判断是否为模式执行成功 当速度模式、位置模式执行成功后 要通知蓝牙再次发送当前请求
         // 暂停模式成功、复位成功、故障复位成功、急停解成通知 不需要做处理
 
@@ -85,11 +95,6 @@
 
         switch (getMode(mode)) {
             case MODE_SPEED:
-                // console.log("------------------------")
-                // console.log(isSetMode(responseArray) + "setModel")
-                // console.log(isSetSpeed(responseArray) + "setSpeed")
-                // console.log(isSpeedMode(responseArray) + "inSpeedModel")
-                // console.log("------------------------")
                 if (isSpeedMode(responseArray) || isSetSpeed(responseArray)) {
                     data = [FRAME_HEAD, SPEED_DATA];
                     if (typeCache === 'PAUSE') {
@@ -159,9 +164,12 @@
 
     function parseResponseArray(responseArray) {
         responseArray = analyzeDataArray(responseArray); // 可能抛出INVALID异常
+        let isStopOver = responseArray.pop();
+
+
         if (isHeart(responseArray)) {
             // 为心跳 直接结束流程 缓存依旧是上次的缓存
-            return HEART_FRAME;
+            return isStopOver ? STOP_OVER : HEART_FRAME;
         }
         try {
             switch (responseArray[1]) {
@@ -174,7 +182,7 @@
                         // 当设备急停时 触发急停异常 通知用户界面禁止操作
                         throw STOPPING;
                     }
-                    if (equalsCode(responseArray[5], STOP_OVER)) {
+                    if (isStopOver) {
                         // 急停解除
                         return STOP_OVER;
                     }
@@ -194,9 +202,6 @@
     }
 
     function getMode(modeStr) {
-
-        // alert(modeStr)
-        // alert(typeof modeStr)
         switch (modeStr.toUpperCase()) {
             case 'PT':
             case 'DEMO':
@@ -212,24 +217,37 @@
         const l = originResponse.length;
 
         if (l < 8) {
+            // 丢弃
             throw INVALID;
         } else if (l === 8 && equalsCode(originResponse[0], FRAME_HEAD)) {
             verify(originResponse);
+            // 判断是否为复位结束
+            if (originResponse.join(' ').includes(STOP_OVER_RESPONSE_STR)) {
+                originResponse.push(true);
+            } else {
+                originResponse.push(false);
+            }
             return originResponse;
         } else if (l > 8) {
             // 排除心跳
             if (originResponse.join(' ').includes(HEART_RESPONSE_STR)) {
-                originResponse = originResponse.join(' ').replace(HEART_RESPONSE_STR, '')
+                originResponse = originResponse.join(' ').replace(new RegExp(HEART_RESPONSE_STR, 'gm'), '')
                     .trim().split(/\s+/);
                 if (originResponse.length < 8) {
                     // 此时全部都是心跳
-                    return HEART_RESPONSE;
+                    return [...HEART_RESPONSE, false];
                 }
             }
+
+            // 还是多于8个字节 判断是否有复位结束
+            let flag = originResponse.join(' ').includes(STOP_OVER_RESPONSE_STR);
+
             let number = arrayLastIndexOf(originResponse, FRAME_HEAD);
             if (number >= 0) {
                 originResponse = originResponse.slice(number, number + 8);
                 verify(originResponse);
+                // 判断是否为复位结束
+                originResponse.push(flag);
                 return originResponse;
             }
         }
