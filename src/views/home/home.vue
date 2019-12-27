@@ -902,6 +902,7 @@
             },
             // 点击
             discoveryNewDevice() {
+                this.status = 1
                 alert('点击重新搜索')
                 this.$store.dispatch('setLoginflag', { storeStatusContent: 1 })
                 // this.$parent.$options.parent.$options.components.App.methods.searchDevice()
