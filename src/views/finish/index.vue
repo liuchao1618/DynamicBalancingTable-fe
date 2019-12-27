@@ -192,7 +192,6 @@
       this.model = this.$route.query.model
       this.locus = JSON.parse(window.localStorage.getItem('locus'))
       this.devices = JSON.parse(window.localStorage.getItem('devices'))
-      console.log(this.locus,'this.locus')
       this.getcheckMember()
       var c = document.getElementById('mycanvas');
       var ctx = c.getContext("2d");
@@ -246,12 +245,19 @@
         checkMember().then((res) => {
           this.trainerName = res.data.data
           res.data.data.forEach((item, i) => {
+            console.log(item,'item')
             if (item.username == this.coachName) {
               item.members.forEach((v, i) => {
-                v.checked = false
+                if(v.username == this.$store.state.loginName){
+                  v.checked = true
+                  this.checkName.push(v)
+                }else{
+                  v.checked = false
+                }
               })
               this.nameList = JSON.parse(JSON.stringify(item.members))
             }
+            
           })
         })
       },
@@ -387,9 +393,9 @@
 
   .list {
     position: absolute;
-    top: 35px;
-    left: 49px;
-    width: 139px;
+    top: 45px;
+    left: 67px;
+    width: 145px;
     height: 100px;
     background: rgba(41, 43, 49, 1);
     box-shadow: 0px -1px 0px 0px rgba(88, 86, 93, 1);
@@ -398,7 +404,7 @@
     border-top: 0;
     z-index: 999;
     color: #8D8D94;
-    line-height: 32px;
+    line-height: 45px;
     padding: 5px 10px;
     box-sizing: border-box;
     overflow: auto;
@@ -407,10 +413,16 @@
       width: 100%;
     }
   }
-
+  /deep/ .van-search__content{
+    height: 45px;
+    
+  }
+  /deep/ .van-cell--borderless{
+    height: 45px;
+  }
   .lists {
     position: absolute;
-    top: 35px;
+    top: 45px;
     left: 0px;
     width: 205px;
     height: 100px;
@@ -421,10 +433,13 @@
     border-top: 0;
     z-index: 1000;
     color: #8D8D94;
-    line-height: 32px;
+    line-height: 45px;
     padding: 5px 10px;
     box-sizing: border-box;
     overflow: auto;
+    li{
+      width: 100%;
+    }
   }
 
   .select {
@@ -434,8 +449,8 @@
     justify-content: space-between;
     align-items: center;
     box-sizing: border-box;
-    width: 138px;
-    height: 35px;
+    width: 145px;
+    height: 45px;
     color: #D1D5E6;
     border-radius: 4px;
     border: 1px solid rgba(98, 101, 118, 1);
@@ -463,11 +478,13 @@
 
   /deep/.van-field__left-icon {
     margin-left: 10px;
-
+    color: transparent;
+    display: none
   }
 
   /deep/.van-icon .van-icon-search,
   .van-cell {
+    font-size: 22px;
     color: #626576 !important;
   }
 
@@ -478,9 +495,13 @@
   }
 
   /deep/.van-field__control {
+    height: 35px;
+    padding: 0 10px;
     color: #D1D5E6 !important;
   }
-
+  /deep/ .van-checkbox__icon--disabled .van-icon{
+    background-color:#373A43 !important;
+  }
   .box {
     display: flex;
     justify-content: space-between;
@@ -489,7 +510,7 @@
 
     h3 {
       color: rgba(184, 187, 198, 1);
-      font-size: 18px;
+      font-size: 24px;
       margin-bottom: 15px;
     }
 
@@ -521,7 +542,7 @@
       box-sizing: border-box;
 
       span {
-        font-size: 17px;
+        font-size: 20px;
         font-family: PingFangSC-Regular, PingFang SC;
         font-weight: 400;
         color: rgba(151, 154, 169, 1);
@@ -552,7 +573,7 @@
       box-sizing: border-box;
 
       .check {
-        font-size: 18px;
+        font-size: 22px;
 
         display: flex;
         height: 38px;
@@ -568,7 +589,7 @@
         }
 
         .checkName {
-          font-size: 18px;
+          font-size: 22px;
           margin-right: 20px;
           padding: 0 10px;
           display: flex;
@@ -584,10 +605,10 @@
 
       .drill {
         display: flex;
-        height: 35px;
+        height: 45px;
         justify-content: space-between;
         align-items: center;
-        font-size: 18px;
+        font-size: 22px;
         margin: 15px 0 20px 0;
         .coach {
           position: relative;
@@ -606,7 +627,7 @@
         .search {
           position: relative;
           width: 204px;
-          height: 35px;
+          height: 45px;
           border-radius: 4px;
           border: 1px solid rgba(98, 101, 118, 1);
           /* overflow: hidden; */
@@ -633,8 +654,8 @@
         border: 1px solid rgba(98, 101, 118, 1);
 
         .info {
-          font-size: 18px;
-          width: 20%;
+          font-size: 22px;
+          width: 23%;
           display: flex;
           height: 38px;
           padding-left: 10px;
@@ -646,10 +667,10 @@
 
       .sub {
         width: 195px;
-        height: 35px;
+        height: 45px;
         background: rgba(50, 61, 81, 1);
         border-radius: 5px;
-        font-size: 18px;
+        font-size: 22px;
         font-family: PingFangSC-Regular, PingFang SC;
         color: rgba(95, 88, 96, 1);
         display: flex;
@@ -659,12 +680,14 @@
       }
 
       .active {
-        background: rgba(34, 96, 169, 1);
-        font-size: 18px;
+        font-size: 22px;
         font-family: PingFangSC-Regular, PingFang SC;
         font-weight: 400;
+        background: rgba(34, 96, 169, 1);
         color: rgba(209, 208, 209, 1);
-        line-height: 25px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
     }
 
@@ -681,7 +704,7 @@
         flex-direction: column;
 
         span {
-          font-size: 17px;
+          font-size: 21px;
           font-family: PingFangSC-Regular, PingFang SC;
           font-weight: 400;
           color: rgba(151, 154, 169, 1);
@@ -726,8 +749,7 @@
           dd {
             margin-top: 5px;
             text-align: center;
-            font-size: 8px;
-            -webkit-text-size-adjust: none;
+            font-size: 18px;
           }
         }
       }
@@ -736,13 +758,21 @@
 
   .bottom {
     width: 480px;
-    height: 48px;
+    height: 50px;
     border-radius: 5px;
-    font-size: 22px;
-    line-height: 48px;
-    color: rgba(152, 151, 164, 1);
+    font-size: 24px;
+    line-height: 50px;
+    
+    background: rgba(34, 96, 169, 1);
+        color: rgba(209, 208, 209, 1);
     margin: 0 auto;
-    border: 1px solid rgba(99, 107, 114, 1);
+    moz-user-select: -moz-none; 
+    -moz-user-select: none; 
+    -o-user-select:none; 
+    -khtml-user-select:none; 
+    -webkit-user-select:none; 
+    -ms-user-select:none; 
+    user-select:none;
   }
 
   .wanC {

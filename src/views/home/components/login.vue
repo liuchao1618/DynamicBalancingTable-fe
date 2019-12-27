@@ -33,7 +33,7 @@
         name: 'login',
         data() {
             return {
-                tel: '154545454152',
+                tel: '13100000002',
                 pwd: '123456',
                 flag: true,
                 telFlag: false,
@@ -89,6 +89,13 @@
                     });
                     return false
                 }
+                if(!(/^1[3456789]\d{9}$/.test(this.tel))){
+                    this.$toast({
+                        message: '手机号码有误',
+                        position: 'bottom'
+                    });
+                    return false; 
+                } 
                 let data = {
                     username: this.tel,
                     password: this.pwd

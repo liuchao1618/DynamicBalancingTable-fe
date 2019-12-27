@@ -49,7 +49,7 @@
             </div>
         </van-popup>
         <van-popup v-model="dateShow" position="bottom">
-            <van-datetime-picker type="date" @cancel="handleCancel" @confirm="handleEndDateConfirm" />
+            <van-datetime-picker type="date" :min-date='minDate' :max-date='maxDate' @cancel="handleCancel" @confirm="handleEndDateConfirm" />
         </van-popup>
     </div>
 </template>
@@ -61,6 +61,8 @@
         name: 'addAthletes',
         data() {
             return {
+                minDate:new Date(1970,0,1),
+                maxDate:new Date(),
                 form: {
                     username: '',
                     tel: '',
@@ -211,6 +213,9 @@
 </script>
 
 <style lang="less" scoped>
+    /deep/ .van-picker__cancel, /deep/.van-picker__confirm , /deep/ .van-picker__columns li{
+        font-size: 22px!important
+    }
     /deep/.van-picker-column__wrapper{
         display: flex;
         flex-direction: column;

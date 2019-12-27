@@ -69,13 +69,12 @@
                                 position: 'bottom'
                             });
                             this.$router.push({ name: 'Home', query: { index: 0 } })
+                        }else{
+                            this.$toast({
+                                message: res.data.msg,
+                                position: 'bottom'
+                            });
                         }
-                        // else{
-                        //     this.$toast({
-                        //         message: res.data.msg,
-                        //         position: 'bottom'
-                        //     });
-                        // }
                     })
                 }
                 console.log(this.form, 'form')

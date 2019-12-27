@@ -80,6 +80,7 @@
                     <div class='rightItem' v-for='(item,index) in touristList' :key='index' v-html='item.text'
                         :style='{"background-color": item.color}' @click='godetails(index,item.text)'></div>
                 </div>
+                <button class="aliginBtn" @click='alignBtn'>重置</button>
             </div>
             <!-- 记录 -->
             <div v-show='tab === 1' class='list'>
@@ -615,6 +616,7 @@
             'text',
             'storeStatusContent',
             'transmitType',
+            'resetType',
             'storeStatus'
         ]),
         watch: {
@@ -641,9 +643,20 @@
             },
             storeStatus() {
                 this.status = this.storeStatus
+            },
+            login() {
+                if (this.login) {
+                window.localStorage.setItem('modle', 'PT')
+            } else {
+                window.localStorage.setItem('modle', 'DEMO')
+            }
             }
         },
         methods: {
+            alignBtn(){
+                this.$store.dispatch('setLoginflag', { resetType:  'reset'})
+                this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null','RESET',0,0,0,0] })
+            },
             searchbtnEvent() {
                 //     this.collectList.forEach((item, index) => {
                 //     var c = document.getElementById('a' + index);
@@ -974,6 +987,10 @@
                 addCollect(data).then((res) => {
                     if (res.data.code == 200) {
                         this.getExercise()
+                        this.$toast({
+                            message: '收藏成功',
+                            position: 'bottom'
+                        });
                     }
                 })
             },
@@ -986,6 +1003,10 @@
                 delCollect(data).then((res) => {
                     if (res.data.code == 200) {
                         this.getExercise()
+                        this.$toast({
+                            message: '取消收藏',
+                            position: 'bottom'
+                        });
                     }
                 })
             },
@@ -1054,6 +1075,12 @@
                         position: 'bottom'
                     });
                 } else if (this.transmitType == 'normal') {
+                    if(this.resetType == 'reset'){
+                        this.$toast({
+                        message: '正在复位中，请稍后',
+                        position: 'bottom'
+                    });
+                    }else{
                     if(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() ==false){
                     // if (!this) {
                         this.$toast({
@@ -1075,6 +1102,7 @@
                         this.$router.push({ name: 'SelectTime' });
                     }
                 }
+                }
             },
             godetail(index, text) {
                 if (this.transmitType == 'stopping') {
@@ -1083,6 +1111,12 @@
                         position: 'bottom'
                     });
                 } else if (this.transmitType == 'normal') {
+                    if(this.resetType == 'reset'){
+                        this.$toast({
+                        message: '正在复位中，请稍后',
+                        position: 'bottom'
+                    });
+                    }else{
                     if(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() ==false){
                     // if (!this) {
                         this.$toast({
@@ -1161,6 +1195,7 @@
                         }
                         window.localStorage.setItem('level', text)
                     }
+                }
 
                 }
 
@@ -1172,6 +1207,12 @@
                         position: 'bottom'
                     });
                 } else if (this.transmitType == 'normal') {
+                    if(this.resetType == 'reset'){
+                        this.$toast({
+                        message: '正在复位中，请稍后',
+                        position: 'bottom'
+                    });
+                    }else{
                     if (this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() == false) {
                     // if (!this) {
 
@@ -1232,6 +1273,8 @@
                         window.localStorage.setItem('level', text)
 
                     }
+
+                    }
                 }
             },
             // 点击使用本次设置进行训练
@@ -1273,6 +1316,19 @@
 </script>
 
 <style scoped lang="less">
+    .aliginBtn{
+        line-height: 30px;
+        padding: 10px 20px;
+        background: transparent;
+        position: fixed;
+        bottom: 105px;
+        right: 90px;
+        border: 1px solid rgba(156, 160, 177, 1);
+        width: 135px;
+        height: 50px;
+        font-size: 22px;
+        color: rgba(156, 160, 177, 1);
+    }
     .refreSearchbox {
         width: 135px;
         height: 30px;
@@ -1292,8 +1348,7 @@
         /* margin: 0 20px; */
         width: 210px;
         height: 50px;
-        background: rgba(41, 43, 49, 1);
-        box-shadow: 0px -1px 0px 0px rgba(88, 86, 93, 1);
+        background:transparent;
         border-radius: 5px;
         color: #8D8D94;
         border: 1px solid rgba(88, 86, 93, 1);
@@ -1641,7 +1696,13 @@
                         height: 230px;
                         margin-bottom: 30px;
                         position: relative;
-
+                        moz-user-select: -moz-none; 
+                        -moz-user-select: none; 
+                        -o-user-select:none; 
+                        -khtml-user-select:none; 
+                        -webkit-user-select:none; 
+                        -ms-user-select:none; 
+                        user-select:none;
                         img {
                             position: absolute;
                             width: 100%;
@@ -1669,7 +1730,13 @@
                     width: 100%;
                     flex: 1;
                     margin-left: 40px;
-
+                    moz-user-select: -moz-none; 
+                    -moz-user-select: none; 
+                    -o-user-select:none; 
+                    -khtml-user-select:none; 
+                    -webkit-user-select:none; 
+                    -ms-user-select:none; 
+                    user-select:none;
                     .rightItem {
                         width: 22%;
                         height: 230px;

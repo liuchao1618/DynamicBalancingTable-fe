@@ -54,7 +54,7 @@
     <van-overlay :show="markFlag">
       <div class="wrapperMark">
         <img src="../../assets/image/timg.gif" alt="">
-        <p>设备复位中...</p>
+        <p>复位中，请稍等几秒后再进行操作。...</p>
       </div>
     </van-overlay>
 
@@ -150,6 +150,7 @@
     },
     computed: mapState({
       transmitType: state => state.transmitType,
+      resetType: state => state.resetType,
     }),
     watch: {
       transmitType() {
@@ -160,6 +161,13 @@
           });
           this.$router.push({ name: 'Home', query:{index: 0} })
         }
+      },
+      resetType(){
+        if(this.$store.state.resetType == 'normal'){
+            this.markFlag = false;
+          }else{
+            this.markFlag = true;
+          }
       },
       bottomValue(now, old) {
         setTimeout(() => {
@@ -180,6 +188,7 @@
         },500)
       },
       stop() {
+        this.$store.dispatch('setLoginflag', { resetType:  'reset'})
         this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
         clearInterval(this.timer)
         let data = {
@@ -300,10 +309,12 @@
       },
 
       changealign() {
-        this.markFlag = true;
-        setTimeout(() => {
-          this.markFlag = false;
-        }, 11000)
+        this.$store.dispatch('setLoginflag', { resetType:  'reset'})
+        if(this.$store.state.resetType == 'normal'){
+            this.markFlag = false;
+          }else{
+            this.markFlag = true;
+          }
         this.freeze = '解冻'
         this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', 'STOP', 0, 0, 0, 0] })
 

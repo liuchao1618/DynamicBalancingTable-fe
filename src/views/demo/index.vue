@@ -20,7 +20,7 @@
     <van-overlay :show="markFlag">
         <div class="wrapperMark">
         <img src="../../assets/image/timg.gif" alt="">
-        <p>设备复位中...</p></div>
+        <p>复位中，请稍等几秒后再进行操作。...</p></div>
       </van-overlay>
   </div>
 </template>
@@ -102,6 +102,7 @@
     },
     computed: mapState({
       transmitType: state => state.transmitType,
+      resetType: state => state.resetType,
     }),
     watch: {
       transmitType() {
@@ -113,6 +114,13 @@
           this.$router.push({ name: 'Home', query:{index: 0} })
         }
       },
+      resetType(){
+        if(this.$store.state.resetType == 'normal'){
+            this.markFlag = false;
+          }else{
+            this.markFlag = true;
+          }
+      }
     },
     methods: {
       randomScope(min, max, decimal) {
@@ -154,7 +162,7 @@
         }, future[2])
       },
       stop() {
-        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
+        this.$store.dispatch('setLoginflag', { resetType:  'reset'})
         clearTimeout(this.interva)
         if( window.localStorage.getItem('leftbox')  != 1){
           var level = window.localStorage.getItem('level').split('<br/>').join('-')
@@ -174,9 +182,11 @@
           if (res.data.code == 200) {
             window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
             this.$router.push({ name: 'finish', query: { fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, level: level, id: res.data.data.id, model: 'PT' } });
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
           } else if (res.data.code == 401) {
             this.$router.push({ name: 'Home' ,query:{index:0}})
           }
+          
         })
       },
       changepause() {
@@ -224,10 +234,12 @@
         }
       },
       changealign() {
-        this.markFlag = true;
-        setTimeout(()=>{
-          this.markFlag = false;
-        },11000)
+        this.$store.dispatch('setLoginflag', { resetType:  'reset'})
+        if(this.$store.state.resetType == 'normal'){
+            this.markFlag = false;
+          }else{
+            this.markFlag = true;
+          }
         clearTimeout(this.interva)
         this.intervalCount = 0
         this.freeze = '解冻'
