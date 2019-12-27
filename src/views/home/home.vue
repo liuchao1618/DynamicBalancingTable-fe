@@ -80,7 +80,7 @@
                     <div class='rightItem' v-for='(item,index) in touristList' :key='index' v-html='item.text'
                         :style='{"background-color": item.color}' @click='godetails(index,item.text)'></div>
                 </div>
-                <button class="aliginBtn" @click='alignBtn'>复位</button>
+                <button class="aliginBtn" @click='alignBtn'>重置</button>
             </div>
             <!-- 记录 -->
             <div v-show='tab === 1' class='list'>
@@ -654,6 +654,7 @@
         },
         methods: {
             alignBtn(){
+                this.$store.dispatch('setLoginflag', { resetType:  'reset'})
                 this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null','RESET',0,0,0,0] })
             },
             searchbtnEvent() {
@@ -1346,8 +1347,7 @@
         /* margin: 0 20px; */
         width: 210px;
         height: 50px;
-        background: rgba(41, 43, 49, 1);
-        box-shadow: 0px -1px 0px 0px rgba(88, 86, 93, 1);
+        background:transparent;
         border-radius: 5px;
         color: #8D8D94;
         border: 1px solid rgba(88, 86, 93, 1);
