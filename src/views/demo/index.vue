@@ -154,7 +154,7 @@
         }, future[2])
       },
       stop() {
-        that.$store.dispatch('setLoginflag', { resetType:  'reset'})
+        this.$store.dispatch('setLoginflag', { resetType:  'reset'})
         clearTimeout(this.interva)
         if( window.localStorage.getItem('leftbox')  != 1){
           var level = window.localStorage.getItem('level').split('<br/>').join('-')
@@ -226,7 +226,7 @@
         }
       },
       changealign() {
-        that.$store.dispatch('setLoginflag', { resetType:  'reset'})
+        this.$store.dispatch('setLoginflag', { resetType:  'reset'})
         this.markFlag = true;
         setTimeout(()=>{
           this.markFlag = false;
