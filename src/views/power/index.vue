@@ -180,6 +180,7 @@
         },500)
       },
       stop() {
+        that.$store.dispatch('setLoginflag', { resetType:  'reset'})
         this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
         clearInterval(this.timer)
         let data = {
@@ -300,6 +301,7 @@
       },
 
       changealign() {
+        that.$store.dispatch('setLoginflag', { resetType:  'reset'})
         this.markFlag = true;
         setTimeout(() => {
           this.markFlag = false;

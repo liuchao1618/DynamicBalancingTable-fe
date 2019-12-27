@@ -616,6 +616,7 @@
             'text',
             'storeStatusContent',
             'transmitType',
+            'resetType',
             'storeStatus'
         ]),
         watch: {
@@ -1072,6 +1073,12 @@
                         position: 'bottom'
                     });
                 } else if (this.transmitType == 'normal') {
+                    if(this.resetType == 'reset'){
+                        this.$toast({
+                        message: '正在复位中，请稍后',
+                        position: 'bottom'
+                    });
+                    }else{
                     if(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() ==false){
                     // if (!this) {
                         this.$toast({
@@ -1093,6 +1100,7 @@
                         this.$router.push({ name: 'SelectTime' });
                     }
                 }
+                }
             },
             godetail(index, text) {
                 if (this.transmitType == 'stopping') {
@@ -1101,6 +1109,12 @@
                         position: 'bottom'
                     });
                 } else if (this.transmitType == 'normal') {
+                    if(this.resetType == 'reset'){
+                        this.$toast({
+                        message: '正在复位中，请稍后',
+                        position: 'bottom'
+                    });
+                    }else{
                     if(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() ==false){
                     // if (!this) {
                         this.$toast({
@@ -1179,6 +1193,7 @@
                         }
                         window.localStorage.setItem('level', text)
                     }
+                }
 
                 }
 
@@ -1190,6 +1205,12 @@
                         position: 'bottom'
                     });
                 } else if (this.transmitType == 'normal') {
+                    if(this.resetType == 'reset'){
+                        this.$toast({
+                        message: '正在复位中，请稍后',
+                        position: 'bottom'
+                    });
+                    }else{
                     if (this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() == false) {
                     // if (!this) {
 
@@ -1248,6 +1269,8 @@
                             this.$router.push({ name: 'SelectTime' });
                         }
                         window.localStorage.setItem('level', text)
+
+                    }
 
                     }
                 }

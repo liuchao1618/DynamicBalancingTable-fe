@@ -47,8 +47,8 @@
     },
     methods: {
       stop() {
+        that.$store.dispatch('setLoginflag', { resetType:  'reset'})
         this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', '', 0, 0, 0, 0] })
-
         clearInterval(this.timers)
         clearInterval(this.timer)
         // locus:[{

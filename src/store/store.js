@@ -23,6 +23,7 @@ const mutations = {
     state.storeStatusContent = data.storeStatusContent || state.storeStatusContent
     state.storeStatus = data.storeStatus || state.storeStatus
     state.transmitType = data.transmitType || state.transmitType
+    state.resetType = data.resetType || state.resetType
 
     if(data.text =='coach'){
       state.identity = data.identity
