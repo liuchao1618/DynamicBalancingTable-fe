@@ -83,14 +83,16 @@ export default {
         discoveryFinishedCallback: function (Content) { // 搜索设备回调
           that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
         },
-        // getPairedDevicescallback: function (Content) { // 搜索默认蓝牙回调
-        //   that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
-        // },
+        getPairedDevicescallback: function (Content) { // 搜索默认蓝牙回调
+          that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
+        },
         connDeviceCallback: function (Content, judgementState) { // 连接设备回调
           that.judgementState = judgementState
           if(bluetoothTool.state.readThreadState) {
             that.sendHeard()
             that.$store.dispatch('setLoginflag', { storeStatus: 'success' })
+            that.$store.dispatch('setLoginflag', { transmitType:  'normal'})
+            that.$store.dispatch('setLoginflag', { resetType:  'normal'})
           }
           that.$store.dispatch('setLoginflag', { storeStatusContent:Content })
         },
@@ -150,11 +152,9 @@ export default {
       let address = ['00:15:A6:00:1E:36', '00:15:A6:00:44:2A', '00:19:09:01:1D:B0']
       bluetoothTool.getPairedDevices(address)
     },
-    connectionState () {
-      console.log(this.judgementState+'点击重新搜索judgementStatejudgementState')
-      
+    connectionState () {      
       this.defaultDevice()
-      if (!this.judgementState) {
+      if (!bluetoothTool.state.readThreadState) {
         this.searchDevice()
       }
     },
