@@ -154,7 +154,6 @@
         }, future[2])
       },
       stop() {
-        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
         clearTimeout(this.interva)
         if( window.localStorage.getItem('leftbox')  != 1){
           var level = window.localStorage.getItem('level').split('<br/>').join('-')
@@ -174,9 +173,11 @@
           if (res.data.code == 200) {
             window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
             this.$router.push({ name: 'finish', query: { fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, level: level, id: res.data.data.id, model: 'PT' } });
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
           } else if (res.data.code == 401) {
             this.$router.push({ name: 'Home' ,query:{index:0}})
           }
+          
         })
       },
       changepause() {
