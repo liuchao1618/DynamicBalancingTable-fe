@@ -574,7 +574,7 @@
                 })
                 ctx.stroke();
             })
-            console.log(this.collectList, 'this.collectList')
+            // console.log(this.collectList, 'this.collectList')
             this.collectList.forEach((item, index) => {
                 var c = document.getElementById('a' + index);
                 var ctx = c.getContext("2d");
@@ -597,7 +597,7 @@
             this.status = this.storeStatus
             // this.loginflag = localStorage.getItem('loginflag')
             // this.login = localStorage.getItem('login')
-            console.log('  this.loginflag', this.loginflag, 'this.login', this.login)
+            // console.log('  this.loginflag', this.loginflag, 'this.login', this.login)
             this.getExercise(); //所有记录
             this.getmemberMsg(); //我的运动员
             this.tab = this.$route.query.index * 1 || 0;
@@ -915,11 +915,10 @@
             },
             // 点击
             discoveryNewDevice() {
-                this.status = 1
-                alert('点击重新搜索')
-                this.$store.dispatch('setLoginflag', { storeStatusContent: 1 })
-                // this.$parent.$options.parent.$options.components.App.methods.searchDevice()
-                this.$parent.$options.parent.$options.components.App.methods.connectionState()
+                // this.statusContent = 1
+                // this.$store.dispatch('setLoginflag', { storeStatusContent: 1 })
+                this.$parent.$options.parent.$options.components.App.methods.searchDevice()
+                // this.$parent.$options.parent.$options.components.App.methods.connectionState()
             },
             exitLogin() {
                 this.dialogFlag = true
