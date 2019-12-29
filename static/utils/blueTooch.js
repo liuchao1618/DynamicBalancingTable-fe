@@ -520,6 +520,8 @@ function BluetoothTool() {
                     }
                     if (dataArr.length > 0) {
                         // alert('接收数据')
+                        
+                        shortToast(dataArr+"接收到的数据")
                         options.readDataCallback && options.readDataCallback(dataArr);
                     }
                 }

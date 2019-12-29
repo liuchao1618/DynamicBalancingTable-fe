@@ -111,6 +111,7 @@
     watch: {
       transmitType() {
         if (this.transmitType == 'stopping') {
+          clearTimeout(this.interva)
           this.$toast({
             message: '设备已急停',
             position: 'bottom'
