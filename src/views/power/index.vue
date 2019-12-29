@@ -107,7 +107,7 @@
         s = (s.length == 1) ? '0' + s : s;
         return h + ':' + s;
       }
-
+      clearInterval(this.timer)
       this.setTime = window.localStorage.getItem('setTime');
       this.timer = setInterval(() => {
         if (this.setTime > 0) {
@@ -115,6 +115,9 @@
           this.currentTime = s_to_hs(this.setTime)
         } else {
           clearInterval(this.timer)
+          this.timer = null
+          this.$store.dispatch('setLoginflag', { resetType:  'reset'})
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
           let data = {
             model: 'PT',
             devices: [{ deviceId: 1, deviceAlias: '设备1' }],

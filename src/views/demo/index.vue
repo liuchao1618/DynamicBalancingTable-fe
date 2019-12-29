@@ -18,10 +18,11 @@
       <div @click='stop'>结束</div>
     </div>
     <van-overlay :show="markFlag">
-        <div class="wrapperMark">
+      <div class="wrapperMark">
         <img src="../../assets/image/timg.gif" alt="">
-        <p>复位中，请稍等几秒后再进行操作...</p></div>
-      </van-overlay>
+        <p>复位中，请稍等几秒后再进行操作...</p>
+      </div>
+    </van-overlay>
   </div>
 </template>
 <script>
@@ -30,61 +31,51 @@
   const minLeftPower = 10;
   const minRightPower = 15;
   const minRuntime = 6.0;
-  const maxRuntime = 10.0;
+  const maxRuntime = 9.0;
   const minStoptime = 1.0;
-  const maxStoptime = 3.0;
+  const maxStoptime = 2.0;
   export default {
     data() {
       return {
         currentTime: '00:00',
         pause: '暂停',
-        left:window.localStorage.getItem('left'),
-        right:window.localStorage.getItem('right'),
+        left: window.localStorage.getItem('left'),
+        right: window.localStorage.getItem('right'),
         freeze: '冻结',
         align: '复位',
         setTime: 0,
         intervalCount: 0, // 结束要置零  偶数运动 奇数停止
         interva: null,
         closeFlag: false,
-        markFlag:false
+        markFlag: false,
+        timer:null
 
       }
     },
     mounted() {
+      this.setTime = window.localStorage.getItem('setTime');
+
+      console.log(this.setTime + '时间')
       /**
        * 将秒转换为 分:秒
        * s int 秒数
       */
-      function s_to_hs(s) {
-        //计算分钟
-        //算法：将秒数除以60，然后下舍入，既得到分钟数
-        var h;
-        h = Math.floor(s / 60);
-        //计算秒
-        //算法：取得秒%60的余数，既得到秒数
-        s = s % 60;
-        //将变量转换为字符串
-        h += '';
-        s += '';
-        //如果只有一位数，前面增加一个0
-        h = (h.length == 1) ? '0' + h : h;
-        s = (s.length == 1) ? '0' + s : s;
-        return h + ':' + s;
-      }
-      this.setTime = window.localStorage.getItem('setTime');
+      clearInterval(this.timer)
       this.timer = setInterval(() => {
         if (this.setTime > 0) {
           this.setTime--;
-          this.currentTime = s_to_hs(this.setTime)
+          this.currentTime = this.s_to_hs(this.setTime)
         } else {
           clearInterval(this.timer)
+          this.timer = null
+          this.$store.dispatch('setLoginflag', { resetType: 'reset' })
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
           clearTimeout(this.interva)
-          if( window.localStorage.getItem('leftbox')  != 1){
-          var level = window.localStorage.getItem('level').split('<br/>').join('-')
-        }else{
-          var level = window.localStorage.getItem('level')
-        }
+          if (window.localStorage.getItem('leftbox') != 1) {
+            var level = window.localStorage.getItem('level').split('<br/>').join(' ')
+          } else {
+            var level = window.localStorage.getItem('level')
+          }
           let data = {
             userCode: window.localStorage.getItem('userCode'),
             model: 'DEMO',
@@ -102,7 +93,7 @@
         }
       }, 1000);
       this.a();
-      
+
     },
     computed: mapState({
       transmitType: state => state.transmitType,
@@ -116,18 +107,34 @@
             message: '设备已急停',
             position: 'bottom'
           });
-          this.$router.push({ name: 'Home', query:{index: 0} })
+          this.$router.push({ name: 'Home', query: { index: 0 } })
         }
       },
-      resetType(){
-        if(this.$store.state.resetType == 'normal'){
-            this.markFlag = false;
-          }else{
-            this.markFlag = true;
-          }
+      resetType() {
+        if (this.$store.state.resetType == 'normal') {
+          this.markFlag = false;
+        } else {
+          this.markFlag = true;
+        }
       }
     },
     methods: {
+      s_to_hs(s) {
+        //计算分钟
+        //算法：将秒数除以60，然后下舍入，既得到分钟数
+        var h;
+        h = Math.floor(s / 60);
+        //计算秒
+        //算法：取得秒%60的余数，既得到秒数
+        s = s % 60;
+        //将变量转换为字符串
+        h += '';
+        s += '';
+        //如果只有一位数，前面增加一个0
+        h = (h.length == 1) ? '0' + h : h;
+        s = (s.length == 1) ? '0' + s : s;
+        return h + ':' + s;
+      },
       randomScope(min, max, decimal) {
         if (!decimal || decimal <= 0) decimal = 0;
         return (Math.random() * (max - min + 1) + min).toFixed(decimal);
@@ -140,7 +147,7 @@
        * 10-15 ~ 90-95 差值位0-80
        * @param this.left
        */
-       randomFuture() {
+      randomFuture() {
         try {
           if (this.intervalCount % 2 === 0) {
             let random0 = Math.floor(this.randomScope(0, this.left, 0) / 5) * 5;
@@ -154,28 +161,28 @@
         }
       },
 
-       a() {
+      a() {
         clearTimeout(this.interva);
         if (this.closeFlag) {
           return;
         }
-        let future = this.randomFuture(this.left,this.right);
-        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO', this.intervalCount, future[0],future[1], 0, 0] })
-        
-        this.interva = setTimeout(()=> {
+        let future = this.randomFuture(this.left, this.right);
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO', this.intervalCount, future[0], future[1], 0, 0] })
+
+        this.interva = setTimeout(() => {
           this.a();
         }, future[2])
       },
       stop() {
         clearTimeout(this.interva)
-        if( window.localStorage.getItem('leftbox')  == 1){
+        if (window.localStorage.getItem('leftbox') == 1) {
           var level = window.localStorage.getItem('level')
-        }else{
+        } else {
           var level = window.localStorage.getItem('level').split('<br/>').join(' ')
         }
         window.localStorage.removeItem('leftbox')
-        // this.$store.dispatch('setLoginflag', { resetType:  'reset'})
-        console.log(level,'等级')
+        this.$store.dispatch('setLoginflag', { resetType: 'reset' })
+        console.log(level, '等级')
         let data = {
           userCode: window.localStorage.getItem('userCode'),
           model: 'DEMO',
@@ -188,30 +195,20 @@
           if (res.data.code == 200) {
             window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
             this.$router.push({ name: 'finish', query: { fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, level: level, id: res.data.data.id, model: 'PT' } });
-        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
+            this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
           } else if (res.data.code == 401) {
-            this.$router.push({ name: 'Home' ,query:{index:0}})
+            this.$router.push({ name: 'Home', query: { index: 0 } })
           }
-          
+
         })
       },
       changepause() {
         if (this.pause == '继续') {
-          function s_to_hs(s) {
-            var h;
-            h = Math.floor(s / 60);
-            s = s % 60;
-            h += '';
-            s += '';
-            h = (h.length == 1) ? '0' + h : h;
-            s = (s.length == 1) ? '0' + s : s;
-            return h + ':' + s;
-          }
           this.setTime = window.localStorage.getItem('setTime');
           this.timer = setInterval(() => {
             if (this.setTime > 0) {
               this.setTime--;
-              this.currentTime = s_to_hs(this.setTime)
+              this.currentTime = this.s_to_hs(this.setTime)
             } else {
               clearInterval(this.timer)
               window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
@@ -219,6 +216,9 @@
             }
           }, 1000);
           this.pause = '暂停'
+          if (this.intervalCount % 2 == 1) {
+            this.intervalCount--
+          }
           this.a();
         } else {
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO', 'PAUSE', 0, 0, 0, 0] })
@@ -240,16 +240,16 @@
         }
       },
       changealign() {
-        this.$store.dispatch('setLoginflag', { resetType:  'reset'})
-        if(this.$store.state.resetType == 'normal'){
-            this.markFlag = false;
-          }else{
-            this.markFlag = true;
-          }
+        this.$store.dispatch('setLoginflag', { resetType: 'reset' })
+        if (this.$store.state.resetType == 'normal') {
+          this.markFlag = false;
+        } else {
+          this.markFlag = true;
+        }
         clearTimeout(this.interva)
         this.intervalCount = 0
         this.freeze = '解冻'
-        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO', 'STOP',0,0, 0, 0] })
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO', 'STOP', 0, 0, 0, 0] })
 
       }
     }
@@ -262,16 +262,19 @@
     justify-content: center;
     flex-direction: column;
     height: 100%;
-  img{
+
+    img {
       width: 60px;
       height: 60px;
     }
-    p{
+
+    p {
       margin-top: 10px;
       font-size: 20px;
-      color:#abafbd;
+      color: #abafbd;
     }
-}
+  }
+
   .none {
     pointer-events: none;
   }

@@ -431,6 +431,7 @@
         },
         data() {
             return {
+                checkModel:'',
                 itemdata: {},
                 dialogFlag: false,
                 dialogFlags: false,
@@ -598,6 +599,15 @@
             })
         },
         mounted() {
+
+            // this.checkModel = this.$route.query.checkModel||''
+            this.checkModel = window.localStorage.getItem('checkModel')
+            console.log(this.checkModel+'this.checkModel')
+            if(this.checkModel == 'PT'){
+                window.localStorage.setItem('modle', 'PT')
+            }else{
+                window.localStorage.setItem('modle', 'DEMO')
+            }
             // 在其他页面监听蓝牙与设备的连接状态
             let urlContent = this.$route.query.urlContent
             if (urlContent) {
@@ -737,57 +747,6 @@
                 this.$store.dispatch('setLoginflag', { storeStatus: 'fail' })
             },
             timeSele() {
-                // console.log(this.currentTime, this.iptName)
-                // var kindModleText = ''
-                // if (this.kindModleText == '显示所有训练记录') {
-                //     kindModleText = ''
-                // } else if (this.kindModleText == '仅显示DEMO模式') {
-                //     kindModleText = 'DEMO'
-
-                // } else if (this.kindModleText == '仅显示手动模式') {
-                //     kindModleText = 'PT'
-
-                // } else if (this.kindModleText == '仅显示轨迹模式') {
-                //     kindModleText = 'LIVE'
-
-                // }
-                // console.log(this.kindModleText, 'this.kindModleText')
-                // if (this.iptName == '') {
-                //     var data = {
-                //         userCode: window.localStorage.getItem('userCode'),
-                //         condDate: this.currentTime,
-                //         condMode: kindModleText
-                //     }
-                // }
-                // else {
-                //     var data = {
-                //         userCode: window.localStorage.getItem('userCode'),
-                //         condDate: this.currentTime,
-                //         condRunner: this.iptName,
-                //         condMode: kindModleText
-                //     }
-                // }
-                // memberExercise(data).then((res) => {
-                //     this.recordList = res.data.data;
-                //     this.collectList = [];
-                //     res.data.data && res.data.data.forEach((item, index) => {
-                //         item.memberList = item.memberList.join('、')
-                //         item.expands = []
-                //         if (JSON.parse(item.expand) != null) {
-                //             var expand = JSON.parse(item.expand)
-                //             expand.forEach((v, ind) => {
-                //                 var newArr = []
-                //                 v.c.forEach((val, i) => {
-                //                     newArr.push(parseInt(val / 4))
-                //                 })
-                //                 item.expands.push(newArr)
-                //             })
-                //         }
-                //         if (item.favored) {
-                //             this.collectList.push(item)
-                //         }
-                //     })
-                // })
             },
             tabShow() {
                 if (this.show == false) {
@@ -799,120 +758,10 @@
             changekindModleText(val) {
                 this.kindModleText = val
                 this.show = false
-                // var kindModleText = ''
-                // if (this.kindModleText == '显示所有训练记录') {
-                //     kindModleText = ''
-                // } else if (this.kindModleText == '仅显示DEMO模式') {
-                //     kindModleText = 'DEMO'
-
-                // } else if (this.kindModleText == '仅显示手动模式') {
-                //     kindModleText = 'PT'
-
-                // } else if (this.kindModleText == '仅显示轨迹模式') {
-                //     kindModleText = 'LIVE'
-
-                // }
-                // if (this.iptName == '') {
-                //     var data = {
-                //         userCode: window.localStorage.getItem('userCode'),
-                //         condDate: this.currentTime,
-                //         condMode: kindModleText
-                //     }
-                // } else {
-                //     var data = {
-                //         userCode: window.localStorage.getItem('userCode'),
-                //         condDate: this.currentTime,
-                //         condRunner: this.iptName,
-                //         condMode: kindModleText
-                //     }
-                // }
-                // if (this.currentTime == '') {
-                //     var data = {
-                //         userCode: window.localStorage.getItem('userCode'),
-                //         condRunner: this.iptName,
-                //         condMode: kindModleText
-                //     }
-                // } else if (this.iptName == '') {
-                //     var data = {
-                //         userCode: window.localStorage.getItem('userCode'),
-                //         condDate: this.currentTime,
-                //         condMode: kindModleText
-                //     }
-                // }
-                // memberExercise(data).then((res) => {
-                //     this.recordList = res.data.data;
-                //     this.collectList = [];
-                //     res.data.data && res.data.data.forEach((item, index) => {
-                //         item.memberList = item.memberList.join('、')
-                //         item.expands = []
-                //         if (JSON.parse(item.expand) != null) {
-                //             var expand = JSON.parse(item.expand)
-                //             expand.forEach((v, ind) => {
-                //                 var newArr = []
-                //                 v.c.forEach((val, i) => {
-                //                     newArr.push(parseInt(val / 4))
-                //                 })
-                //                 item.expands.push(newArr)
-                //             })
-                //         }
-                //         if (item.favored) {
-                //             this.collectList.push(item)
-                //         }
-                //     })
-                // })
             },
             checkNames(val) {
                 this.iptName = val.username
                 this.shows = false
-                // var kindModleText = ''
-                // if (this.kindModleText == '显示所有训练记录') {
-                //     kindModleText = ''
-                // } else if (this.kindModleText == '仅显示DEMO模式') {
-                //     kindModleText = 'DEMO'
-
-                // } else if (this.kindModleText == '仅显示手动模式') {
-                //     kindModleText = 'PT'
-
-                // } else if (this.kindModleText == '仅显示轨迹模式') {
-                //     kindModleText = 'LIVE'
-
-                // }
-                // if (this.currentTime == '') {
-                //     var data = {
-                //         userCode: window.localStorage.getItem('userCode'),
-                //         condRunner: this.iptName,
-                //         condMode: kindModleText
-                //     }
-                // }
-                // else {
-                //     var data = {
-                //         userCode: window.localStorage.getItem('userCode'),
-                //         condDate: this.currentTime,
-                //         condRunner: this.iptName,
-                //         condMode: kindModleText
-                //     }
-                // }
-                // memberExercise(data).then((res) => {
-                //     this.recordList = res.data.data;
-                //     this.collectList = [];
-                //     res.data.data && res.data.data.forEach((item, index) => {
-                //         item.memberList = item.memberList.join('、')
-                //         item.expands = []
-                //         if (JSON.parse(item.expand) != null) {
-                //             var expand = JSON.parse(item.expand)
-                //             expand.forEach((v, ind) => {
-                //                 var newArr = []
-                //                 v.c.forEach((val, i) => {
-                //                     newArr.push(parseInt(val / 4))
-                //                 })
-                //                 item.expands.push(newArr)
-                //             })
-                //         }
-                //         if (item.favored) {
-                //             this.collectList.push(item)
-                //         }
-                //     })
-                // })
             },
             changeIpt() {
                 runnersName().then((res) => {
@@ -946,14 +795,6 @@
             },
             exitLogin() {
                 this.dialogFlag = true
-                // Dialog.confirm({
-                //     message: '您确定要退出登录吗？'
-                // }).then(() => {
-                // on confirm
-                // localStorage.clear()
-                // }).catch(() => {
-                //     // on cancel
-                // });
             },
             loginflagTRUE() {
                 this.dialogFlag = false
@@ -1357,8 +1198,17 @@
                             position: 'bottom'
                         });
                     } else {
+                        if (this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() == false) {
+                            // if (!this) {
+                            this.$toast({
+                                message: '未连接可用设备，请连接后重试。',
+                                position: 'bottom'
+                            })
+                        }else{
                         this.dialogFlags = true
                         this.itemdata = item
+
+                        }
                     }
                 }
                 // Dialog.confirm({

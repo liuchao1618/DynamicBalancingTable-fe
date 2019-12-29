@@ -207,7 +207,8 @@
     },
     methods: {
       goHome() {
-        this.$router.push({ name: 'Home', query: { index: 0 } })
+        this.$router.push({ name: 'Home', query: { index: 0} })
+        window.localStorage.setItem('checkModel',this.model);
         window.localStorage.removeItem('locus')
       },
       checkNames(item) {
