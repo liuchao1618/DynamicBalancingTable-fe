@@ -166,7 +166,6 @@
         responseArray = analyzeDataArray(responseArray); // 可能抛出INVALID异常
         let isStopOver = responseArray.pop();
 
-
         if (isHeart(responseArray)) {
             // 为心跳 直接结束流程 缓存依旧是上次的缓存
             return isStopOver ? STOP_OVER : HEART_FRAME;
@@ -198,6 +197,9 @@
             return BLANK;
         } finally {
             arrayCache = responseArray;
+            if(equalsCode(responseArray[5], MODE_STOP)) {
+                arrayCache = [0xCF, 0X01, 0X00, 0X80, 0X00, 0X04, 0xAA, 0xBC];
+            }
         }
     }
 
@@ -215,6 +217,7 @@
 
     function analyzeDataArray(originResponse) {
         const l = originResponse.length;
+        let flag = originResponse.join(' ').includes(STOP_OVER_RESPONSE_STR);
 
         if (l < 8) {
             // 丢弃
@@ -222,11 +225,12 @@
         } else if (l === 8 && equalsCode(originResponse[0], FRAME_HEAD)) {
             verify(originResponse);
             // 判断是否为复位结束
-            if (originResponse.join(' ').includes(STOP_OVER_RESPONSE_STR)) {
-                originResponse.push(true);
-            } else {
-                originResponse.push(false);
-            }
+            originResponse.push(flag);
+            // if (originResponse.join(' ').includes(STOP_OVER_RESPONSE_STR)) {
+            //     originResponse.push(true);
+            // } else {
+            //     originResponse.push(false);
+            // }
             return originResponse;
         } else if (l > 8) {
             // 排除心跳
@@ -240,7 +244,7 @@
             }
 
             // 还是多于8个字节 判断是否有复位结束
-            let flag = originResponse.join(' ').includes(STOP_OVER_RESPONSE_STR);
+            // let flag = originResponse.join(' ').includes(STOP_OVER_RESPONSE_STR);
 
             let number = arrayLastIndexOf(originResponse, FRAME_HEAD);
             if (number >= 0) {

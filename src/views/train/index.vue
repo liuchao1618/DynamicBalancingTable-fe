@@ -199,6 +199,7 @@
           }
           }, 1000);
           this.f(this.expand)
+           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', '', 0, 0, 0, 0] })
         } else {
           if (this.model == 'PT') {
             this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', '', this.leftPower, this.rightPower, 0, 0] })
@@ -250,7 +251,7 @@
       },
       stop() {
         console.log(this.model)
-        this.$store.dispatch('setLoginflag', { BluetoothDataArr: [this.model, '', 0, 0, 0, 0] })
+        
         clearInterval(this.timer)
         if (this.model == 'LIVE') {
           var data = {
@@ -265,6 +266,7 @@
             level: this.level,
             locus: this.expand
           }
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', '', 0, 0, 0, 0] })
         } else {
           var data = {
             model: this.$route.query.model,
@@ -278,6 +280,7 @@
             level: this.level,
             locus: this.expand
           }
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: [this.model, 'STOP', 0, 0, 0, 0] })
         }
         window.localStorage.setItem('locus', JSON.stringify(this.expand))
 

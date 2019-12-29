@@ -113,6 +113,7 @@ function BluetoothTool() {
     }
 
     function shortToast(msg) {
+        alert(Toast)
         Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
     }
     function windowMeFlag () {
@@ -520,6 +521,8 @@ function BluetoothTool() {
                     }
                     if (dataArr.length > 0) {
                         // alert('接收数据')
+
+                        // shortToast(dataArr+"接收到的数据")
                         options.readDataCallback && options.readDataCallback(dataArr);
                     }
                 }
@@ -533,6 +536,13 @@ function BluetoothTool() {
      * @return {Boolean}
      */
     function sendData(dataStr) {
+        console.log(dataStr)
+        // console.log(typeof dataStr)
+        console.log(dataStr.map(v => v.toString(16)))
+
+        // shortToast(dataStr)
+        // shortToast(typeof dataStr)
+        // shortToast(dataStr.map(v => v.toString(16)))
         if (!btOutStream) {
             // shortToast("创建输出流失败！");
             return;
