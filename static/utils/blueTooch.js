@@ -113,6 +113,7 @@ function BluetoothTool() {
     }
 
     function shortToast(msg) {
+        alert(Toast)
         Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
     }
     function windowMeFlag () {
@@ -189,10 +190,10 @@ function BluetoothTool() {
         if (btAdapter != null && btAdapter.isEnabled()) {
             btAdapter.disable();
             statusContent = 0;
-            shortToast("蓝牙关闭成功");
+            // shortToast("蓝牙关闭成功");
         } else {
             statusContent = 0;
-            shortToast("蓝牙已经关闭");
+            // shortToast("蓝牙已经关闭");
         }
     }
 
@@ -215,7 +216,7 @@ function BluetoothTool() {
         if (btAdapter != null && btAdapter.isEnabled()) {
             pairedDevicesAndroid = btAdapter.getBondedDevices();
         } else {
-            shortToast("蓝牙未开启");
+            // shortToast("蓝牙未开启");
         }
 
         if (!pairedDevicesAndroid) {
@@ -353,7 +354,7 @@ function BluetoothTool() {
                                 state.bluetoothEnable = false;
                                 break;
                             case BluetoothAdapter.STATE_OFF:
-                                shortToast('设备已断开连接')
+                                // shortToast('设备已断开连接')
                                 content = 0;
                                 state.bluetoothEnable = false;
                                 break;
@@ -472,7 +473,7 @@ function BluetoothTool() {
      */
     function readData() {
         if (!btSocket) {
-            shortToast("请先连接蓝牙设备！");
+            // shortToast("请先连接蓝牙设备！");
             return false;
         }
         try {
@@ -480,7 +481,7 @@ function BluetoothTool() {
             btOutStream = invoke(btSocket, "getOutputStream");
         } catch (e) {
             console.error(e);
-            shortToast("创建输入输出流失败！");
+            // shortToast("创建输入输出流失败！");
             closeBtSocket();
             return false;
         }
@@ -504,7 +505,7 @@ function BluetoothTool() {
                             // btOutStream.write([0b00]);
                         } catch (e) {
                             state.readThreadState = false;
-                            shortToast('设备已断开连接')
+                            // shortToast('设备已断开连接')
                             statusContent = 2
                             options.connExceptionCallback && options.connExceptionCallback(statusContent);
                         }
@@ -520,8 +521,8 @@ function BluetoothTool() {
                     }
                     if (dataArr.length > 0) {
                         // alert('接收数据')
-                        
-                        shortToast(dataArr+"接收到的数据")
+
+                        // shortToast(dataArr+"接收到的数据")
                         options.readDataCallback && options.readDataCallback(dataArr);
                     }
                 }
@@ -535,8 +536,15 @@ function BluetoothTool() {
      * @return {Boolean}
      */
     function sendData(dataStr) {
+        console.log(dataStr)
+        // console.log(typeof dataStr)
+        console.log(dataStr.map(v => v.toString(16)))
+
+        // shortToast(dataStr)
+        // shortToast(typeof dataStr)
+        // shortToast(dataStr.map(v => v.toString(16)))
         if (!btOutStream) {
-            shortToast("创建输出流失败！");
+            // shortToast("创建输出流失败！");
             return;
         }
         // let bytes = invoke(dataStr, 'getBytes', 'gbk');
@@ -549,7 +557,7 @@ function BluetoothTool() {
             statusContent = 2
             state.readThreadState = false;
             options.sendDataback && options.sendDataback(statusContent)
-            shortToast('发送失败')
+            // shortToast('发送失败')
             return false;
         }
         // alert('发送成功')

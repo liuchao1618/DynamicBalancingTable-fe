@@ -125,6 +125,7 @@
         }
         this.position.x = touch.clientX;
         this.position.y = touch.clientY;
+        console.log(moveDiv+'moveDiv')
         this.dx = moveDiv.offsetLeft;
         this.dy = moveDiv.offsetTop;
       },
@@ -171,6 +172,7 @@
     watch: {
       transmitType() {
         if (this.transmitType == 'stopping') {
+          console.log('急停啦')
           clearInterval(this.timers)
           this.$toast({
             message: '设备已急停',
