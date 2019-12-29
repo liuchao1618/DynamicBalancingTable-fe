@@ -7,7 +7,6 @@ function BluetoothTool() {
     let Toast = plus.android.importClass("android.widget.Toast");
     //连接串口设备的 UUID
     let MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-
     let invoke = plus.android.invoke;
     let btAdapter = BluetoothAdapter.getDefaultAdapter(); //默认适配器
     let activity = plus.android.runtimeMainActivity();
@@ -147,6 +146,8 @@ function BluetoothTool() {
      * @param requestCode
      */
     function turnOnBluetooth() {
+        // console.log(invoke(Toast, "getClass"));
+        // console.log(invoke(IntentFilter, "getClass"));
         if (btAdapter == null) {
             // shortToast("没有蓝牙");
             return;
@@ -520,8 +521,8 @@ function BluetoothTool() {
                         // }
                     }
                     if (dataArr.length > 0) {
-                        // alert('接收数据')
-
+                        // shortToast('接收数据')
+                        console.log('接收："-----------------------------------------'+dataArr.map(v => v.toString(16)))
                         // shortToast(dataArr+"接收到的数据")
                         options.readDataCallback && options.readDataCallback(dataArr);
                     }
@@ -536,9 +537,9 @@ function BluetoothTool() {
      * @return {Boolean}
      */
     function sendData(dataStr) {
-        console.log(dataStr)
+        // console.log(dataStr)
         // console.log(typeof dataStr)
-        console.log(dataStr.map(v => v.toString(16)))
+        console.log('发送：'+dataStr.map(v => v.toString(16)) + "-----------------------------------------")
 
         // shortToast(dataStr)
         // shortToast(typeof dataStr)

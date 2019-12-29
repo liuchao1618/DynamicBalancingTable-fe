@@ -17,7 +17,7 @@ export default {
     let that = this;
     return {
       flag: false,
-      address: ['00:15:A6:00:1E:36', '00:15:A6:00:44:2A', '00:19:09:01:1D:B0'],
+      address: ['00:15:A6:00:44:2A', '00:19:09:01:1D:B0','00:15:A6:00:1E:36'],
       originResponse : {
         success: function (res) {
           if(pluginFub.equals(res, pluginFub.STOP_OVER)) {
@@ -139,7 +139,7 @@ export default {
   },
   methods: {
     searchDevice () { // 搜索设备
-    let add = ['00:15:A6:00:1E:36', '00:15:A6:00:44:2A', '00:19:09:01:1D:B0']
+    let add = ['00:15:A6:00:44:2A', '00:19:09:01:1D:B0','00:15:A6:00:1E:36',]
       bluetoothTool.discoveryNewDevice(add)
     },
     sendHeard () { //  发送心跳
