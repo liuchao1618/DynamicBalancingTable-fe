@@ -44,7 +44,7 @@
             <div class='name'>参与本次训练运动员</div>
             <!-- PT模式 DEMO模式 -->
             <div style="display: flex;flex-wrap: wrap;">
-              <div style="color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
+              <div style="line-height:25px;color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
             </div>
             <!-- PT模式 -->
             <!-- LIVE模式 -->
@@ -78,7 +78,7 @@
             <div class='name'>参与本次训练运动员</div>
             <!-- PT模式 DEMO模式 -->
             <div style="display: flex;flex-wrap: wrap;">
-              <div style="color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
+              <div style="line-height:25px;color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
             </div>
             <!-- PT模式 -->
             <!-- LIVE模式 -->
@@ -110,7 +110,7 @@
             <div class='name'>参与本次训练运动员</div>
             <!-- PT模式 DEMO模式 -->
             <div style="display: flex;flex-wrap: wrap;">
-              <div style="color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
+              <div style="line-height:25px;color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
             </div>
             <!-- PT模式 -->
             <!-- LIVE模式 -->
