@@ -189,10 +189,10 @@ function BluetoothTool() {
         if (btAdapter != null && btAdapter.isEnabled()) {
             btAdapter.disable();
             statusContent = 0;
-            shortToast("蓝牙关闭成功");
+            // shortToast("蓝牙关闭成功");
         } else {
             statusContent = 0;
-            shortToast("蓝牙已经关闭");
+            // shortToast("蓝牙已经关闭");
         }
     }
 
@@ -215,7 +215,7 @@ function BluetoothTool() {
         if (btAdapter != null && btAdapter.isEnabled()) {
             pairedDevicesAndroid = btAdapter.getBondedDevices();
         } else {
-            shortToast("蓝牙未开启");
+            // shortToast("蓝牙未开启");
         }
 
         if (!pairedDevicesAndroid) {
@@ -238,14 +238,14 @@ function BluetoothTool() {
      * 发现设备
      */
     function discoveryNewDevice(discoveryAddress) {
-        console.log(discoveryAddress+'kkkkkjjjjjjjj')
+        // console.log(discoveryAddress+'kkkkkjjjjjjjj')
         // alert('发现设备')
         statusContent = 1
         options.discoveryFinishedCallback && options.discoveryFinishedCallback(statusContent);
-        console.log('length ===========00000')
+        // console.log('length ===========00000')
 
         if (discoveryAddress.length == 0) {
-            console.log('length ===========1111')
+            // console.log('length ===========1111')
             // shortToast('未提供可配对设备地址')
             cancelDiscovery(); // 取消发现
             statusContent = 2
@@ -262,24 +262,24 @@ function BluetoothTool() {
             cancelDiscovery(); // 取消发现
         }
         let Build = plus.android.importClass("android.os.Build");
-            console.log('66666666666666')
+            // console.log('66666666666666')
         //6.0以后的如果需要利用本机查找周围的wifi和蓝牙设备, 申请权限
         if (Build.VERSION.SDK_INT >= 6.0) {
             plus.android.requestPermissions(['android.permission.ACCESS_FINE_LOCATION'], function(e){
                 if(e.deniedAlways.length>0){	//权限被永久拒绝
                     // 弹出提示框解释为何需要定位权限，引导用户打开设置页面开启
-                    console.log('Always Denied!!! '+ e.deniedAlways.toString());
+                    // console.log('Always Denied!!! '+ e.deniedAlways.toString());
                 }
                 if(e.deniedPresent.length>0){	//权限被临时拒绝
                     // 弹出提示框解释为何需要定位权限，可再次调用plus.android.requestPermissions申请权限
-                    console.log('Present Denied!!! '+e.deniedPresent.toString());
+                    // console.log('Present Denied!!! '+e.deniedPresent.toString());
                 }
                 if(e.granted.length>0){	//权限被允许
                     //调用依赖获取定位权限的代码
-                    console.log('Granted!!! '+e.granted.toString());
+                    // console.log('Granted!!! '+e.granted.toString());
                 }
             }, function(e){
-                    console.log('Request Permissions error:'+JSON.stringify(e));
+                    // console.log('Request Permissions error:'+JSON.stringify(e));
             });
         }
         btFindReceiver = plus.android.implements("io.dcloud.android.content.BroadcastReceiver", {
@@ -353,7 +353,7 @@ function BluetoothTool() {
                                 state.bluetoothEnable = false;
                                 break;
                             case BluetoothAdapter.STATE_OFF:
-                                shortToast('设备已断开连接')
+                                // shortToast('设备已断开连接')
                                 content = 0;
                                 state.bluetoothEnable = false;
                                 break;
@@ -472,15 +472,15 @@ function BluetoothTool() {
      */
     function readData() {
         if (!btSocket) {
-            shortToast("请先连接蓝牙设备！");
+            // shortToast("请先连接蓝牙设备！");
             return false;
         }
         try {
             btInStream = invoke(btSocket, "getInputStream");
             btOutStream = invoke(btSocket, "getOutputStream");
         } catch (e) {
-            console.error(e);
-            shortToast("创建输入输出流失败！");
+            // console.error(e);
+            // shortToast("创建输入输出流失败！");
             closeBtSocket();
             return false;
         }
@@ -504,7 +504,7 @@ function BluetoothTool() {
                             // btOutStream.write([0b00]);
                         } catch (e) {
                             state.readThreadState = false;
-                            shortToast('设备已断开连接')
+                            // shortToast('设备已断开连接')
                             statusContent = 2
                             options.connExceptionCallback && options.connExceptionCallback(statusContent);
                         }
@@ -534,7 +534,7 @@ function BluetoothTool() {
      */
     function sendData(dataStr) {
         if (!btOutStream) {
-            shortToast("创建输出流失败！");
+            // shortToast("创建输出流失败！");
             return;
         }
         // let bytes = invoke(dataStr, 'getBytes', 'gbk');
@@ -547,7 +547,7 @@ function BluetoothTool() {
             statusContent = 2
             state.readThreadState = false;
             options.sendDataback && options.sendDataback(statusContent)
-            shortToast('发送失败')
+            // shortToast('发送失败')
             return false;
         }
         // alert('发送成功')

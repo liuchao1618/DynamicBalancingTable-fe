@@ -124,7 +124,6 @@ export default {
       if (bluetoothTool.state.bluetoothEnable) {
         that.searchDevice()
       } else {
-        console.log('4444444444444')
         that.$store.dispatch('setLoginflag', {storeStatusContent: 0})
       }
     }, false)
