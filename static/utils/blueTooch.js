@@ -7,7 +7,6 @@ function BluetoothTool() {
     let Toast = plus.android.importClass("android.widget.Toast");
     //连接串口设备的 UUID
     let MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-
     let invoke = plus.android.invoke;
     let btAdapter = BluetoothAdapter.getDefaultAdapter(); //默认适配器
     let activity = plus.android.runtimeMainActivity();
@@ -147,6 +146,8 @@ function BluetoothTool() {
      * @param requestCode
      */
     function turnOnBluetooth() {
+        // console.log(invoke(Toast, "getClass"));
+        // console.log(invoke(IntentFilter, "getClass"));
         if (btAdapter == null) {
             // shortToast("没有蓝牙");
             return;
@@ -239,14 +240,14 @@ function BluetoothTool() {
      * 发现设备
      */
     function discoveryNewDevice(discoveryAddress) {
-        console.log(discoveryAddress+'kkkkkjjjjjjjj')
+        // console.log(discoveryAddress+'kkkkkjjjjjjjj')
         // alert('发现设备')
         statusContent = 1
         options.discoveryFinishedCallback && options.discoveryFinishedCallback(statusContent);
-        console.log('length ===========00000')
+        // console.log('length ===========00000')
 
         if (discoveryAddress.length == 0) {
-            console.log('length ===========1111')
+            // console.log('length ===========1111')
             // shortToast('未提供可配对设备地址')
             cancelDiscovery(); // 取消发现
             statusContent = 2
@@ -263,24 +264,24 @@ function BluetoothTool() {
             cancelDiscovery(); // 取消发现
         }
         let Build = plus.android.importClass("android.os.Build");
-            console.log('66666666666666')
+            // console.log('66666666666666')
         //6.0以后的如果需要利用本机查找周围的wifi和蓝牙设备, 申请权限
         if (Build.VERSION.SDK_INT >= 6.0) {
             plus.android.requestPermissions(['android.permission.ACCESS_FINE_LOCATION'], function(e){
                 if(e.deniedAlways.length>0){	//权限被永久拒绝
                     // 弹出提示框解释为何需要定位权限，引导用户打开设置页面开启
-                    console.log('Always Denied!!! '+ e.deniedAlways.toString());
+                    // console.log('Always Denied!!! '+ e.deniedAlways.toString());
                 }
                 if(e.deniedPresent.length>0){	//权限被临时拒绝
                     // 弹出提示框解释为何需要定位权限，可再次调用plus.android.requestPermissions申请权限
-                    console.log('Present Denied!!! '+e.deniedPresent.toString());
+                    // console.log('Present Denied!!! '+e.deniedPresent.toString());
                 }
                 if(e.granted.length>0){	//权限被允许
                     //调用依赖获取定位权限的代码
-                    console.log('Granted!!! '+e.granted.toString());
+                    // console.log('Granted!!! '+e.granted.toString());
                 }
             }, function(e){
-                    console.log('Request Permissions error:'+JSON.stringify(e));
+                    // console.log('Request Permissions error:'+JSON.stringify(e));
             });
         }
         btFindReceiver = plus.android.implements("io.dcloud.android.content.BroadcastReceiver", {
@@ -480,7 +481,7 @@ function BluetoothTool() {
             btInStream = invoke(btSocket, "getInputStream");
             btOutStream = invoke(btSocket, "getOutputStream");
         } catch (e) {
-            console.error(e);
+            // console.error(e);
             // shortToast("创建输入输出流失败！");
             closeBtSocket();
             return false;
@@ -520,8 +521,8 @@ function BluetoothTool() {
                         // }
                     }
                     if (dataArr.length > 0) {
-                        // alert('接收数据')
-
+                        // shortToast('接收数据')
+                        console.log('接收："-----------------------------------------'+dataArr.map(v => v.toString(16)))
                         // shortToast(dataArr+"接收到的数据")
                         options.readDataCallback && options.readDataCallback(dataArr);
                     }
@@ -536,9 +537,9 @@ function BluetoothTool() {
      * @return {Boolean}
      */
     function sendData(dataStr) {
-        console.log(dataStr)
+        // console.log(dataStr)
         // console.log(typeof dataStr)
-        console.log(dataStr.map(v => v.toString(16)))
+        console.log('发送：'+dataStr.map(v => v.toString(16)) + "-----------------------------------------")
 
         // shortToast(dataStr)
         // shortToast(typeof dataStr)
