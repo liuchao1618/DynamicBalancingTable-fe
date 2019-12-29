@@ -934,10 +934,9 @@
             // 点击
             discoveryNewDevice() {
                 // this.statusContent = 1
-                // console.log(this.statusContent+'33333333333')
-                this.$store.dispatch('setLoginflag', { storeStatusContent: 1 })
-                // this.$parent.$options.parent.$options.components.App.methods.searchDevice()
-                this.$parent.$options.parent.$options.components.App.methods.connectionState()
+                // this.$store.dispatch('setLoginflag', { storeStatusContent: 1 })
+                this.$parent.$options.parent.$options.components.App.methods.searchDevice()
+                // this.$parent.$options.parent.$options.components.App.methods.connectionState()
             },
             exitLogin() {
                 this.dialogFlag = true

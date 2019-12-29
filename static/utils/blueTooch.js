@@ -78,13 +78,13 @@ function BluetoothTool() {
          */
         sendDataback: function (stateContent) { },
         // 获取默认蓝牙回调
-        getPairedDevicescallback: function(stateContent) {}
+        getPairedDevicescallback: function(stateContent) { }
     }
 
     let bluetoothToolInstance = {
         state: state, //蓝牙状态
         init: init, //初始化回调函数
-        statusContent: statusContent, // 页面显示状态
+        // statusContent: statusContent, // 页面显示状态
         isSupportBluetooth: isSupportBluetooth,
         getBluetoothStatus: getBluetoothStatus,
         turnOnBluetooth: turnOnBluetooth,
@@ -147,19 +147,17 @@ function BluetoothTool() {
      */
     function turnOnBluetooth() {
         if (btAdapter == null) {
-            shortToast("没有蓝牙");
+            // shortToast("没有蓝牙");
             return;
         }
         if (!btAdapter.isEnabled()) {
             if (activity == null) {
-                shortToast("未获取到activity", activity);
+                // shortToast("未获取到activity", activity);
                 return;
             } else {
                 let intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 let requestCode = 1;
                 activity.startActivityForResult(intent, requestCode);
-                // statusContent = 1; // 蓝牙已经打开展示搜索状态
-                // options.turnOnBluetoothCallback && options.turnOnBluetoothCallback(statusContent)
                 return;
             }
         } else {
@@ -203,7 +201,10 @@ function BluetoothTool() {
      * @return {Array} connetedDevices
      */
     function getPairedDevices(discoveryAddress) {
+        // statusContent = 1
+        // options.discoveryFinishedCallback && options.discoveryFinishedCallback(statusContent);
         // alert('获取默认设备')
+        // console.log('获取默认设备')
         statusContent = 1
         options.getPairedDevicescallback && options.getPairedDevicescallback(statusContent)
         // alert('获取已经配对的设备')
@@ -237,12 +238,15 @@ function BluetoothTool() {
      * 发现设备
      */
     function discoveryNewDevice(discoveryAddress) {
+        console.log(discoveryAddress+'kkkkkjjjjjjjj')
         // alert('发现设备')
         statusContent = 1
         options.discoveryFinishedCallback && options.discoveryFinishedCallback(statusContent);
+        console.log('length ===========00000')
 
         if (discoveryAddress.length == 0) {
-            shortToast('未提供可配对设备地址')
+            console.log('length ===========1111')
+            // shortToast('未提供可配对设备地址')
             cancelDiscovery(); // 取消发现
             statusContent = 2
             options.discoveryFinishedCallback && options.discoveryFinishedCallback(statusContent);
@@ -258,7 +262,7 @@ function BluetoothTool() {
             cancelDiscovery(); // 取消发现
         }
         let Build = plus.android.importClass("android.os.Build");
-
+            console.log('66666666666666')
         //6.0以后的如果需要利用本机查找周围的wifi和蓝牙设备, 申请权限
         if (Build.VERSION.SDK_INT >= 6.0) {
             plus.android.requestPermissions(['android.permission.ACCESS_FINE_LOCATION'], function(e){
@@ -423,7 +427,7 @@ function BluetoothTool() {
             closeBtSocket();
         }
         state.readThreadState = false;
-        shortToast("断开连接成功");
+        // shortToast("断开连接成功");
     }
 
     /**
