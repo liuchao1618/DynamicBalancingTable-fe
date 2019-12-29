@@ -21,7 +21,7 @@
                 <div class='img'>
                     <img src="./image/none.png" alt="">未发现可用设备
                 </div>
-                <div style="display: flex; width: 20%;margin: 0 auto">
+                <div style="display: flex; width: 20%;margin: 178px auto 0">
                     <div @click="discoveryNewDevice()" class='load-button'>重新搜索</div>
                     <div @click="changeStoreStatus()" class='load-button'>进入系统</div>
                 </div>
@@ -144,7 +144,7 @@
                             <div class='con' style='width:200px'>
                                 <div class='name'>参与本次训练运动员</div>
                                 <div style="display: flex;flex-wrap: wrap;">
-                                    <div style="color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
+                                    <div style="line-height:25px;color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
                                 </div>
 
                             </div>
@@ -175,7 +175,7 @@
                             <div class='con' style='width:200px'>
                                 <div class='name'>参与本次训练运动员</div>
                                 <div style="display: flex;flex-wrap: wrap;">
-                                    <div style="color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
+                                    <div style="line-height:25px;color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
                                 </div>
 
                             </div>
@@ -205,7 +205,7 @@
                             <div class='con' style='width:200px'>
                                 <div class='name'>参与本次训练运动员</div>
                                 <div style="display: flex;flex-wrap: wrap;">
-                                    <div style="color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
+                                    <div style="line-height:25px;color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
                                 </div>
 
                             </div>
@@ -278,7 +278,7 @@
                             <div class='con' style='width:200px'>
                                 <div class='name'>参与本次训练运动员</div>
                                 <div style="display: flex;flex-wrap: wrap;">
-                                    <div style="color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
+                                    <div style="line-height:25px;color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
                                 </div>
 
                             </div>
@@ -310,7 +310,7 @@
                             <div class='con' style='width:200px'>
                                 <div class='name'>参与本次训练运动员</div>
                                 <div style="display: flex;flex-wrap: wrap;">
-                                    <div style="color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
+                                    <div style="line-height:25px;color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
                                 </div>
 
                             </div>
@@ -340,7 +340,7 @@
                             <div class='con' style='width:200px'>
                                 <div class='name'>参与本次训练运动员</div>
                                 <div style="display: flex;flex-wrap: wrap;">
-                                    <div style="color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
+                                    <div style="line-height:25px;color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
                                 </div>
 
                             </div>
@@ -565,6 +565,8 @@
         },
         updated() {
             this.recordList && this.recordList.forEach((item, index) => {
+                if(item.model == 'LIVE'){
+
                 var c = document.getElementById(index);
                 var ctx = c.getContext("2d");
                 ctx.strokeStyle = '#D1D5E6'
@@ -573,9 +575,11 @@
                     ctx.lineTo(v[0], v[1]);
                 })
                 ctx.stroke();
+            }
             })
-            console.log(this.collectList, 'this.collectList')
-            this.collectList.forEach((item, index) => {
+            this.collectList && this.collectList.forEach((item, index) => {
+                if(item.model == 'LIVE'){
+
                 var c = document.getElementById('a' + index);
                 var ctx = c.getContext("2d");
                 ctx.strokeStyle = '#D1D5E6'
@@ -584,6 +588,7 @@
                     ctx.lineTo(v[0], v[1]);
                 })
                 ctx.stroke();
+            }
             })
         },
         mounted() {
@@ -597,7 +602,6 @@
             this.status = this.storeStatus
             // this.loginflag = localStorage.getItem('loginflag')
             // this.login = localStorage.getItem('login')
-            console.log('  this.loginflag', this.loginflag, 'this.login', this.login)
             this.getExercise(); //所有记录
             this.getmemberMsg(); //我的运动员
             this.tab = this.$route.query.index * 1 || 0;
@@ -620,14 +624,28 @@
             'storeStatus'
         ]),
         watch: {
-            tab(now, old) {
+             tab(now, old) {
                 this.kindModleText = '显示所有训练记录'
                 this.iptName = ''
                 this.currentTime = ''
                 if (now == 1) {
                     this.getExercise();
                 } else if (now == 2) {
-                    this.getExercise();
+                    console.log('收藏', this.collectList)
+                    // await this.getExercise();
+                    this.collectList.forEach((x, y) => {
+                        if(x.model == 'LIVE'){
+                            console.log(x.model)
+                            var c = document.getElementById('a' + y);
+                            var ctx = c.getContext("2d");
+                            ctx.strokeStyle = '#D1D5E6'
+                            var arr = x.expands
+                            arr.forEach((v, i) => {
+                                ctx.lineTo(v[0], v[1]);
+                            })
+                            ctx.stroke();
+                        }
+                    })
                 } else if (now == 3) {
                     this.getmemberMsg();
                 }
@@ -646,16 +664,16 @@
             },
             login() {
                 if (this.login) {
-                window.localStorage.setItem('modle', 'PT')
-            } else {
-                window.localStorage.setItem('modle', 'DEMO')
-            }
+                    window.localStorage.setItem('modle', 'PT')
+                } else {
+                    window.localStorage.setItem('modle', 'DEMO')
+                }
             }
         },
         methods: {
-            alignBtn(){
-                this.$store.dispatch('setLoginflag', { resetType:  'reset'})
-                this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null','RESET',0,0,0,0] })
+            alignBtn() {
+                this.$store.dispatch('setLoginflag', { resetType: 'reset' })
+                this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'RESET', 0, 0, 0, 0] })
             },
             searchbtnEvent() {
                 //     this.collectList.forEach((item, index) => {
@@ -1075,33 +1093,32 @@
                         position: 'bottom'
                     });
                 } else if (this.transmitType == 'normal') {
-                    if(this.resetType == 'reset'){
+                    if (this.resetType == 'reset') {
                         this.$toast({
-                        message: '正在复位中，请稍后',
-                        position: 'bottom'
-                    });
-                    }else{
-                    if(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() ==false){
-                    // if (!this) {
-                        this.$toast({
-                            message: '未连接可用设备，请连接后重试。',
+                            message: '正在复位中，请稍后',
                             position: 'bottom'
                         });
-                    }else{
-                        let modle = window.localStorage.getItem('modle')
-                        console.log(modle, '点图片')
-                        if (modle == 'DEMO') {
-                            window.localStorage.setItem('level', item)
-                        } else if (modle == 'PT') {
-                            window.localStorage.setItem('level', item)
-                            window.localStorage.setItem('left', this.leftValue)
-                            window.localStorage.setItem('right', this.rightValue)
+                    } else {
+                        if (this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() == false) {
+                            // if (!this) {
+                            this.$toast({
+                                message: '未连接可用设备，请连接后重试。',
+                                position: 'bottom'
+                            });
+                        } else {
+                            let modle = window.localStorage.getItem('modle')
+                            if (modle == 'DEMO') {
+                                window.localStorage.setItem('level', item)
+                            } else if (modle == 'PT') {
+                                window.localStorage.setItem('level', item)
+                                window.localStorage.setItem('left', this.leftValue)
+                                window.localStorage.setItem('right', this.rightValue)
 
+                            }
+                            window.localStorage.setItem('leftbox', 1)
+                            this.$router.push({ name: 'SelectTime' });
                         }
-                        window.localStorage.setItem('leftbox', 1)
-                        this.$router.push({ name: 'SelectTime' });
                     }
-                }
                 }
             },
             godetail(index, text) {
@@ -1111,91 +1128,91 @@
                         position: 'bottom'
                     });
                 } else if (this.transmitType == 'normal') {
-                    if(this.resetType == 'reset'){
+                    if (this.resetType == 'reset') {
                         this.$toast({
-                        message: '正在复位中，请稍后',
-                        position: 'bottom'
-                    });
-                    }else{
-                    if(this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() ==false){
-                    // if (!this) {
-                        this.$toast({
-                            message: '未连接可用设备，请连接后重试。',
+                            message: '正在复位中，请稍后',
                             position: 'bottom'
                         });
                     } else {
-                        if (index == 0) {
-                            this.leftValue = 15
-                            this.rightValue = 20
-                        } else if (index == 1) {
-                            this.leftValue = 25
-                            this.rightValue = 30
-                        } else if (index == 2) {
-                            this.leftValue = 30
-                            this.rightValue = 35
-                        } else if (index == 3) {
-                            this.leftValue = 35
-                            this.rightValue = 40
-                        } else if (index == 4) {
-                            this.leftValue = 50
-                            this.rightValue = 55
-                        } else if (index == 5) {
-                            this.leftValue = 55
-                            this.rightValue = 60
-                        } else if (index == 6) {
-                            this.leftValue = 60
-                            this.rightValue = 65
-                        } else if (index == 7) {
-                            this.leftValue = 70
-                            this.rightValue = 75
-                        } else if (index == 8) {
-                            this.leftValue = 85
-                            this.rightValue = 90
-                        } else if (index == 9) {
-                            this.leftValue = 90
-                            this.rightValue = 95
-                        } else if (index == 10) {
-                            this.leftValue = 95
-                            this.rightValue = 100
+                        if (this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() == false) {
+                            // if (!this) {
+                            this.$toast({
+                                message: '未连接可用设备，请连接后重试。',
+                                position: 'bottom'
+                            });
+                        } else {
+                            if (index == 0) {
+                                this.leftValue = 15
+                                this.rightValue = 20
+                            } else if (index == 1) {
+                                this.leftValue = 25
+                                this.rightValue = 30
+                            } else if (index == 2) {
+                                this.leftValue = 30
+                                this.rightValue = 35
+                            } else if (index == 3) {
+                                this.leftValue = 35
+                                this.rightValue = 40
+                            } else if (index == 4) {
+                                this.leftValue = 50
+                                this.rightValue = 55
+                            } else if (index == 5) {
+                                this.leftValue = 55
+                                this.rightValue = 60
+                            } else if (index == 6) {
+                                this.leftValue = 60
+                                this.rightValue = 65
+                            } else if (index == 7) {
+                                this.leftValue = 70
+                                this.rightValue = 75
+                            } else if (index == 8) {
+                                this.leftValue = 85
+                                this.rightValue = 90
+                            } else if (index == 9) {
+                                this.leftValue = 90
+                                this.rightValue = 95
+                            } else if (index == 10) {
+                                this.leftValue = 95
+                                this.rightValue = 100
+                            }
+                            window.localStorage.setItem('left', this.leftValue)
+                            window.localStorage.setItem('right', this.rightValue)
+                            // if(window.localStorage.getItem('modle') == 'DEMO'){
+                            //     this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO','',this.leftValue,this.rightValue,0,0] })
+                            // }else if(window.localStorage.getItem('modle') == 'PT'){
+                            //     this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','',this.leftValue,this.rightValue,0,0]  })
+                            // }
+                            if (index == 10 && text == '轨迹模式') {
+                                window.localStorage.setItem('modle', 'LIVE')
+                                this.$router.push({ name: 'live' });
+                            }
+                            else if (index == 11 && text == 'DEMO TEST') {
+                                window.localStorage.setItem('modle', 'DEMO')
+                                this.list.forEach((item, i) => {
+                                    if (i == 10) {
+                                        item.text = '功能 3 <br/>L4'
+                                    } else if (i == 11) {
+                                        item.text = '手动模式'
+                                    }
+                                })
+                            }
+                            else if (index == 11 && text == '手动模式') {
+                                window.localStorage.setItem('modle', 'PT')
+                                this.list.forEach((item, i) => {
+                                    if (i == 10) {
+                                        item.text = '轨迹模式'
+                                    } else if (i == 11) {
+                                        item.text = 'DEMO TEST'
+                                    }
+                                })
+                            }
+                            else {
+                                // this.$store.dispatch('setLoginflag', { left: this.leftValue, right: this.rightValue })
+                                this.$router.push({ name: 'SelectTime' });
+                            }
+                            window.localStorage.setItem('level', text)
                         }
-                        window.localStorage.setItem('left', this.leftValue)
-                        window.localStorage.setItem('right', this.rightValue)
-                        // if(window.localStorage.getItem('modle') == 'DEMO'){
-                        //     this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO','',this.leftValue,this.rightValue,0,0] })
-                        // }else if(window.localStorage.getItem('modle') == 'PT'){
-                        //     this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','',this.leftValue,this.rightValue,0,0]  })
-                        // }
-                        if (index == 10 && text == '轨迹模式') {
-                            window.localStorage.setItem('modle', 'LIVE')
-                            this.$router.push({ name: 'live' });
-                        }
-                        else if (index == 11 && text == 'DEMO TEST') {
-                            window.localStorage.setItem('modle', 'DEMO')
-                            this.list.forEach((item, i) => {
-                                if (i == 10) {
-                                    item.text = '功能 3 <br/>L4'
-                                } else if (i == 11) {
-                                    item.text = '手动模式'
-                                }
-                            })
-                        }
-                        else if (index == 11 && text == '手动模式') {
-                            window.localStorage.setItem('modle', 'PT')
-                            this.list.forEach((item, i) => {
-                                if (i == 10) {
-                                    item.text = '轨迹模式'
-                                } else if (i == 11) {
-                                    item.text = 'DEMO TEST'
-                                }
-                            })
-                        }
-                        else {
-                            // this.$store.dispatch('setLoginflag', { left: this.leftValue, right: this.rightValue })
-                            this.$router.push({ name: 'SelectTime' });
-                        }
-                        window.localStorage.setItem('level', text)
                     }
-                }
 
                 }
 
@@ -1207,72 +1224,72 @@
                         position: 'bottom'
                     });
                 } else if (this.transmitType == 'normal') {
-                    if(this.resetType == 'reset'){
+                    if (this.resetType == 'reset') {
                         this.$toast({
-                        message: '正在复位中，请稍后',
-                        position: 'bottom'
-                    });
-                    }else{
-                    if (this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() == false) {
-                    // if (!this) {
-
-                        if (index == 11 && text == '手动模式') {
-                            window.localStorage.setItem('modle', 'PT')
-                            this.$store.dispatch('setLoginflag', { loginflag: true, index: 2 })
-                        }
-                        this.$toast({
-                            message: '未连接可用设备，请连接后重试。',
+                            message: '正在复位中，请稍后',
                             position: 'bottom'
                         });
                     } else {
-                        if (index == 0) {
-                            this.leftValue = 15
-                            this.rightValue = 20
-                        } else if (index == 1) {
-                            this.leftValue = 25
-                            this.rightValue = 30
-                        } else if (index == 2) {
-                            this.leftValue = 30
-                            this.rightValue = 35
-                        } else if (index == 3) {
-                            this.leftValue = 35
-                            this.rightValue = 40
-                        } else if (index == 4) {
-                            this.leftValue = 50
-                            this.rightValue = 55
-                        } else if (index == 5) {
-                            this.leftValue = 55
-                            this.rightValue = 60
-                        } else if (index == 6) {
-                            this.leftValue = 60
-                            this.rightValue = 65
-                        } else if (index == 7) {
-                            this.leftValue = 70
-                            this.rightValue = 75
-                        } else if (index == 8) {
-                            this.leftValue = 85
-                            this.rightValue = 90
-                        } else if (index == 9) {
-                            this.leftValue = 90
-                            this.rightValue = 95
-                        } else if (index == 10) {
-                            this.leftValue = 95
-                            this.rightValue = 100
-                        }
-                        if (index == 11 && text == '手动模式') {
-                            window.localStorage.setItem('modle', 'PT')
-                            this.$store.dispatch('setLoginflag', { loginflag: true, index: 2 })
-                        }
-                        else {
-                            window.localStorage.setItem('modle', 'DEMO')
-                            window.localStorage.setItem('left', this.leftValue)
-                            window.localStorage.setItem('right', this.rightValue)
-                            // this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO','',this.leftValue,this.rightValue,0,0] })
-                            this.$router.push({ name: 'SelectTime' });
-                        }
-                        window.localStorage.setItem('level', text)
+                        if (this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() == false) {
+                            // if (!this) {
 
-                    }
+                            if (index == 11 && text == '手动模式') {
+                                window.localStorage.setItem('modle', 'PT')
+                                this.$store.dispatch('setLoginflag', { loginflag: true, index: 2 })
+                            }
+                            this.$toast({
+                                message: '未连接可用设备，请连接后重试。',
+                                position: 'bottom'
+                            });
+                        } else {
+                            if (index == 0) {
+                                this.leftValue = 15
+                                this.rightValue = 20
+                            } else if (index == 1) {
+                                this.leftValue = 25
+                                this.rightValue = 30
+                            } else if (index == 2) {
+                                this.leftValue = 30
+                                this.rightValue = 35
+                            } else if (index == 3) {
+                                this.leftValue = 35
+                                this.rightValue = 40
+                            } else if (index == 4) {
+                                this.leftValue = 50
+                                this.rightValue = 55
+                            } else if (index == 5) {
+                                this.leftValue = 55
+                                this.rightValue = 60
+                            } else if (index == 6) {
+                                this.leftValue = 60
+                                this.rightValue = 65
+                            } else if (index == 7) {
+                                this.leftValue = 70
+                                this.rightValue = 75
+                            } else if (index == 8) {
+                                this.leftValue = 85
+                                this.rightValue = 90
+                            } else if (index == 9) {
+                                this.leftValue = 90
+                                this.rightValue = 95
+                            } else if (index == 10) {
+                                this.leftValue = 95
+                                this.rightValue = 100
+                            }
+                            if (index == 11 && text == '手动模式') {
+                                window.localStorage.setItem('modle', 'PT')
+                                this.$store.dispatch('setLoginflag', { loginflag: true, index: 2 })
+                            }
+                            else {
+                                window.localStorage.setItem('modle', 'DEMO')
+                                window.localStorage.setItem('left', this.leftValue)
+                                window.localStorage.setItem('right', this.rightValue)
+                                // this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO','',this.leftValue,this.rightValue,0,0] })
+                                this.$router.push({ name: 'SelectTime' });
+                            }
+                            window.localStorage.setItem('level', text)
+
+                        }
 
                     }
                 }
@@ -1307,7 +1324,7 @@
             },
             // 点击进入页面改变store里面的值
             changeStoreStatus() {
-                this.$store.dispatch('setLoginflag', { resetType:  'normal',transmitType:'normal'})
+                this.$store.dispatch('setLoginflag', { resetType: 'normal', transmitType: 'normal' })
                 this.$store.dispatch('setLoginflag', { storeStatus: 'success' })
             },
         }
@@ -1317,7 +1334,7 @@
 </script>
 
 <style scoped lang="less">
-    .aliginBtn{
+    .aliginBtn {
         line-height: 30px;
         padding: 10px 20px;
         background: transparent;
@@ -1330,6 +1347,7 @@
         font-size: 22px;
         color: rgba(156, 160, 177, 1);
     }
+
     .refreSearchbox {
         position: fixed;
         bottom: 100px;
@@ -1353,7 +1371,7 @@
         /* margin: 0 20px; */
         width: 210px;
         height: 50px;
-        background:transparent;
+        background: transparent;
         border-radius: 5px;
         color: #8D8D94;
         border: 1px solid rgba(88, 86, 93, 1);
@@ -1569,7 +1587,6 @@
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    margin-bottom: 178px;
 
                     .van-landing {
                         width: 50px;
@@ -1701,13 +1718,14 @@
                         height: 230px;
                         margin-bottom: 30px;
                         position: relative;
-                        moz-user-select: -moz-none; 
-                        -moz-user-select: none; 
-                        -o-user-select:none; 
-                        -khtml-user-select:none; 
-                        -webkit-user-select:none; 
-                        -ms-user-select:none; 
-                        user-select:none;
+                        moz-user-select: -moz-none;
+                        -moz-user-select: none;
+                        -o-user-select: none;
+                        -khtml-user-select: none;
+                        -webkit-user-select: none;
+                        -ms-user-select: none;
+                        user-select: none;
+
                         img {
                             position: absolute;
                             width: 100%;
@@ -1735,13 +1753,14 @@
                     width: 100%;
                     flex: 1;
                     margin-left: 40px;
-                    moz-user-select: -moz-none; 
-                    -moz-user-select: none; 
-                    -o-user-select:none; 
-                    -khtml-user-select:none; 
-                    -webkit-user-select:none; 
-                    -ms-user-select:none; 
-                    user-select:none;
+                    moz-user-select: -moz-none;
+                    -moz-user-select: none;
+                    -o-user-select: none;
+                    -khtml-user-select: none;
+                    -webkit-user-select: none;
+                    -ms-user-select: none;
+                    user-select: none;
+
                     .rightItem {
                         width: 22%;
                         height: 230px;

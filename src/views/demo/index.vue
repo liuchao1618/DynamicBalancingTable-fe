@@ -80,7 +80,11 @@
           clearInterval(this.timer)
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
           clearTimeout(this.interva)
-          let level = window.localStorage.getItem('level').split('<br/>').join('-')
+          if( window.localStorage.getItem('leftbox')  != 1){
+          var level = window.localStorage.getItem('level').split('<br/>').join('-')
+        }else{
+          var level = window.localStorage.getItem('level')
+        }
           let data = {
             userCode: window.localStorage.getItem('userCode'),
             model: 'DEMO',

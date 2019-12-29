@@ -177,7 +177,7 @@ import request from '../utils/request'
 // 登录
 export function login(params) {
   return request({
-    url: 'http://www.xnnre.com/balance-web/api/login',
+    url: 'http://www.xnnre.com/api/login',
     method: 'POST',
     data: params
   })
@@ -185,7 +185,7 @@ export function login(params) {
 //获取某pad登录成功过的账号信息
 export function phoneList(data) {
   return request({
-    url: 'http://www.xnnre.com/balance-web/api/device/cache',
+    url: 'http://www.xnnre.com/api/device/cache',
     method: 'GET',
     params: data
   })
@@ -194,7 +194,7 @@ export function phoneList(data) {
 //修改密码
 export function editPass(params) {
   return request({
-    url: 'http://www.xnnre.com/balance-web/api/user/password',
+    url: 'http://www.xnnre.com/api/user/password',
     method: 'PUT',
     data: params
   })
@@ -203,7 +203,7 @@ export function editPass(params) {
 //某pad添加登录成功记录
 export function addPhoneList(params) {
   return request({
-    url: 'http://www.xnnre.com/balance-web/api/device/cache',
+    url: 'http://www.xnnre.com/api/device/cache',
     method: 'POST',
     data: params
   })
@@ -211,7 +211,7 @@ export function addPhoneList(params) {
 //某pad删除登录成功记录
 export function delPhoneList(params) {
   return request({
-    url: 'http://www.xnnre.com/balance-web/api/device/cache',
+    url: 'http://www.xnnre.com/api/device/cache',
     method: 'DELETE',
     data: params
   })
@@ -220,7 +220,7 @@ export function delPhoneList(params) {
 //获取登录信息
 export function loginMsg(data) {
   return request({
-    url: 'http://www.xnnre.com/balance-web/api/user/myself',
+    url: 'http://www.xnnre.com/api/user/myself',
     method: 'GET',
     params: data
   })
@@ -229,7 +229,7 @@ export function loginMsg(data) {
 // 退出登录
 export function exitLogin(data) {
   return request({
-    url: 'http://www.xnnre.com/balance-web/api/logout',
+    url: 'http://www.xnnre.com/api/logout',
     method: 'GET',
     params: data
   })
@@ -238,7 +238,7 @@ export function exitLogin(data) {
 //获取某个用户的所有记录
 export function memberExercise(data) {
   return request({
-    url: 'http://www.xnnre.com/balance-web/api/record/relevant',
+    url: 'http://www.xnnre.com/api/record/relevant',
     method: 'GET',
     params: data
   })
@@ -247,7 +247,7 @@ export function memberExercise(data) {
 //保存新记录(主要部分 点击stop后保存)
 export function saveRecord(params) {
   return request({
-    url: 'http://www.xnnre.com/balance-web/api/record/main',
+    url: 'http://www.xnnre.com/api/record/main',
     method: 'POST',
     data: params
   })
@@ -256,14 +256,14 @@ export function saveRecord(params) {
 //获取运动员教练层级信息(新记录选择运动员时使用)
 export function checkMember() {
   return request({
-    url: 'http://www.xnnre.com/balance-web/api/member/topClass',
+    url: 'http://www.xnnre.com/api/member/topClass',
     method: 'GET'
   })
 }
 //在新记录上添加运动员信息
 export function addSport(params) {
   return request({
-    url: 'http://www.xnnre.com/balance-web/api/record/member',
+    url: 'http://www.xnnre.com/api/record/member',
     method: 'POST',
     data: params
   })
@@ -272,7 +272,7 @@ export function addSport(params) {
 //添加收藏
 export function addCollect(params) {
   return request({
-    url: 'http://www.xnnre.com/balance-web/api/record/favorite',
+    url: 'http://www.xnnre.com/api/record/favorite',
     method: 'POST',
     data: params
   })
@@ -280,7 +280,7 @@ export function addCollect(params) {
 //删除收藏
 export function delCollect(params) {
   return request({
-    url: 'http://www.xnnre.com/balance-web/api/record/favorite',
+    url: 'http://www.xnnre.com/api/record/favorite',
     method: 'DELETE',
     data: params
   })
@@ -289,7 +289,7 @@ export function delCollect(params) {
 // 获取（教练、运动员）信息
 export function memberMessage(data) {
   return request({
-    url: 'http://www.xnnre.com/balance-web/api/member/members',
+    url: 'http://www.xnnre.com/api/member/members',
     method: 'GET',
     params: data
   })
@@ -298,7 +298,7 @@ export function memberMessage(data) {
 // 获取所有教练姓名
 export function trainersName(data) {
   return request({
-    url: 'http://www.xnnre.com/balance-web/api/member/trainers',
+    url: 'http://www.xnnre.com/api/member/trainers',
     method: 'GET',
     params: data
   })
@@ -306,7 +306,7 @@ export function trainersName(data) {
 // 获取所有教练姓名
 export function runnersName(data) {
   return request({
-    url: 'http://www.xnnre.com/balance-web/api/member/runners',
+    url: 'http://www.xnnre.com/api/member/runners',
     method: 'GET',
     params: data
   })
@@ -315,7 +315,7 @@ export function runnersName(data) {
 //添加新运动员
 export function addMember(params) {
   return request({
-    url: 'http://www.xnnre.com/balance-web/api/member',
+    url: 'http://www.xnnre.com/api/member',
     method: 'POST',
     data: params
   })
@@ -324,7 +324,7 @@ export function addMember(params) {
 //修改运动员
 export function editMember(params) {
   return request({
-    url: 'http://www.xnnre.com/balance-web/api/member',
+    url: 'http://www.xnnre.com/api/member',
     method: 'PUT',
     data: params
   })
@@ -333,7 +333,7 @@ export function editMember(params) {
 //删除运动员
 export function delMember(params) {
   return request({
-    url: 'http://www.xnnre.com/balance-web/api/member',
+    url: 'http://www.xnnre.com/api/member',
     method: 'DELETE',
     data: params
   })
@@ -342,7 +342,7 @@ export function delMember(params) {
 //获取单条记录详情
 export function trainDetail(data) {
   return request({
-    url: 'http://www.xnnre.com/balance-web/api/record',
+    url: 'http://www.xnnre.com/api/record',
     method: 'GET',
     params: data
   })
