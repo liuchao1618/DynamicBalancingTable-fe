@@ -87,6 +87,8 @@ export default {
           if(bluetoothTool.state.readThreadState) {
             that.sendHeard()
             that.$store.dispatch('setLoginflag', { storeStatus: 'success' })
+            that.$store.dispatch('setLoginflag', { transmitType:  'normal'})
+            that.$store.dispatch('setLoginflag', { resetType:  'normal'})
           }
         },
         connExceptionCallback: function (Content) {

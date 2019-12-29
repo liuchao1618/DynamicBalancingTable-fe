@@ -20,7 +20,7 @@
     <van-overlay :show="markFlag">
         <div class="wrapperMark">
         <img src="../../assets/image/timg.gif" alt="">
-        <p>复位中，请稍等几秒后再进行操作。...</p></div>
+        <p>复位中，请稍等几秒后再进行操作...</p></div>
       </van-overlay>
   </div>
 </template>

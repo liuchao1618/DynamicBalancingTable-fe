@@ -300,7 +300,7 @@ function BluetoothTool() {
                 }
                 if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED == action) { // 搜索完成
                     if (!state.readThreadState) {
-                        shortToast('未发现可用设备')
+                        // shortToast('未发现可用设备')
                         statusContent = 2;
                     }
                     cancelDiscovery();
@@ -347,7 +347,7 @@ function BluetoothTool() {
                             case BluetoothAdapter.STATE_ON:
                                 state.bluetoothEnable = true;
                                 content = 1;
-                                shortToast('蓝牙已开启')
+                                // shortToast('蓝牙已开启')
                                 break;
                             case BluetoothAdapter.STATE_TURNING_OFF:
                                 state.bluetoothEnable = false;
