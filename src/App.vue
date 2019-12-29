@@ -32,13 +32,13 @@ export default {
               that.sendReset() // 发送复位
               break;
             case pluginFub.stopping:
-              that.$store.dispatch('setLoginflag', { transmitType:  'stopping'})
+              // that.$store.dispatch('setLoginflag', { transmitType:  'stopping'})
               break;
             case pluginFub.invalid:
-              console.log(e, 'invalid')
+              // console.log(e, 'invalid')
               break;
             default:
-              console.log(e, 'default')
+              // console.log(e, 'default')
           }
         },
         complete: function (arrayCache) {
