@@ -167,13 +167,14 @@
         }, future[2])
       },
       stop() {
-        this.$store.dispatch('setLoginflag', { resetType:  'reset'})
         clearTimeout(this.interva)
-        if( window.localStorage.getItem('leftbox')  != 1){
-          var level = window.localStorage.getItem('level').split('<br/>').join('-')
-        }else{
+        if( window.localStorage.getItem('leftbox')  == 1){
           var level = window.localStorage.getItem('level')
+        }else{
+          var level = window.localStorage.getItem('level').split('<br/>').join(' ')
         }
+        window.localStorage.removeItem('leftbox')
+        // this.$store.dispatch('setLoginflag', { resetType:  'reset'})
         console.log(level,'等级')
         let data = {
           userCode: window.localStorage.getItem('userCode'),

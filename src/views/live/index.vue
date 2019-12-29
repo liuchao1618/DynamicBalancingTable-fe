@@ -79,7 +79,6 @@
       },
       start() {
         this.startFlag = '0.6'
-        console.log(this.startFlag)
         clearInterval(this.timer)
         this.startStr = new Date() * 1
         this.flag = true

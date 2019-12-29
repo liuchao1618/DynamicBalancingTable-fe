@@ -144,7 +144,8 @@
                             <div class='con' style='width:200px'>
                                 <div class='name'>参与本次训练运动员</div>
                                 <div style="display: flex;flex-wrap: wrap;">
-                                    <div style="line-height:25px;color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
+                                    <div style="line-height:25px;color:rgba(209,213,230,1);fontSize:20px;">
+                                        {{item.memberList}}</div>
                                 </div>
 
                             </div>
@@ -175,7 +176,8 @@
                             <div class='con' style='width:200px'>
                                 <div class='name'>参与本次训练运动员</div>
                                 <div style="display: flex;flex-wrap: wrap;">
-                                    <div style="line-height:25px;color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
+                                    <div style="line-height:25px;color:rgba(209,213,230,1);fontSize:20px;">
+                                        {{item.memberList}}</div>
                                 </div>
 
                             </div>
@@ -205,7 +207,8 @@
                             <div class='con' style='width:200px'>
                                 <div class='name'>参与本次训练运动员</div>
                                 <div style="display: flex;flex-wrap: wrap;">
-                                    <div style="line-height:25px;color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
+                                    <div style="line-height:25px;color:rgba(209,213,230,1);fontSize:20px;">
+                                        {{item.memberList}}</div>
                                 </div>
 
                             </div>
@@ -278,7 +281,8 @@
                             <div class='con' style='width:200px'>
                                 <div class='name'>参与本次训练运动员</div>
                                 <div style="display: flex;flex-wrap: wrap;">
-                                    <div style="line-height:25px;color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
+                                    <div style="line-height:25px;color:rgba(209,213,230,1);fontSize:20px;">
+                                        {{item.memberList}}</div>
                                 </div>
 
                             </div>
@@ -310,7 +314,8 @@
                             <div class='con' style='width:200px'>
                                 <div class='name'>参与本次训练运动员</div>
                                 <div style="display: flex;flex-wrap: wrap;">
-                                    <div style="line-height:25px;color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
+                                    <div style="line-height:25px;color:rgba(209,213,230,1);fontSize:20px;">
+                                        {{item.memberList}}</div>
                                 </div>
 
                             </div>
@@ -340,7 +345,8 @@
                             <div class='con' style='width:200px'>
                                 <div class='name'>参与本次训练运动员</div>
                                 <div style="display: flex;flex-wrap: wrap;">
-                                    <div style="line-height:25px;color:rgba(209,213,230,1);fontSize:20px;">{{item.memberList}}</div>
+                                    <div style="line-height:25px;color:rgba(209,213,230,1);fontSize:20px;">
+                                        {{item.memberList}}</div>
                                 </div>
 
                             </div>
@@ -565,30 +571,30 @@
         },
         updated() {
             this.recordList && this.recordList.forEach((item, index) => {
-                if(item.model == 'LIVE'){
+                if (item.model == 'LIVE') {
 
-                var c = document.getElementById(index);
-                var ctx = c.getContext("2d");
-                ctx.strokeStyle = '#D1D5E6'
-                var arr = item.expands
-                arr.forEach((v, i) => {
-                    ctx.lineTo(v[0], v[1]);
-                })
-                ctx.stroke();
-            }
+                    var c = document.getElementById(index);
+                    var ctx = c.getContext("2d");
+                    ctx.strokeStyle = '#D1D5E6'
+                    var arr = item.expands
+                    arr.forEach((v, i) => {
+                        ctx.lineTo(v[0], v[1]);
+                    })
+                    ctx.stroke();
+                }
             })
             this.collectList && this.collectList.forEach((item, index) => {
-                if(item.model == 'LIVE'){
+                if (item.model == 'LIVE') {
 
-                var c = document.getElementById('a' + index);
-                var ctx = c.getContext("2d");
-                ctx.strokeStyle = '#D1D5E6'
-                var arr = item.expands
-                arr.forEach((v, i) => {
-                    ctx.lineTo(v[0], v[1]);
-                })
-                ctx.stroke();
-            }
+                    var c = document.getElementById('a' + index);
+                    var ctx = c.getContext("2d");
+                    ctx.strokeStyle = '#D1D5E6'
+                    var arr = item.expands
+                    arr.forEach((v, i) => {
+                        ctx.lineTo(v[0], v[1]);
+                    })
+                    ctx.stroke();
+                }
             })
         },
         mounted() {
@@ -624,7 +630,7 @@
             'storeStatus'
         ]),
         watch: {
-             tab(now, old) {
+            tab(now, old) {
                 this.kindModleText = '显示所有训练记录'
                 this.iptName = ''
                 this.currentTime = ''
@@ -634,7 +640,7 @@
                     console.log('收藏', this.collectList)
                     // await this.getExercise();
                     this.collectList.forEach((x, y) => {
-                        if(x.model == 'LIVE'){
+                        if (x.model == 'LIVE') {
                             console.log(x.model)
                             var c = document.getElementById('a' + y);
                             var ctx = c.getContext("2d");
@@ -969,6 +975,50 @@
                 window.localStorage.setItem('setTrainTime', this.itemdata.fullPlayTime)
                 window.localStorage.setItem('expand', this.itemdata.expand)
                 window.localStorage.setItem('expands', JSON.stringify(this.itemdata.expands))
+                if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 1 L1"){
+                    this.itemdata.leftPower = 10
+                    this.itemdata.rightPower = 15
+                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 1 L2"){
+                    this.itemdata.leftPower = 15
+                    this.itemdata.rightPower = 20
+                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 1 L3"){
+                    this.itemdata.leftPower = 25
+                    this.itemdata.rightPower = 30
+                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 1 L4"){
+                    this.itemdata.leftPower = 30
+                    this.itemdata.rightPower = 35
+                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 1 L5"){
+                    this.itemdata.leftPower = 35
+                    this.itemdata.rightPower = 40
+                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 2 L1"){
+                    this.itemdata.leftPower = 40
+                    this.itemdata.rightPower = 45
+                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 2 L2"){
+                    this.itemdata.leftPower = 50
+                    this.itemdata.rightPower = 55
+                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 2 L3"){
+                    this.itemdata.leftPower = 55
+                    this.itemdata.rightPower = 60
+                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 2 L4"){
+                    this.itemdata.leftPower = 60
+                    this.itemdata.rightPower = 65
+                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 2 L5"){
+                    this.itemdata.leftPower = 70
+                    this.itemdata.rightPower = 75
+                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 3 L1"){
+                    this.itemdata.leftPower = 80
+                    this.itemdata.rightPower = 85
+                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 3 L2"){
+                    this.itemdata.leftPower = 85
+                    this.itemdata.rightPower = 90
+                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 3 L3"){
+                    this.itemdata.leftPower = 90
+                    this.itemdata.rightPower = 95
+                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 3 L4"){
+                    this.itemdata.leftPower = 95
+                    this.itemdata.rightPower = 100
+                }
+                console.log(this.itemdata)
                 this.$router.push({ name: 'train', query: { model: this.itemdata.model, fullPlayTime: this.itemdata.fullPlayTime, realPlayTime: this.itemdata.realPlayTime, leftPower: this.itemdata.leftPower, rightPower: this.itemdata.rightPower, avgPower: this.itemdata.avgPower, level: this.itemdata.level } })
             },
             detail(item) {
@@ -1295,8 +1345,22 @@
             },
             // 点击使用本次设置进行训练
             clickToTrain(item) {
-                this.dialogFlags = true
-                this.itemdata = item
+                if (this.transmitType == 'stopping') {
+                    this.$toast({
+                        message: '设备急停中，无法执行该操作',
+                        position: 'bottom'
+                    });
+                } else if (this.transmitType == 'normal') {
+                    if (this.resetType == 'reset') {
+                        this.$toast({
+                            message: '正在复位中，请稍后',
+                            position: 'bottom'
+                        });
+                    } else {
+                        this.dialogFlags = true
+                        this.itemdata = item
+                    }
+                }
                 // Dialog.confirm({
                 //     message: '确定使用本次设置进行训练？'
                 // }).then(() => {

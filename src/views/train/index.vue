@@ -1,9 +1,9 @@
 <template>
   <div class="train">
     <div class="patternWapper">
-      <p v-if='model == PT'>手动模式</p>
-      <p v-if='model == DEMO'>demo模式</p>
-      <p v-if='model == LIVE'>轨迹模式</p>
+      <p v-if='model == "PT"'>手动模式</p>
+      <p v-if='model == "DEMO"'>demo模式</p>
+      <p v-if='model == "LIVE"'>轨迹模式</p>
       <div class="pattern">
         <div class="pattern_left">
           <p>设置运动时间</p>
@@ -49,7 +49,7 @@
       <div class="time_num">{{currentTime}}</div>
     </div>
     <div class="buttonWapper">
-      <div class="but_blue but" @click='start'>开始</div>
+      <div class="but_blue but" :style="{ opacity : startFlag  }" @click='start'>开始</div>
       <div class="but_red but" @click='stop'>停止</div>
       <div></div>
     </div>
@@ -68,6 +68,7 @@
     name: 'Train',
     data() {
       return {
+        startFlag: '1',
         value: 2,
         setTime: 0,
         currentTime: '00:00',
@@ -88,6 +89,7 @@
         intervalCount: 0, // 结束要置零  偶数运动 奇数停止
         interva: null,
         closeFlag: false,
+        id: '',
         markFlag: false
       }
     },
@@ -121,8 +123,8 @@
         this.realPlayTime = this.$route.query.realPlayTime;
         this.currentTimeNum = 0
       } else {
-        this.currentTimeNum = this.fullPlayTime - this.$route.query.realPlayTime
-        this.currentTime = s_to_hs(this.fullPlayTime - this.$route.query.realPlayTime);
+        this.currentTimeNum = this.fullPlayTime
+        this.currentTime = s_to_hs(this.fullPlayTime);
 
       }
     },
@@ -167,42 +169,42 @@
         }, future[2])
       },
       start() {
+        this.startFlag = '0.6'
         clearInterval(this.timer)
         if (this.model == 'LIVE') {
           this.timer = setInterval(() => {
-          if(this.currentTimeNum>=this.realPlayTime){
-            clearInterval(this.timer)
-            var data = {
-            model: 'LIVE',
-            devices: [{ deviceId: 1, deviceAlias: '设备1' }],
-            fullPlayTime: this.fullPlayTime * 1,
-            realPlayTime: this.currentTimeNum,
-            leftPower: this.leftPower,
-            rightPower: this.rightPower,
-            avgPower: parseInt((this.leftPower + this.rightPower) / 2),
-            userCode: window.localStorage.getItem('userCode'),
-            level: this.level,
-            locus: this.expand
-          }
-          window.localStorage.setItem('locus', JSON.stringify(this.expand))
-
-          saveRecord(data).then((res) => {
-            console.log(res,'保存记录')
-          if (res.data.code == 200) {
-            window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
-            this.$router.push({ name: 'finish', query: {  realPlayTime: this.currentTimeNum, id: res.data.data.id, model: 'LIVE' } })
-          }
-        })
-          }else{
-            this.currentTimeNum++;
-            this.currentTime = s_to_hs(this.currentTimeNum)
-          }
+            if (this.currentTimeNum >= this.realPlayTime) {
+              clearInterval(this.timer)
+              var data = {
+                model: 'LIVE',
+                devices: [{ deviceId: 1, deviceAlias: '设备1' }],
+                fullPlayTime: this.fullPlayTime * 1,
+                realPlayTime: this.currentTimeNum,
+                leftPower: this.leftPower,
+                rightPower: this.rightPower,
+                avgPower: parseInt((this.leftPower + this.rightPower) / 2),
+                userCode: window.localStorage.getItem('userCode'),
+                level: this.level,
+                locus: this.expand
+              }
+              window.localStorage.setItem('locus', JSON.stringify(this.expand))
+              saveRecord(data).then((res) => {
+                console.log(res, '保存记录')
+                if (res.data.code == 200) {
+                  this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', '', 0, 0, 0, 0] })
+                  window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
+                  this.$router.push({ name: 'finish', query: { realPlayTime: this.currentTimeNum, id: res.data.data.id, model: 'LIVE' } })
+                }
+              })
+            } else {
+              this.currentTimeNum++;
+              this.currentTime = s_to_hs(this.currentTimeNum)
+            }
           }, 1000);
           this.f(this.expand)
-           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', '', 0, 0, 0, 0] })
         } else {
           if (this.model == 'PT') {
-            this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', '', this.leftPower, this.rightPower, 0, 0] })
+            this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', 'STOP', 0, 0, 0, 0] })
 
           } else {
             this.a()
@@ -213,8 +215,24 @@
               this.currentTime = s_to_hs(this.currentTimeNum)
             } else {
               clearInterval(this.timer)
-              window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
-              this.$router.push({ name: 'finish', query: { left: this.leftPower, right: this.rightPower, avg: this.avgPower, fullPlayTime: this.fullPlayTime, realPlayTime: window.localStorage.getItem('setTrainTime') - this.currentTimeNum, id: res.data.data.id, level: this.level, model: this.model } })
+              var data = {
+                model: this.$route.query.model,
+                devices: [{ deviceId: 1, deviceAlias: '设备1' }],
+                fullPlayTime: this.fullPlayTime * 1,
+                realPlayTime: window.localStorage.getItem('setTrainTime') - this.currentTimeNum,
+                leftPower: this.leftPower,
+                rightPower: this.rightPower,
+                avgPower: parseInt((this.leftPower + this.rightPower) / 2),
+                userCode: window.localStorage.getItem('userCode'),
+                level: this.level,
+                locus: this.expand
+              }
+              saveRecord(data).then((res) => {
+                if (res.data.code == 200) {
+                  window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
+                  this.$router.push({ name: 'finish', query: { left: this.leftPower, right: this.rightPower, avg: this.avgPower, fullPlayTime: this.fullPlayTime, realPlayTime: window.localStorage.getItem('setTrainTime') - this.currentTimeNum, id: res.data.data.id, level: this.level, model: this.model } })
+                }
+              })
             }
           }, 1000);
         }
@@ -251,7 +269,6 @@
       },
       stop() {
         console.log(this.model)
-        
         clearInterval(this.timer)
         if (this.model == 'LIVE') {
           var data = {
@@ -293,14 +310,16 @@
       },
     },
     updated() {
-      var c = document.getElementById('mycanvas');
-      var ctx = c.getContext("2d");
-      ctx.strokeStyle = '#D1D5E6'
-      var arr = this.expands
-      arr.forEach((v, i) => {
-        ctx.lineTo(v[0], v[1]);
-      })
-      ctx.stroke();
+      if (this.expands.length > 0) {
+        var c = document.getElementById('mycanvas');
+        var ctx = c.getContext("2d");
+        ctx.strokeStyle = '#D1D5E6'
+        var arr = this.expands
+        arr.forEach((v, i) => {
+          ctx.lineTo(v[0], v[1]);
+        })
+        ctx.stroke();
+      }
 
     },
   }
