@@ -12,9 +12,9 @@
         <div class='itemTitle'>{{item.createTime}} 手动模式 </div>
         <div class='itemCon'>
           <div class='con'>
-            <div class='name'>设置运动时间</div>
+            <div class='name'>设置运动时长</div>
             <div class='time'>{{parseInt(item.fullPlayTime/60)}}分钟</div>
-            <div class='name'>实际运动时间</div>
+            <div class='name'>实际运动时长</div>
             <div class='time'>{{parseInt(item.realPlayTime/60)}}分钟</div>
           </div>
           <div class='con'>
@@ -61,9 +61,9 @@
         <div class='itemTitle'>{{item.createTime}} DEMO模式 </div>
         <div class='itemCon'>
           <div class='con'>
-            <div class='name'>设置运动时间</div>
+            <div class='name'>设置运动时长</div>
             <div class='time'>{{parseInt(item.fullPlayTime/60)}}分钟</div>
-            <div class='name'>实际运动时间</div>
+            <div class='name'>实际运动时长</div>
             <div class='time'>{{parseInt(item.realPlayTime/60)}}分钟</div>
           </div>
           <div class='con'>
@@ -94,7 +94,7 @@
         <div class='itemTitle'>{{item.createTime}} 轨迹模式 </div>
         <div class='itemCon'>
           <div class='con'>
-            <div class='name'>实际运动时间</div>
+            <div class='name'>实际运动时长</div>
             <div class='time'>{{parseInt(item.realPlayTime/60)}}分钟</div>
             <div class='name'>本次使用设备</div>
             <div class='time' v-for='(val,ind) in item.deviceAliasList'>

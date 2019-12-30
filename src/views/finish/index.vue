@@ -1,5 +1,5 @@
 <template>
-  <div class="chooseWrap">
+  <div class="chooseWrap" @click='closeSelect'>
     <div class="title">
       <img src="../../assets/image/title.png" />
     </div>
@@ -15,8 +15,8 @@
         <div class="livebox" v-if='locus'>
           <div class="liveL">
             <div class="exerciseTime">
-              <span>实际运动时间</span>
-              <h2>{{parseInt(realPlayTime/60)}}分钟</h2>
+              <span>实际运动时长</span>
+              <h2>{{realPlayTime}}分钟</h2>
             </div>
             <div class="log">
               <span>操控点轨迹记录</span>
@@ -25,16 +25,16 @@
             </div>
           </div>
           <div class='conCollect'>
-            <img v-if='favored' @click='Collect()' src="../../assets/image/starS.png" alt="">
-            <img v-else @click='Collect()' src="../../assets/image/star.png" alt="">
+            <img v-if='favored' @click.stop='Collect()' src="../../assets/image/starS.png" alt="">
+            <img v-else @click.stop='Collect()' src="../../assets/image/star.png" alt="">
           </div>
         </div>
         <div class="exercise" v-else>
           <div class="exerciseTime">
-            <span>设置运动时间</span>
-            <h2> {{parseInt(fullPlayTime/60)}}分钟</h2>
-            <span>实际运动时间</span>
-            <h2>{{parseInt(realPlayTime/60)}}分钟</h2>
+            <span>设置运动时长</span>
+            <h2> {{fullPlayTime}}分钟</h2>
+            <span>实际运动时长</span>
+            <h2>{{realPlayTime}}分钟</h2>
           </div>
           <div class="usedevice">
             <span>本次使用设备</span>
@@ -64,8 +64,8 @@
             </div>
           </div>
           <div class='conCollect'>
-            <img v-if='favored' @click='Collect()' src="../../assets/image/starS.png" alt="">
-            <img v-else @click='Collect()' src="../../assets/image/star.png" alt="">
+            <img v-if='favored' @click.stop='Collect()' src="../../assets/image/starS.png" alt="">
+            <img v-else @click.stop='Collect()' src="../../assets/image/star.png" alt="">
           </div>
         </div>
       </div>
@@ -77,37 +77,37 @@
             <div class="chekbox">
               <div class="checkName" v-for='(item,ind) in checkName'>
                 <span>{{item.username}}</span>
-                <span @click='del(item)'>×</span>
+                <span @click.stop='del(item)'>×</span>
               </div>
             </div>
           </div>
           <div class="drill">
             <div class="coach">
               <span>教练：</span>
-              <div class="select" @click='tabShow'>
+              <div class="select" @click.stop='tabShow'>
                 <span>{{coachName}}</span>
                 <span class="img"><img src="../../assets/image/xiala.png" alt=""></span>
               </div>
               <ul class="list" v-if='show'>
-                <li v-for='(item,i) in trainerName' @click='changeName(item.username)'>{{item.username}}</li>
+                <li v-for='(item,i) in trainerName' @click.stop='changeName(item.username)'>{{item.username}}</li>
               </ul>
             </div>
             <div class="search">
               <van-search placeholder="请输入运动员姓名" @input='changeIpt' v-model="iptName" />
               <ul class="lists" v-if='shows'>
-                <li v-for='(item,i) in sportName' @click='checkNames(item)'>{{item.username}}</li>
+                <li v-for='(item,i) in sportName' @click.stop='checkNames(item)'>{{item.username}}</li>
               </ul>
             </div>
           </div>
           <div class="exerciseName">
             <div class="info" v-for='(item,index) in nameList'>
               <van-checkbox :disabled='nameDisabled' :class='nameDisabled?"forbidBox":""' v-model="item.checked"
-                shape="square" @click='selectAll(item)'>
+                shape="square" @click.stop='selectAll(item)'>
                 {{item.username}}</van-checkbox>
             </div>
           </div>
 
-          <div class="sub" :class="[checkName.length>0 ? 'active' : '']" @click='submit'>提交
+          <div class="sub" :class="[checkName.length>0 ? 'active' : '']" @click.stop='submit'>提交
           </div>
         </div>
       </div>
@@ -185,8 +185,8 @@
       this.dataTime = getDate()
       this.leftValue = this.$route.query.left
       this.rightValue = this.$route.query.right
-      this.fullPlayTime = this.$route.query.fullPlayTime
-      this.realPlayTime = this.$route.query.realPlayTime
+      this.fullPlayTime = this.formatSeconds(this.$route.query.fullPlayTime)
+      this.realPlayTime = this.formatSeconds(this.$route.query.realPlayTime)
       this.currentId = this.$route.query.id
       this.level = this.$route.query.level
       this.model = this.$route.query.model
@@ -196,7 +196,7 @@
       var c = document.getElementById('mycanvas');
       var ctx = c.getContext("2d");
       ctx.strokeStyle = '#D1D5E6'
-      this.locus.forEach((v, i) => {
+        this.locus&&this.locus.forEach((v, i) => {
         var newArr = []
         v.c.forEach((val, i) => {
           newArr.push(parseInt(val / 4))
@@ -206,6 +206,10 @@
       ctx.stroke();
     },
     methods: {
+      closeSelect(){
+        this.show = false
+        this.shows = false
+      },
       goHome() {
         this.$router.push({ name: 'Home', query: { index: 0} })
         window.localStorage.setItem('checkModel',this.model);
@@ -261,6 +265,22 @@
             
           })
         })
+      },
+      formatSeconds(s) {
+        //计算分钟
+        //算法：将秒数除以60，然后下舍入，既得到分钟数
+        var h;
+        h = Math.floor(s / 60);
+        //计算秒
+        //算法：取得秒%60的余数，既得到秒数
+        s = s % 60;
+        //将变量转换为字符串
+        h += '';
+        s += '';
+        //如果只有一位数，前面增加一个0
+        h = (h.length == 1) ? '0' + h : h;
+        s = (s.length == 1) ? '0' + s : s;
+        return h + ':' + s;
       },
       changeName(val) {
         if (val) {

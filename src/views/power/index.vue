@@ -11,7 +11,8 @@
       </div>
       <div class="center">
         <div class="cenLeft">
-          <van-slider :disabled='barFalg' :step="5" class="leftLine" v-model="leftValue" bar-height='32px;' vertical @change='changeleft' />
+          <van-slider :disabled='barFalg' :step="5" class="leftLine" v-model="leftValue" bar-height='32px;' vertical
+            @change='changeleft' />
           <img src="../../assets/image/left.png" alt="">
         </div>
         <div class="cenCent">
@@ -39,8 +40,8 @@
       </div>
     </div>
     <div class="centBottom">
-      <van-slider :disabled='barFalg' :step="5" class="bottomLine" @drag-end='botEnd' v-model="bottomValue" bar-height='23px'
-        @change="changeBottom" />
+      <van-slider :disabled='barFalg' :step="5" class="bottomLine" @drag-end='botEnd' v-model="bottomValue"
+        bar-height='23px' @change="changeBottom" />
       <img src="../../assets/image/bottom.png" alt="">
     </div>
     <div class="bottom">
@@ -78,7 +79,7 @@
         setTime: 0,
         watchFlag: false,
         markFlag: false,
-        barFalg:false,
+        barFalg: false,
       }
     },
     mounted() {
@@ -116,7 +117,7 @@
         } else {
           clearInterval(this.timer)
           this.timer = null
-          this.$store.dispatch('setLoginflag', { resetType:  'reset'})
+          this.$store.dispatch('setLoginflag', { resetType: 'reset' })
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
           let data = {
             model: 'PT',
@@ -162,15 +163,15 @@
             message: '设备已急停',
             position: 'bottom'
           });
-          this.$router.push({ name: 'Home', query:{index: 0} })
+          this.$router.push({ name: 'Home', query: { index: 0 } })
         }
       },
-      resetType(){
-        if(this.$store.state.resetType == 'normal'){
-            this.markFlag = false;
-          }else{
-            this.markFlag = true;
-          }
+      resetType() {
+        if (this.$store.state.resetType == 'normal') {
+          this.markFlag = false;
+        } else {
+          this.markFlag = true;
+        }
       },
       bottomValue(now, old) {
         setTimeout(() => {
@@ -186,12 +187,12 @@
         console.log(obj);
       },
       botEnd() {
-        setTimeout(()=>{
+        setTimeout(() => {
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', '', 100 - this.leftValue, 100 - this.rightValue, 0, 0] })
-        },500)
+        }, 500)
       },
       stop() {
-        this.$store.dispatch('setLoginflag', { resetType:  'reset'})
+        this.$store.dispatch('setLoginflag', { resetType: 'reset' })
         this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
         clearInterval(this.timer)
         let data = {
@@ -243,6 +244,7 @@
 
       changepause() {
         if (this.pause == '继续') {
+          console.log(1111)
           this.pause = '暂停'
 
           function s_to_hs(s) {
@@ -261,35 +263,51 @@
             s = (s.length == 1) ? '0' + s : s;
             return h + ':' + s;
           }
-
-          // this.setTime = window.localStorage.getItem('setTime');
           this.timer = setInterval(() => {
             if (this.setTime > 0) {
               this.setTime--;
               this.currentTime = s_to_hs(this.setTime)
             } else {
+              this.$store.dispatch('setLoginflag', { resetType: 'reset' })
+              this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
               clearInterval(this.timer)
-              window.localStorage.setItem('devices', JSON.stringify([{
-                "deviceId": "1",
-                "deviceAlias": "设备1"
-              }]));
-              this.$router.push({
-                name: 'finish',
-                query: {
-                  left: 100 - this.leftValue,
-                  right: 100 - this.rightValue,
-                  avg: parseInt((100 - this.leftValue + 100 - this.rightValue) / 2),
-                  fullPlayTime: window.localStorage.getItem('setTime') * 1,
-                  realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime,
-                  id: res.data.data.id,
-                  model: 'PT'
+              let data = {
+                model: 'PT',
+                devices: [{ deviceId: 1, deviceAlias: '设备1' }],
+                fullPlayTime: window.localStorage.getItem('setTime') * 1,
+                realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime,
+                leftPower: 100 - this.leftValue,
+                rightPower: 100 - this.rightValue,
+                avgPower: parseInt((100 - this.leftValue + 100 - this.rightValue) / 2),
+                userCode: window.localStorage.getItem('userCode')
+              }
+              saveRecord(data).then((res) => {
+                if (res.data.code == 200) {
+                  window.localStorage.setItem('devices', JSON.stringify([{
+                    "deviceId": "1",
+                    "deviceAlias": "设备1"
+                  }]));
+                  this.$router.push({
+                    name: 'finish',
+                    query: {
+                      left: 100 - this.leftValue,
+                      right: 100 - this.rightValue,
+                      avg: parseInt((100 - this.leftValue + 100 - this.rightValue) / 2),
+                      fullPlayTime: window.localStorage.getItem('setTime') * 1,
+                      realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime,
+                      id: res.data.data.id,
+                      model: 'PT'
+                    }
+                  });
                 }
-              });
+              })
             }
           }, 1000);
+          // this.setTime = window.localStorage.getItem('setTime');
+
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', '', 100 - this.leftValue, 100 - this.rightValue, 0, 0] })
           this.barFalg = false
-          
+
         } else {
           this.barFalg = true
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', 'PAUSE', 0, 0, 0, 0] })
@@ -312,15 +330,14 @@
       },
 
       changealign() {
-        this.$store.dispatch('setLoginflag', { resetType:  'reset'})
-        if(this.$store.state.resetType == 'normal'){
-            this.markFlag = false;
-          }else{
-            this.markFlag = true;
-          }
+        this.$store.dispatch('setLoginflag', { resetType: 'reset' })
+        if (this.$store.state.resetType == 'normal') {
+          this.markFlag = false;
+        } else {
+          this.markFlag = true;
+        }
         this.freeze = '解冻'
         this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', 'STOP', 0, 0, 0, 0] })
-
       },
 
       calculateBottomValue(now, old) {

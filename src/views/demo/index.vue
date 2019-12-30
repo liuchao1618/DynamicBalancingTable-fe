@@ -48,7 +48,7 @@
         interva: null,
         closeFlag: false,
         markFlag: false,
-        timer:null
+        timer: null
 
       }
     },
@@ -145,6 +145,9 @@
 
       /**
        * 10-15 ~ 90-95 差值位0-80
+       * 此函数用来计算新一次的随机值  当需要修改随机比例时 从这里改
+       *
+       * 当目前的随机迭代计数器为偶数时 即为运动(有值产生) 为奇数时 为暂停(数值为0)
        * @param this.left
        */
       randomFuture() {
@@ -160,7 +163,12 @@
           this.intervalCount++;
         }
       },
-
+      /**
+             * 此函数用来迭代生产下次的随机值
+             * 先判断是否未停止 然后根据当前迭代计数器生成新值 后通过生成的随机时间作为下次调用本方法的计时器时间
+             *
+             * 当暂停和冻结时
+             */
       a() {
         clearTimeout(this.interva);
         if (this.closeFlag) {
@@ -211,16 +219,39 @@
               this.currentTime = this.s_to_hs(this.setTime)
             } else {
               clearInterval(this.timer)
-              window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
-              this.$router.push({ name: 'finish', query: { fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, level: level, id: res.data.data.id, model: 'PT' } });
+              clearTimeout(this.interva)
+              if (window.localStorage.getItem('leftbox') == 1) {
+                var level = window.localStorage.getItem('level')
+              } else {
+                var level = window.localStorage.getItem('level').split('<br/>').join(' ')
+              }
+              window.localStorage.removeItem('leftbox')
+              this.$store.dispatch('setLoginflag', { resetType: 'reset' })
+              console.log(level, '等级')
+              let data = {
+                userCode: window.localStorage.getItem('userCode'),
+                model: 'DEMO',
+                devices: [{ deviceId: 1, deviceAlias: '设备1' }],
+                fullPlayTime: window.localStorage.getItem('setTime') * 1,
+                realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime,
+                level: level
+              }
+              saveRecord(data).then((res) => {
+                if (res.data.code == 200) {
+                  window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
+                  this.$router.push({ name: 'finish', query: { fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, level: level, id: res.data.data.id, model: 'DEMO' } });
+                  this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
+                } else if (res.data.code == 401) {
+                  this.$router.push({ name: 'Home', query: { index: 0 } })
+                }
+
+              })
             }
           }, 1000);
           this.pause = '暂停'
-          if (this.intervalCount % 2 == 1) {
-            this.intervalCount--
-          }
           this.a();
         } else {
+          this.intervalCount = 0
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO', 'PAUSE', 0, 0, 0, 0] })
           clearTimeout(this.interva)
           this.pause = '继续'
@@ -229,14 +260,13 @@
       },
       changefreeze() {
         if (this.freeze == '冻结') {
+          this.intervalCount = 0
           this.freeze = '解冻'
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO', 'PAUSE', 0, 0, 0, 0] })
           clearTimeout(this.interva)
         } else {
           this.freeze = '冻结'
           this.a();
-
-
         }
       },
       changealign() {
