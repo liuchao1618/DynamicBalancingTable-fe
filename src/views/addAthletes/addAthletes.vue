@@ -49,7 +49,7 @@
             </div>
         </van-popup>
         <van-popup v-model="dateShow" position="bottom">
-            <van-datetime-picker type="date" :min-date='minDate' :max-date='maxDate' @cancel="handleCancel" @confirm="handleEndDateConfirm" />
+            <van-datetime-picker type="date" :value='currentDate' :min-date='minDate' :max-date='maxDate' @cancel="handleCancel" @confirm="handleEndDateConfirm" />
         </van-popup>
     </div>
 </template>
@@ -61,6 +61,7 @@
         name: 'addAthletes',
         data() {
             return {
+                currentDate:new Date(2000,0,1),
                 minDate:new Date(1970,0,1),
                 maxDate:new Date(),
                 form: {

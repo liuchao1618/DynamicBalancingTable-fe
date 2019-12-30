@@ -110,13 +110,13 @@
                 </div>
                 <div class='item' v-for='(item,i) in recordList'>
                     <div v-show='item.model=="PT"'>
-                        <div class='itemTitle'>{{item.createTime}} PT模式 </div>
+                        <div class='itemTitle'>{{item.createTime}} 手动模式 </div>
                         <div class='itemCon'>
                             <div class='con'>
-                                <div class='name'>设置运动时间</div>
-                                <div class='time'>{{parseInt(item.fullPlayTime/60)}}分钟</div>
-                                <div class='name'>实际运动时间</div>
-                                <div class='time'>{{parseInt(item.realPlayTime/60)}}分钟</div>
+                                <div class='name'>设置运动时长</div>
+                                <div class='time'>{{item.fullPlayTime}}</div>
+                                <div class='name'>实际运动时长</div>
+                                <div class='time'>{{item.realPlayTime}}</div>
                             </div>
                             <div class='con'>
                                 <div class='name'>本次使用设备</div>
@@ -128,7 +128,7 @@
                                     <div class='detail'>
                                         <div class='detailItem'>
                                             <div class='detailUp'>{{item.leftPower}}</div>
-                                            <div class='detailDown'>POWER LEFT</div>
+                                            <div class='detailDown'>左</div>
                                         </div>
                                         <div class='detailItem'>
                                             <div class='detailUp'>{{item.avgPower}}</div>
@@ -136,7 +136,7 @@
                                         </div>
                                         <div class='detailItem'>
                                             <div class='detailUp'>{{item.rightPower}}</div>
-                                            <div class='detailDown'>POWER RIGHT</div>
+                                            <div class='detailDown'>右</div>
                                         </div>
                                     </div>
                                 </div>
@@ -160,10 +160,10 @@
                         <div class='itemTitle'>{{item.createTime}} DEMO模式 </div>
                         <div class='itemCon'>
                             <div class='con'>
-                                <div class='name'>设置运动时间</div>
-                                <div class='time'>{{parseInt(item.fullPlayTime/60)}}分钟</div>
-                                <div class='name'>实际运动时间</div>
-                                <div class='time'>{{parseInt(item.realPlayTime/60)}}分钟</div>
+                                <div class='name'>设置运动时长</div>
+                                <div class='time'>{{item.fullPlayTime}}</div>
+                                <div class='name'>实际运动时长</div>
+                                <div class='time'>{{item.realPlayTime}}</div>
                             </div>
                             <div class='con'>
                                 <div class='name'>本次使用设备</div>
@@ -188,10 +188,10 @@
                         </div>
                     </div>
                     <div v-show='item.model=="LIVE"'>
-                        <div class='itemTitle'>{{item.createTime}} LIVE模式 </div>
+                        <div class='itemTitle'>{{item.createTime}} 轨迹模式 </div>
                         <div class='itemCon'>
                             <div class='con'>
-                                <div class='name'>实际运动时间</div>
+                                <div class='name'>实际运动时长</div>
                                 <div class='time'>{{parseInt(item.realPlayTime/60)}}分钟</div>
                                 <div class='name'>本次使用设备</div>
                                 <div class='time' v-for='(val,ind) in item.deviceAliasList'>
@@ -247,13 +247,13 @@
                 </div>
                 <div class='item' v-for='(item,i) in collectList'>
                     <div v-if='item.model=="PT"'>
-                        <div class='itemTitle'>{{item.createTime}} PT模式 </div>
+                        <div class='itemTitle'>{{item.createTime}} 手动模式 </div>
                         <div class='itemCon'>
                             <div class='con'>
-                                <div class='name'>设置运动时间</div>
-                                <div class='time'>{{parseInt(item.fullPlayTime/60)}}分钟</div>
-                                <div class='name'>实际运动时间</div>
-                                <div class='time'>{{parseInt(item.realPlayTime/60)}}分钟</div>
+                                <div class='name'>设置运动时长</div>
+                                <div class='time'>{{item.fullPlayTime}}</div>
+                                <div class='name'>实际运动时长</div>
+                                <div class='time'>{{item.realPlayTime}}</div>
                             </div>
                             <div class='con'>
                                 <div class='name'>本次使用设备</div>
@@ -265,7 +265,7 @@
                                     <div class='detail'>
                                         <div class='detailItem'>
                                             <div class='detailUp'>{{item.leftPower}}</div>
-                                            <div class='detailDown'>POWER LEFT</div>
+                                            <div class='detailDown'>左</div>
                                         </div>
                                         <div class='detailItem'>
                                             <div class='detailUp'>{{item.avgPower}}</div>
@@ -273,7 +273,7 @@
                                         </div>
                                         <div class='detailItem'>
                                             <div class='detailUp'>{{item.rightPower}}</div>
-                                            <div class='detailDown'>POWER RIGHT</div>
+                                            <div class='detailDown'>右</div>
                                         </div>
                                     </div>
                                 </div>
@@ -298,10 +298,10 @@
                         <div class='itemTitle'>{{item.createTime}} DEMO模式 </div>
                         <div class='itemCon'>
                             <div class='con'>
-                                <div class='name'>设置运动时间</div>
-                                <div class='time'>{{parseInt(item.fullPlayTime/60)}}分钟</div>
-                                <div class='name'>实际运动时间</div>
-                                <div class='time'>{{parseInt(item.realPlayTime/60)}}分钟</div>
+                                <div class='name'>设置运动时长</div>
+                                <div class='time'>{{item.fullPlayTime}}</div>
+                                <div class='name'>实际运动时长</div>
+                                <div class='time'>{{item.realPlayTime}}</div>
                             </div>
                             <div class='con'>
                                 <div class='name'>本次使用设备</div>
@@ -330,7 +330,7 @@
                         <div class='itemTitle'>{{item.createTime}} LIVE模式 </div>
                         <div class='itemCon'>
                             <div class='con'>
-                                <div class='name'>实际运动时间</div>
+                                <div class='name'>实际运动时长</div>
                                 <div class='time'>{{parseInt(item.realPlayTime/60)}}分钟</div>
                                 <div class='name'>本次使用设备</div>
                                 <div class='time' v-for='(val,ind) in item.deviceAliasList'>
@@ -431,7 +431,7 @@
         },
         data() {
             return {
-                checkModel:'',
+                checkModel: '',
                 itemdata: {},
                 dialogFlag: false,
                 dialogFlags: false,
@@ -603,13 +603,7 @@
             // this.checkModel = this.$route.query.checkModel||''
             this.checkModel = window.localStorage.getItem('checkModel')
 
-            console.log(this.checkModel+'this.checkModel')
-            if(this.checkModel == 'DEMO'){
-                this.list = this.touristList
-                window.localStorage.setItem('modle', 'DEMO')
-            }else{
-                window.localStorage.setItem('modle', 'PT')
-            }
+            console.log(this.checkModel + 'this.checkModel')
             // 在其他页面监听蓝牙与设备的连接状态
             let urlContent = this.$route.query.urlContent
             if (urlContent) {
@@ -625,6 +619,12 @@
             this.tab = this.$route.query.index * 1 || 0;
             if (this.login) {
                 window.localStorage.setItem('modle', 'PT')
+                if (this.checkModel == 'DEMO') {
+                    this.list = this.touristList
+                    window.localStorage.setItem('modle', 'DEMO')
+                } else {
+                    window.localStorage.setItem('modle', 'PT')
+                }
             } else {
                 window.localStorage.setItem('modle', 'DEMO')
             }
@@ -724,9 +724,11 @@
                     condMode: kindModleText
                 }
                 memberExercise(data).then((res) => {
-                    this.recordList = res.data.data;
                     this.collectList = [];
                     res.data.data && res.data.data.forEach((item, index) => {
+                        item.fullPlayTime = this.formatSeconds(item.fullPlayTime)
+                        item.realPlayTime = this.formatSeconds(item.realPlayTime)
+                        
                         item.memberList = item.memberList.join('、')
                         item.expands = []
                         if (JSON.parse(item.expand) != null) {
@@ -743,10 +745,27 @@
                             this.collectList.push(item)
                         }
                     })
+                    this.recordList = res.data.data;
                 })
             },
             refreEvent() {
                 this.$store.dispatch('setLoginflag', { storeStatus: 'fail' })
+            },
+            formatSeconds(s) {
+                //计算分钟
+                //算法：将秒数除以60，然后下舍入，既得到分钟数
+                var h;
+                h = Math.floor(s / 60);
+                //计算秒
+                //算法：取得秒%60的余数，既得到秒数
+                s = s % 60;
+                //将变量转换为字符串
+                h += '';
+                s += '';
+                //如果只有一位数，前面增加一个0
+                h = (h.length == 1) ? '0' + h : h;
+                s = (s.length == 1) ? '0' + s : s;
+                return h + ':' + s;
             },
             timeSele() {
             },
@@ -818,46 +837,46 @@
                 window.localStorage.setItem('setTrainTime', this.itemdata.fullPlayTime)
                 window.localStorage.setItem('expand', this.itemdata.expand)
                 window.localStorage.setItem('expands', JSON.stringify(this.itemdata.expands))
-                if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 1 L1"){
+                if (this.itemdata.model == "DEMO" && this.itemdata.level == "功能 1 L1") {
                     this.itemdata.leftPower = 10
                     this.itemdata.rightPower = 15
-                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 1 L2"){
+                } else if (this.itemdata.model == "DEMO" && this.itemdata.level == "功能 1 L2") {
                     this.itemdata.leftPower = 15
                     this.itemdata.rightPower = 20
-                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 1 L3"){
+                } else if (this.itemdata.model == "DEMO" && this.itemdata.level == "功能 1 L3") {
                     this.itemdata.leftPower = 25
                     this.itemdata.rightPower = 30
-                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 1 L4"){
+                } else if (this.itemdata.model == "DEMO" && this.itemdata.level == "功能 1 L4") {
                     this.itemdata.leftPower = 30
                     this.itemdata.rightPower = 35
-                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 1 L5"){
+                } else if (this.itemdata.model == "DEMO" && this.itemdata.level == "功能 1 L5") {
                     this.itemdata.leftPower = 35
                     this.itemdata.rightPower = 40
-                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 2 L1"){
+                } else if (this.itemdata.model == "DEMO" && this.itemdata.level == "功能 2 L1") {
                     this.itemdata.leftPower = 40
                     this.itemdata.rightPower = 45
-                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 2 L2"){
+                } else if (this.itemdata.model == "DEMO" && this.itemdata.level == "功能 2 L2") {
                     this.itemdata.leftPower = 50
                     this.itemdata.rightPower = 55
-                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 2 L3"){
+                } else if (this.itemdata.model == "DEMO" && this.itemdata.level == "功能 2 L3") {
                     this.itemdata.leftPower = 55
                     this.itemdata.rightPower = 60
-                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 2 L4"){
+                } else if (this.itemdata.model == "DEMO" && this.itemdata.level == "功能 2 L4") {
                     this.itemdata.leftPower = 60
                     this.itemdata.rightPower = 65
-                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 2 L5"){
+                } else if (this.itemdata.model == "DEMO" && this.itemdata.level == "功能 2 L5") {
                     this.itemdata.leftPower = 70
                     this.itemdata.rightPower = 75
-                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 3 L1"){
+                } else if (this.itemdata.model == "DEMO" && this.itemdata.level == "功能 3 L1") {
                     this.itemdata.leftPower = 80
                     this.itemdata.rightPower = 85
-                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 3 L2"){
+                } else if (this.itemdata.model == "DEMO" && this.itemdata.level == "功能 3 L2") {
                     this.itemdata.leftPower = 85
                     this.itemdata.rightPower = 90
-                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 3 L3"){
+                } else if (this.itemdata.model == "DEMO" && this.itemdata.level == "功能 3 L3") {
                     this.itemdata.leftPower = 90
                     this.itemdata.rightPower = 95
-                }else if(this.itemdata.model == "DEMO" && this.itemdata.level=="功能 3 L4"){
+                } else if (this.itemdata.model == "DEMO" && this.itemdata.level == "功能 3 L4") {
                     this.itemdata.leftPower = 95
                     this.itemdata.rightPower = 100
                 }
@@ -928,6 +947,8 @@
                     this.collectList = [];
                     res.data.data && res.data.data.forEach((item, index) => {
 
+                        item.fullPlayTime = this.formatSeconds(item.fullPlayTime)
+                        item.realPlayTime = this.formatSeconds(item.realPlayTime)
                         item.memberList = item.memberList.join('、')
                         item.expands = []
                         if (JSON.parse(item.expand) != null) {
@@ -989,10 +1010,10 @@
                         this.$toast({
                             message: '正在复位中，请稍后',
                             position: 'bottom'
-                        });
+                        })
                     } else {
                         if (this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() == false) {
-                            // if (!this) {
+                        // if (!this) {
                             this.$toast({
                                 message: '未连接可用设备，请连接后重试。',
                                 position: 'bottom'
@@ -1013,6 +1034,7 @@
                     }
                 }
             },
+            //登录后 右侧div开始训练
             godetail(index, text) {
                 if (this.transmitType == 'stopping') {
                     this.$toast({
@@ -1027,12 +1049,13 @@
                         });
                     } else {
                         if (this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() == false) {
-                            // if (!this) {
+                        // if (!this) {
                             this.$toast({
                                 message: '未连接可用设备，请连接后重试。',
                                 position: 'bottom'
                             });
                         } else {
+                            //设置左右初始值
                             if (index == 0) {
                                 this.leftValue = 15
                                 this.rightValue = 20
@@ -1069,11 +1092,6 @@
                             }
                             window.localStorage.setItem('left', this.leftValue)
                             window.localStorage.setItem('right', this.rightValue)
-                            // if(window.localStorage.getItem('modle') == 'DEMO'){
-                            //     this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO','',this.leftValue,this.rightValue,0,0] })
-                            // }else if(window.localStorage.getItem('modle') == 'PT'){
-                            //     this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','',this.leftValue,this.rightValue,0,0]  })
-                            // }
                             if (index == 10 && text == '轨迹模式') {
                                 window.localStorage.setItem('modle', 'LIVE')
                                 this.$router.push({ name: 'live' });
@@ -1099,7 +1117,6 @@
                                 })
                             }
                             else {
-                                // this.$store.dispatch('setLoginflag', { left: this.leftValue, right: this.rightValue })
                                 this.$router.push({ name: 'SelectTime' });
                             }
                             window.localStorage.setItem('level', text)
@@ -1123,8 +1140,7 @@
                         });
                     } else {
                         if (this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() == false) {
-                            // if (!this) {
-
+                        // if (!this) {
                             if (index == 11 && text == '手动模式') {
                                 window.localStorage.setItem('modle', 'PT')
                                 this.$store.dispatch('setLoginflag', { loginflag: true, index: 2 })
@@ -1201,14 +1217,14 @@
                         });
                     } else {
                         if (this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() == false) {
-                            // if (!this) {
+                        // if (!this) {
                             this.$toast({
                                 message: '未连接可用设备，请连接后重试。',
                                 position: 'bottom'
                             })
-                        }else{
-                        this.dialogFlags = true
-                        this.itemdata = item
+                        } else {
+                            this.dialogFlags = true
+                            this.itemdata = item
 
                         }
                     }

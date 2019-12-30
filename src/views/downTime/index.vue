@@ -9,27 +9,26 @@
       return {
         word: 3,
         timer: null,
-        left:window.localStorage.getItem('left'),
-        right:window.localStorage.getItem('right')
+        left: window.localStorage.getItem('left'),
+        right: window.localStorage.getItem('right')
       }
     },
     mounted() {
       this.word = 3
       this.timer = setInterval(() => {
-        if(this.word > 1){
+        if (this.word > 1) {
           --this.word
-        }else{
+        } else {
           clearInterval(this.timer)
           let model = window.localStorage.getItem('modle')
-          if(model == 'PT'){
-            this.$router.push({ name: 'power'});
-          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT','',this.left,this.right,0,0] })
-          }else{
-            this.$router.push({ name: 'demo'});
+          if (model == 'PT') {
+            this.$router.push({ name: 'power' });
+            this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', '', this.left, this.right, 0, 0] })
+          } else {
+            this.$router.push({ name: 'demo' });
           }
         }
-          
-        }, 1000);
+      }, 1000);
     },
     methods: {
     }

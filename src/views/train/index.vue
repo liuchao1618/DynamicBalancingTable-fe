@@ -6,7 +6,7 @@
       <p v-if='model == "LIVE"'>轨迹模式</p>
       <div class="pattern">
         <div class="pattern_left">
-          <p>设置运动时间</p>
+          <p>设置运动时长</p>
           <div class="pattern_content">{{parseInt(fullPlayTime/60)}}分钟</div>
         </div>
         <div v-if="model == 'PT' || model == 'DEMO'" class="pattern_center">
