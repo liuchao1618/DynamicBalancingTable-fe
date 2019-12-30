@@ -602,11 +602,13 @@
 
             // this.checkModel = this.$route.query.checkModel||''
             this.checkModel = window.localStorage.getItem('checkModel')
+
             console.log(this.checkModel+'this.checkModel')
-            if(this.checkModel == 'PT'){
-                window.localStorage.setItem('modle', 'PT')
-            }else{
+            if(this.checkModel == 'DEMO'){
+                this.list = this.touristList
                 window.localStorage.setItem('modle', 'DEMO')
+            }else{
+                window.localStorage.setItem('modle', 'PT')
             }
             // 在其他页面监听蓝牙与设备的连接状态
             let urlContent = this.$route.query.urlContent
