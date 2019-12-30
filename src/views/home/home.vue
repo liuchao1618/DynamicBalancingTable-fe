@@ -599,7 +599,6 @@
             })
         },
         mounted() {
-
             // this.checkModel = this.$route.query.checkModel||''
             this.checkModel = window.localStorage.getItem('checkModel')
 
