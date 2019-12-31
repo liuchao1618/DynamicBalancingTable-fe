@@ -217,6 +217,7 @@
         window.localStorage.removeItem('locus')
       },
       checkNames(item) {
+        console.log(item,'item')
         item.checked = true
         this.checkName.push(item)
         this.shows = false

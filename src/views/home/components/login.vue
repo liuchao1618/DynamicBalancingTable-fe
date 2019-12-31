@@ -205,6 +205,10 @@
                 delPhoneList(data1).then((res) => {
                     if(res.data.code == 200){
                         this.getphoneList()
+                        this.$toast({
+                        message: '删除成功',
+                        position: 'bottom'
+                    });
                     }
                 })
                 // this.oldTel.splice(index, 1)

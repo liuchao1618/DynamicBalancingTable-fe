@@ -53,6 +53,11 @@
       }
     },
     mounted() {
+          if (window.localStorage.getItem('leftbox') == 1) {
+          var level = window.localStorage.getItem('level')
+        } else {
+          var level = window.localStorage.getItem('level').split('<br/>').join(' ')
+        }
       this.setTime = window.localStorage.getItem('setTime');
       /**
        * 将秒转换为 分:秒
@@ -69,11 +74,6 @@
           this.$store.dispatch('setLoginflag', { resetType: 'reset' })
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
           clearTimeout(this.interva)
-          if (window.localStorage.getItem('leftbox') == 1) {
-          var level = window.localStorage.getItem('level')
-        } else {
-          var level = window.localStorage.getItem('level').split('<br/>').join(' ')
-        }
           let data = {
             userCode: window.localStorage.getItem('userCode'),
             model: 'DEMO',
