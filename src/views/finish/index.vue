@@ -16,7 +16,7 @@
           <div class="liveL">
             <div class="exerciseTime">
               <span>实际运动时长</span>
-              <h2>{{realPlayTime}}分钟</h2>
+              <h2>{{realPlayTime}}</h2>
             </div>
             <div class="log">
               <span>操控点轨迹记录</span>
@@ -32,9 +32,9 @@
         <div class="exercise" v-else>
           <div class="exerciseTime">
             <span>设置运动时长</span>
-            <h2> {{fullPlayTime}}分钟</h2>
+            <h2> {{fullPlayTime}}</h2>
             <span>实际运动时长</span>
-            <h2>{{realPlayTime}}分钟</h2>
+            <h2>{{realPlayTime}}</h2>
           </div>
           <div class="usedevice">
             <span>本次使用设备</span>
@@ -187,6 +187,7 @@
       this.rightValue = this.$route.query.right
       this.fullPlayTime = this.formatSeconds(this.$route.query.fullPlayTime)
       this.realPlayTime = this.formatSeconds(this.$route.query.realPlayTime)
+      console.log(this.realPlayTime)
       this.currentId = this.$route.query.id
       this.level = this.$route.query.level
       this.model = this.$route.query.model

@@ -24,8 +24,8 @@
   export default {
     data() {
       return {
-        currentValue: 300,
-        timeStr:'05:00'
+        currentValue: 1200,
+        timeStr:'20:00'
       }
     },
     methods: {
