@@ -13,9 +13,9 @@
         <div class='itemCon'>
           <div class='con'>
             <div class='name'>设置运动时长</div>
-            <div class='time'>{{parseInt(item.fullPlayTime/60)}}分钟</div>
+            <div class='time'>{{item.fullPlayTime}}分钟</div>
             <div class='name'>实际运动时长</div>
-            <div class='time'>{{parseInt(item.realPlayTime/60)}}分钟</div>
+            <div class='time'>{{item.realPlayTime}}分钟</div>
           </div>
           <div class='con'>
             <div class='name'>本次使用设备</div>
@@ -62,9 +62,9 @@
         <div class='itemCon'>
           <div class='con'>
             <div class='name'>设置运动时长</div>
-            <div class='time'>{{parseInt(item.fullPlayTime/60)}}分钟</div>
+            <div class='time'>{{item.fullPlayTime}}分钟</div>
             <div class='name'>实际运动时长</div>
-            <div class='time'>{{parseInt(item.realPlayTime/60)}}分钟</div>
+            <div class='time'>{{item.realPlayTime}}分钟</div>
           </div>
           <div class='con'>
             <div class='name'>本次使用设备</div>
@@ -95,7 +95,7 @@
         <div class='itemCon'>
           <div class='con'>
             <div class='name'>实际运动时长</div>
-            <div class='time'>{{parseInt(item.realPlayTime/60)}}分钟</div>
+            <div class='time'>{{item.realPlayTime}}分钟</div>
             <div class='name'>本次使用设备</div>
             <div class='time' v-for='(val,ind) in item.deviceAliasList'>
               <span>{{val}}</span>
@@ -153,14 +153,31 @@
       this.getExercise()
     },
     methods: {
+      formatSeconds(s) {
+        //计算分钟
+        //算法：将秒数除以60，然后下舍入，既得到分钟数
+        var h;
+        h = Math.floor(s / 60);
+        //计算秒
+        //算法：取得秒%60的余数，既得到秒数
+        s = s % 60;
+        //将变量转换为字符串
+        h += '';
+        s += '';
+        //如果只有一位数，前面增加一个0
+        h = (h.length == 1) ? '0' + h : h;
+        s = (s.length == 1) ? '0' + s : s;
+        return h + ':' + s;
+      },
       getExercise() {
         let data = {
           userCode: this.userCode
         }
-
         memberExercise(data).then((res) => {
           this.recordList = res.data.data;
           res.data.data.forEach((item, index) => {
+            item.fullPlayTime = this.formatSeconds(item.fullPlayTime)
+            item.realPlayTime = this.formatSeconds(item.realPlayTime)
             item.memberList = item.memberList.join('、')
             item.expands = []
             if (JSON.parse(item.expand) != null) {

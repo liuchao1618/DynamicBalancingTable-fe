@@ -5,11 +5,11 @@
       <p v-if='model == "DEMO"'>demo模式</p>
       <p v-if='model == "LIVE"'>轨迹模式</p>
       <div class="pattern">
-        <div class="pattern_left">
+        <div class="pattern_left" v-if="model == 'PT' || model == 'DEMO'">
           <p>设置运动时长</p>
-          <div class="pattern_content">{{parseInt(fullPlayTime/60)}}分钟</div>
+          <div class="pattern_content">{{fullPlayFormate}}</div>
         </div>
-        <div v-if="model == 'PT' || model == 'DEMO'" class="pattern_center">
+        <div  class="pattern_center">
           <p>使用设备</p>
           <div class="pattern_content">设备1</div>
         </div>
@@ -90,7 +90,8 @@
         interva: null,
         closeFlag: false,
         id: '',
-        markFlag: false
+        markFlag: false,
+        fullPlayFormate:''
       }
     },
     mounted() {
@@ -113,6 +114,7 @@
         return h + ':' + s;
       }
       this.fullPlayTime = this.$route.query.fullPlayTime;
+      this.fullPlayFormate = s_to_hs(this.fullPlayTime)
       this.model = this.$route.query.model;
       this.level = this.$route.query.level;
       this.leftPower = this.$route.query.leftPower;
@@ -268,7 +270,7 @@
         }, temp <= 0 ? array[temp].t : array[temp].t - array[temp - 1].t);
       },
       stop() {
-        console.log(this.model)
+        console.log(this.currentTimeNum)
         clearInterval(this.timer)
         if (this.model == 'LIVE') {
           var data = {
@@ -284,6 +286,12 @@
             locus: this.expand
           }
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', '', 0, 0, 0, 0] })
+          saveRecord(data).then((res) => {
+          if (res.data.code == 200) {
+            window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
+            this.$router.push({ name: 'finish', query: { left: this.leftPower, right: this.rightPower, avg: this.avgPower, fullPlayTime: this.fullPlayTime, realPlayTime: this.currentTimeNum, id: res.data.data.id, level: this.level, model: this.model } })
+          }
+        })
         } else {
           var data = {
             model: this.$route.query.model,
@@ -297,16 +305,17 @@
             level: this.level,
             locus: this.expand
           }
-          this.$store.dispatch('setLoginflag', { BluetoothDataArr: [this.model, 'STOP', 0, 0, 0, 0] })
-        }
-        window.localStorage.setItem('locus', JSON.stringify(this.expand))
-
-        saveRecord(data).then((res) => {
+          saveRecord(data).then((res) => {
           if (res.data.code == 200) {
             window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
             this.$router.push({ name: 'finish', query: { left: this.leftPower, right: this.rightPower, avg: this.avgPower, fullPlayTime: this.fullPlayTime, realPlayTime: window.localStorage.getItem('setTrainTime') - this.currentTimeNum, id: res.data.data.id, level: this.level, model: this.model } })
           }
         })
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: [this.model, 'STOP', 0, 0, 0, 0] })
+        }
+        window.localStorage.setItem('locus', JSON.stringify(this.expand))
+
+        
       },
     },
     updated() {
@@ -366,7 +375,7 @@
           width: 318px;
           height: 77px;
           margin-top: 20px;
-          padding: 8px 6px;
+          padding: 8px 15px;
           display: flex;
           justify-content: space-between;
           border-radius: 2px;
@@ -380,7 +389,7 @@
 
           .box_name {
             color: #B7BAC8;
-            font-size: 14px;
+            font-size: 18px;
             line-height: 20px;
           }
         }

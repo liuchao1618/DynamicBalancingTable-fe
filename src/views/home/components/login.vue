@@ -10,7 +10,7 @@
                     <div class="tel_Wrapper" v-if="telFlag">
                         <div class="tel_box" v-for="(item, index) of oldTel" :key="index">
                             <p @click="oldTelClick(item)">{{item}}</p>
-                            <p @click="deleteTel(index)">×</p>
+                            <p @click="deleteTel(item)">x</p>
                         </div>
                     </div>
                 </van-cell-group>
@@ -33,7 +33,7 @@
         name: 'login',
         data() {
             return {
-                tel: '13100000002',
+                tel: '18012345678',
                 pwd: '123456',
                 flag: true,
                 telFlag: false,
@@ -197,10 +197,10 @@
                 }
             },
             // 删除历史手机号
-            deleteTel(index) {
+            deleteTel(item) {
                 let data1 = {
                     padCode: 'asdf526asdf',
-                    mobile: this.tel
+                    mobile: item
                 }
                 delPhoneList(data1).then((res) => {
                     if(res.data.code == 200){
@@ -304,7 +304,7 @@
                 border-radius: 5px;
                 z-index: 100;
                 font-size: 22px;
-                line-height: 40px;
+                line-height: 50px;
                 color: rgba(141, 141, 148, 1);
                 overflow: auto;
             }

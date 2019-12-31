@@ -54,8 +54,6 @@
     },
     mounted() {
       this.setTime = window.localStorage.getItem('setTime');
-
-      console.log(this.setTime + '时间')
       /**
        * 将秒转换为 分:秒
        * s int 秒数
@@ -71,11 +69,11 @@
           this.$store.dispatch('setLoginflag', { resetType: 'reset' })
           this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
           clearTimeout(this.interva)
-          if (window.localStorage.getItem('leftbox') != 1) {
-            var level = window.localStorage.getItem('level').split('<br/>').join(' ')
-          } else {
-            var level = window.localStorage.getItem('level')
-          }
+          if (window.localStorage.getItem('leftbox') == 1) {
+          var level = window.localStorage.getItem('level')
+        } else {
+          var level = window.localStorage.getItem('level').split('<br/>').join(' ')
+        }
           let data = {
             userCode: window.localStorage.getItem('userCode'),
             model: 'DEMO',
@@ -87,7 +85,7 @@
           saveRecord(data).then((res) => {
             if (res.data.code == 200) {
               window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
-              this.$router.push({ name: 'finish', query: { fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, level: level, id: res.data.data.id, model: 'PT' } });
+              this.$router.push({ name: 'finish', query: { fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, level: level, id: res.data.data.id, model: 'DEMO' } });
             }
           })
         }
@@ -182,6 +180,7 @@
         }, future[2])
       },
       stop() {
+        clearInterval(this.timer)
         clearTimeout(this.interva)
         if (window.localStorage.getItem('leftbox') == 1) {
           var level = window.localStorage.getItem('level')
@@ -212,7 +211,6 @@
       },
       changepause() {
         if (this.pause == '继续') {
-          this.setTime = window.localStorage.getItem('setTime');
           this.timer = setInterval(() => {
             if (this.setTime > 0) {
               this.setTime--;

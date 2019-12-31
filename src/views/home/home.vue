@@ -1,5 +1,5 @@
 <template>
-    <div class="box">
+    <div class="box" @click='closeseleMark'>
         <!-- 蓝牙加载状态 -->
         <div v-if='status === "fail"' class='loading'>
             <img v-if="statusContent != 6" class='loadingImg' src="./image/title.png" alt="">
@@ -22,13 +22,13 @@
                     <img src="./image/none.png" alt="">未发现可用设备
                 </div>
                 <div style="display: flex; width: 20%;margin: 178px auto 0">
-                    <div @click="discoveryNewDevice()" class='load-button'>重新搜索</div>
-                    <div @click="changeStoreStatus()" class='load-button'>进入系统</div>
+                    <div @click.stop="discoveryNewDevice()" class='load-button'>重新搜索</div>
+                    <div @click.stop="changeStoreStatus()" class='load-button'>进入系统</div>
                 </div>
             </div>
             <div v-if='statusContent === 3' class='load-loading'>
                 <div class='img'>
-                    <img src="./image/right.png" alt="">设备已链接
+                    <img src="./image/right.png" alt="">设备已连接
                 </div>
             </div>
         </div>
@@ -40,20 +40,21 @@
             <!-- tab条 -->
             <div class="tabList" v-if='login'>
                 <div class="tabLeft">
-                    <div class="tab" :class="{'tabActive': tab === 0}" @click="tabBtn(0)">训练</div>
-                    <div class="tab" :class="{'tabActive': tab === 1}" @click="tabBtn(1)">记录</div>
-                    <div class="tab" :class="{'tabActive': tab === 2}" @click="tabBtn(2)">收藏</div>
-                    <div class="tab" :class="{'tabActive': tab === 3}" @click="tabBtn(3)" v-if='identity == "coach"'>
+                    <div class="tab" :class="{'tabActive': tab === 0}" @click.stop="tabBtn(0)">训练</div>
+                    <div class="tab" :class="{'tabActive': tab === 1}" @click.stop="tabBtn(1)">记录</div>
+                    <div class="tab" :class="{'tabActive': tab === 2}" @click.stop="tabBtn(2)">收藏</div>
+                    <div class="tab" :class="{'tabActive': tab === 3}" @click.stop="tabBtn(3)"
+                        v-if='identity == "coach"'>
                         我的运动员</div>
                 </div>
                 <div class="tabRight">
                     <div class="name" v-if='identity == "coach"'>教练：{{loginName}}</div>
                     <div class="name" v-else>运动员：{{loginName}}</div>
                     <div class="setup">
-                        <img @click="setup = !setup" src="./image/setup.png" />
+                        <img @click.stop="setup = !setup" src="./image/setup.png" />
                         <div class="setupList" v-if='setup'>
-                            <div class='setupItem' @click='editPWD'>修改密码</div>
-                            <div class='setupItem' @click='exitLogin'>退出登录</div>
+                            <div class='setupItem' @click.stop='editPWD'>修改密码</div>
+                            <div class='setupItem' @click.stop='exitLogin'>退出登录</div>
                             <!-- <div class='setupItem'>自动登录 <van-switch class='switch' size='24px' v-model="loginSwitch"
                                     active-color="#299AC1" inactive-color="#4E4F50"></van-switch>
                             </div> -->
@@ -65,7 +66,7 @@
             <!-- 训练 -->
             <div v-show='tab === 0' class="menu">
                 <div class="menuLeft">
-                    <div class="menuItem" v-for='(item,index) in menuList' @click='leftgoDetail(item.text,index)'
+                    <div class="menuItem" v-for='(item,index) in menuList' @click.stop='leftgoDetail(item.text,index)'
                         :key='index'>
                         <img :src="item.img" />
                         <div class="menuText">{{ item.text }}</div>
@@ -73,15 +74,15 @@
                 </div>
                 <div class="menuRight" v-if='login'>
                     <div class='rightItem' v-for='(item,index) in list' :key='index' v-html='item.text'
-                        :style='{"background-color": item.color}' @click='godetail(index,item.text)'><img
+                        :style='{"background-color": item.color}' @click.stop='godetail(index,item.text)'><img
                             :src="item.img" /></div>
                 </div>
                 <div class="menuRight" v-else>
                     <div class='rightItem' v-for='(item,index) in touristList' :key='index' v-html='item.text'
-                        :style='{"background-color": item.color}' @click='godetails(index,item.text)'></div>
+                        :style='{"background-color": item.color}' @click.stop='godetails(index,item.text)'></div>
                 </div>
-                <button class="aliginBtn" v-if='statusContent == 3' @click='alignBtn'>重置</button>
-                <div class="refreSearchbox" v-if='statusContent == 2' @click='refreEvent'>重新搜索设备</div>
+                <button class="aliginBtn" v-if='statusContent == 3' @click.stop='alignBtn'>重置</button>
+                <div class="refreSearchbox" v-if='statusContent == 2' @click.stop='refreEvent'>重新搜索设备</div>
             </div>
             <!-- 记录 -->
             <div v-show='tab === 1' class='list'>
@@ -90,23 +91,23 @@
                     <div class="search">
                         <van-search placeholder="" @input='changeIpt' v-model="iptName" />
                         <ul class="lists" v-if='shows'>
-                            <li v-for='(item,i) in sportName' @click='checkNames(item)'>{{item.username}}</li>
+                            <li v-for='(item,i) in sportName' @click.stop='checkNames(item)'>{{item.username}}</li>
                         </ul>
                     </div>
                     <p>训练日期 :</p>
                     <input class="dataIpt" type="date" @change='timeSele' v-model="currentTime" placeholder="请选择" />
                     <p>训练模式 :</p>
                     <div class="selectbox">
-                        <div class="select" @click='tabShow'>
+                        <div class="select" @click.stop='tabShow'>
                             <span>{{kindModleText}}</span>
                             <span class="img"><img src="../../assets/image/xiala.png" alt=""></span>
                         </div>
                         <ul class="xialalist" v-if='show'>
-                            <li v-for='(item,i) in kindModle' @click='changekindModleText(item)'>{{item}}
+                            <li v-for='(item,i) in kindModle' @click.stop='changekindModleText(item)'>{{item}}
                             </li>
                         </ul>
                     </div>
-                    <div class='searchbtn' @click='searchbtnEvent'>查询</div>
+                    <div class='searchbtn' @click.stop='searchbtnEvent'>查询</div>
                 </div>
                 <div class='item' v-for='(item,i) in recordList'>
                     <div v-show='item.model=="PT"'>
@@ -150,8 +151,8 @@
 
                             </div>
                             <div class='conCollect'>
-                                <img v-if='item.favored' @click='DelCollect(item)' src="./image/starS.png" alt="">
-                                <img v-else @click='AddCollect(item)' src="./image/star.png" alt="">
+                                <img v-if='item.favored' @click.stop='DelCollect(item)' src="./image/starS.png" alt="">
+                                <img v-else @click.stop='AddCollect(item)' src="./image/star.png" alt="">
                             </div>
                         </div>
                     </div>
@@ -182,8 +183,8 @@
 
                             </div>
                             <div class='conCollect'>
-                                <img v-if='item.favored' @click='DelCollect(item)' src="./image/starS.png" alt="">
-                                <img v-else @click='AddCollect(item)' src="./image/star.png" alt="">
+                                <img v-if='item.favored' @click.stop='DelCollect(item)' src="./image/starS.png" alt="">
+                                <img v-else @click.stop='AddCollect(item)' src="./image/star.png" alt="">
                             </div>
                         </div>
                     </div>
@@ -192,7 +193,7 @@
                         <div class='itemCon'>
                             <div class='con'>
                                 <div class='name'>实际运动时长</div>
-                                <div class='time'>{{parseInt(item.realPlayTime/60)}}分钟</div>
+                                <div class='time'>{{item.realPlayTime}}</div>
                                 <div class='name'>本次使用设备</div>
                                 <div class='time' v-for='(val,ind) in item.deviceAliasList'>
                                     <span>{{val}}</span>
@@ -213,8 +214,8 @@
 
                             </div>
                             <div class='conCollect'>
-                                <img v-if='item.favored' @click='DelCollect(item)' src="./image/starS.png" alt="">
-                                <img v-else @click='AddCollect(item)' src="./image/star.png" alt="">
+                                <img v-if='item.favored' @click.stop='DelCollect(item)' src="./image/starS.png" alt="">
+                                <img v-else @click.stop='AddCollect(item)' src="./image/star.png" alt="">
                             </div>
                         </div>
                     </div>
@@ -227,23 +228,23 @@
                     <div class="search">
                         <van-search placeholder="" @input='changeIpt' v-model="iptName" />
                         <ul class="lists" v-if='shows'>
-                            <li v-for='(item,i) in sportName' @click='checkNames(item)'>{{item.username}}</li>
+                            <li v-for='(item,i) in sportName' @click.stop='checkNames(item)'>{{item.username}}</li>
                         </ul>
                     </div>
                     <p>训练日期 :</p>
                     <input class="dataIpt" type="date" @change='timeSele' v-model="currentTime" placeholder="请选择" />
                     <p>训练模式 :</p>
                     <div class="selectbox">
-                        <div class="select" @click='tabShow'>
+                        <div class="select" @click.stop='tabShow'>
                             <span>{{kindModleText}}</span>
                             <span class="img"><img src="../../assets/image/xiala.png" alt=""></span>
                         </div>
                         <ul class="xialalist" v-if='show'>
-                            <li v-for='(item,i) in kindModle' @click='changekindModleText(item)'>{{item}}
+                            <li v-for='(item,i) in kindModle' @click.stop='changekindModleText(item)'>{{item}}
                             </li>
                         </ul>
                     </div>
-                    <div class='searchbtn' @click='searchbtnEvent'>查询</div>
+                    <div class='searchbtn' @click.stop='searchbtnEvent'>查询</div>
                 </div>
                 <div class='item' v-for='(item,i) in collectList'>
                     <div v-if='item.model=="PT"'>
@@ -287,8 +288,8 @@
 
                             </div>
                             <div class='conCollect'>
-                                <img @click='DelCollect(item)' src="./image/starS.png" alt="">
-                                <div @click="clickToTrain(item)" class='conTrain'>使用本次设置进行训练<img
+                                <img @click.stop='DelCollect(item)' src="./image/starS.png" alt="">
+                                <div @click.stop="clickToTrain(item)" class='conTrain'>使用本次设置进行训练<img
                                         src="./image/right-arrow.png" alt=""></div>
                             </div>
                         </div>
@@ -320,8 +321,8 @@
 
                             </div>
                             <div class='conCollect'>
-                                <img @click='DelCollect(item)' src="./image/starS.png" alt="">
-                                <div @click="clickToTrain(item)" class='conTrain'>使用本次设置进行训练<img
+                                <img @click.stop='DelCollect(item)' src="./image/starS.png" alt="">
+                                <div @click.stop="clickToTrain(item)" class='conTrain'>使用本次设置进行训练<img
                                         src="./image/right-arrow.png" alt=""></div>
                             </div>
                         </div>
@@ -331,7 +332,7 @@
                         <div class='itemCon'>
                             <div class='con'>
                                 <div class='name'>实际运动时长</div>
-                                <div class='time'>{{parseInt(item.realPlayTime/60)}}分钟</div>
+                                <div class='time'>{{item.realPlayTime}}</div>
                                 <div class='name'>本次使用设备</div>
                                 <div class='time' v-for='(val,ind) in item.deviceAliasList'>
                                     <span>{{val}}</span>
@@ -351,8 +352,8 @@
 
                             </div>
                             <div class='conCollect'>
-                                <img @click='DelCollect(item)' src="./image/starS.png" alt="">
-                                <div @click="clickToTrain(item)" class='conTrain'>使用本次设置进行训练<img
+                                <img @click.stop='DelCollect(item)' src="./image/starS.png" alt="">
+                                <div @click.stop="clickToTrain(item)" class='conTrain'>使用本次设置进行训练<img
                                         src="./image/right-arrow.png" alt=""></div>
                             </div>
                         </div>
@@ -362,7 +363,7 @@
             <!-- 我的运动员 -->
             <div v-show='tab === 3' class='myAthletes'>
                 <div class="addSport">
-                    <span class="img" @click='addSport'><img src="../../assets/image/add.png" alt=""></span>
+                    <span class="img" @click.stop='addSport'><img src="../../assets/image/add.png" alt=""></span>
                     <span>添加运动员</span>
                 </div>
                 <van-row class='myHead'>
@@ -382,9 +383,9 @@
                     <van-col span='3' class='headItem'>{{item.weight}}</van-col>
                     <van-col span='5' class='headItem'>{{item.mobile}}</van-col>
                     <van-col span='6' class='headItem'>
-                        <span class='myTdColor' @click='edit(item)'>编辑</span>
-                        <span class='myTdColor' @click='del(item)'>删除</span>
-                        <span class='myTdColor' @click='detail(item)'>查看运动记录</span>
+                        <span class='myTdColor' @click.stop='edit(item)'>编辑</span>
+                        <span class='myTdColor' @click.stop='del(item)'>删除</span>
+                        <span class='myTdColor' @click.stop='detail(item)'>查看运动记录</span>
                     </van-col>
                 </van-row>
             </div>
@@ -394,10 +395,10 @@
         <div v-if='dialogFlag' role="dialog" class="dialogMark" style="z-index: 2002;">
             <div class="dialogTitle">您确定要退出登录吗？</div>
             <div class="dialogBox">
-                <p @click='loginflagCan'>
+                <p @click.stop='loginflagCan'>
                     <span>取消</span>
                     </parent>
-                    <p @click='loginflagTRUE'>
+                    <p @click.stop='loginflagTRUE'>
                         <span>确认</span>
                     </p>
             </div>
@@ -405,10 +406,10 @@
         <div v-if='dialogFlags' role="dialog" class="dialogMark" style="z-index: 2002;">
             <div class="dialogTitle">确定使用本次设置进行训练？</div>
             <div class="dialogBox">
-                <p @click='loginflagCans'>
+                <p @click.stop='loginflagCans'>
                     <span>取消</span>
                     </parent>
-                    <p @click='loginflagTRUEs'>
+                    <p @click.stop='loginflagTRUEs'>
                         <span>确认</span>
                     </p>
             </div>
@@ -420,7 +421,7 @@
     import login from './components/login'
     import { Dialog } from 'vant'
     import { mapState } from 'vuex'
-    import { memberExercise, memberMessage, addCollect, delCollect, delMember, trainDetail, exitLogin, runnersName } from '@/api/index'
+    import { memberExercise, memberMessage, loginMsg, addCollect, delCollect, delMember, trainDetail, exitLogin, runnersName } from '@/api/index'
     import { deviceInfo } from '../../api/api'
     import pluginFub from '../../utils/sendData.js'
 
@@ -573,7 +574,6 @@
         updated() {
             this.recordList && this.recordList.forEach((item, index) => {
                 if (item.model == 'LIVE') {
-
                     var c = document.getElementById(index);
                     var ctx = c.getContext("2d");
                     ctx.strokeStyle = '#D1D5E6'
@@ -586,7 +586,6 @@
             })
             this.collectList && this.collectList.forEach((item, index) => {
                 if (item.model == 'LIVE') {
-
                     var c = document.getElementById('a' + index);
                     var ctx = c.getContext("2d");
                     ctx.strokeStyle = '#D1D5E6'
@@ -599,7 +598,21 @@
             })
         },
         mounted() {
-            // this.checkModel = this.$route.query.checkModel||''
+            if (window.localStorage.getItem('AuthorizationStr')) {
+                this.$store.dispatch('setLoginflag', { login: true, index: 3 })
+                loginMsg().then((res) => {
+                    if (res.data.data.parent == null) {
+                        this.$store.dispatch('setLoginflag', { identity: 'coach', text: 'coach' })
+                        window.localStorage.setItem('username', res.data.data.username)
+                    } else {
+                        window.localStorage.setItem('username', res.data.data.parent.username)
+                        this.$store.dispatch('setLoginflag', { identity: 'athlete', text: 'coach' })
+
+                    }
+                    window.localStorage.setItem('userCode', res.data.data.userCode)
+                    this.$store.dispatch('setLoginflag', { loginName: res.data.data.username, loginflag: false, login: true, index: 1 })
+                })
+            }
             this.checkModel = window.localStorage.getItem('checkModel')
 
             console.log(this.checkModel + 'this.checkModel')
@@ -688,21 +701,15 @@
             }
         },
         methods: {
+            closeseleMark() {
+                this.setup = false
+                this.show = false
+            },
             alignBtn() {
                 this.$store.dispatch('setLoginflag', { resetType: 'reset' })
                 this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'RESET', 0, 0, 0, 0] })
             },
             searchbtnEvent() {
-                //     this.collectList.forEach((item, index) => {
-                //     var c = document.getElementById('a' + index);
-                //     var ctx = c.getContext("2d");
-                //     ctx.strokeStyle = '#D1D5E6'
-                //     var arr = item.expands
-                //     arr.forEach((v, i) => {
-                //         ctx.lineTo(v[0], v[1]);
-                //     })
-                //     ctx.stroke();
-                // })
                 var kindModleText = ''
                 if (this.kindModleText == '显示所有训练记录') {
                     kindModleText = ''
@@ -727,7 +734,7 @@
                     res.data.data && res.data.data.forEach((item, index) => {
                         item.fullPlayTime = this.formatSeconds(item.fullPlayTime)
                         item.realPlayTime = this.formatSeconds(item.realPlayTime)
-                        
+
                         item.memberList = item.memberList.join('、')
                         item.expands = []
                         if (JSON.parse(item.expand) != null) {
@@ -818,10 +825,11 @@
             },
             loginflagTRUE() {
                 this.dialogFlag = false
+                this.$store.dispatch('setLoginflag', { login: false, index: 3 })
                 exitLogin().then((res) => {
                     this.tab = 0
                     this.setup = false
-                    this.$store.dispatch('setLoginflag', { login: false, index: 3 })
+                    window.localStorage.removeItem('AuthorizationStr')
                 })
             },
             loginflagCan() {
@@ -833,6 +841,7 @@
             },
             loginflagTRUEs() {
                 this.dialogFlags = false
+                this.itemdata.fullPlayTime = this.itemdata.fullPlayTime.split(':')[0] * 60 + this.itemdata.fullPlayTime.split(':')[1] * 1;
                 window.localStorage.setItem('setTrainTime', this.itemdata.fullPlayTime)
                 window.localStorage.setItem('expand', this.itemdata.expand)
                 window.localStorage.setItem('expands', JSON.stringify(this.itemdata.expands))
@@ -1125,6 +1134,7 @@
                 }
 
             },
+            //未登录 右侧div进入训练
             godetails(index, text) {
                 if (this.transmitType == 'stopping') {
                     this.$toast({
@@ -1770,7 +1780,7 @@
 
                                     .detailDown {
                                         color: #B7BAC8;
-                                        font-size: 10px;
+                                        font-size: 18px;
                                     }
                                 }
                             }
