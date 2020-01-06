@@ -64,6 +64,7 @@
   const minStoptime = 1.0;
   const maxStoptime = 3.0;
   import { saveRecord } from '@/api/index'
+  import {mapState } from 'vuex'
   export default {
     name: 'Train',
     data() {
@@ -94,7 +95,35 @@
         fullPlayFormate:''
       }
     },
+    created() {
+      this.leftPower = this.$route.query.leftPower;
+      this.rightPower = this.$route.query.rightPower;
+    },
+    computed: mapState({
+      transmitType: state => state.transmitType,
+      resetType: state => state.resetType,
+    }),
+    watch: {
+      transmitType() {
+        if (this.transmitType == 'stopping') {
+          clearInterval(this.timer)
+          this.$toast({
+            message: '设备已急停',
+            position: 'bottom'
+          });
+          this.$router.push({ name: 'Home', query: { index: 0 } })
+        }
+      },
+      resetType() {
+        if (this.$store.state.resetType == 'normal') {
+          this.markFlag = false;
+        } else {
+          this.markFlag = true;
+        }
+      }
+    },
     mounted() {
+      console.log(this.$route.query)
       this.expand = JSON.parse(localStorage.getItem('expand'))
       this.expands = JSON.parse(localStorage.getItem('expands'))
       function s_to_hs(s) {
@@ -117,8 +146,6 @@
       this.fullPlayFormate = s_to_hs(this.fullPlayTime)
       this.model = this.$route.query.model;
       this.level = this.$route.query.level;
-      this.leftPower = this.$route.query.leftPower;
-      this.rightPower = this.$route.query.rightPower;
       this.avgPower = this.$route.query.avgPower;
       if (this.model == 'LIVE') {
         this.setTime = 1
@@ -127,8 +154,8 @@
       } else {
         this.currentTimeNum = this.fullPlayTime
         this.currentTime = s_to_hs(this.fullPlayTime);
-
       }
+       
     },
     methods: {
       randomScope(min, max, decimal) {
@@ -205,10 +232,9 @@
           }, 1000);
           this.f(this.expand)
         } else {
-          if (this.model == 'PT') {
-            this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', 'STOP', 0, 0, 0, 0] })
-
-          } else {
+          if(this.model == 'PT'){
+          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['PT', this.leftPower,this.rightPower, 0, 0] })
+        } else {
             this.a()
           }
           this.timer = setInterval(() => {
@@ -272,6 +298,9 @@
       stop() {
         console.log(this.currentTimeNum)
         clearInterval(this.timer)
+        clearTimeout(this.interva)
+        this.$store.dispatch('setLoginflag', { resetType: 'reset' })
+        this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
         if (this.model == 'LIVE') {
           var data = {
             model: this.$route.query.model,
@@ -285,7 +314,7 @@
             level: this.level,
             locus: this.expand
           }
-          this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', '', 0, 0, 0, 0] })
+         
           saveRecord(data).then((res) => {
           if (res.data.code == 200) {
             window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));

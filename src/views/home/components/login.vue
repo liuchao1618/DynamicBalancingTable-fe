@@ -33,7 +33,7 @@
         name: 'login',
         data() {
             return {
-                tel: '18012345678',
+                tel: '13100000002',
                 pwd: '123456',
                 flag: true,
                 telFlag: false,
@@ -81,7 +81,6 @@
             },
             login() {
                 if (navigator.onLine) {
-                    console.log('联网状态')
                 } else {
                     this.$toast({
                         message: '请连接网络',
@@ -107,16 +106,19 @@
                             mobile: this.tel
                         }
                         window.localStorage.setItem('modle', 'PT')
+                        window.localStorage.setItem('checkModel', 'PT')
                         // this.getData()
                         addPhoneList(data1)
                         loginMsg().then((res) => {
                             if(res.data.data.parent == null){
                             this.$store.dispatch('setLoginflag', { identity: 'coach',text:'coach' })
                             window.localStorage.setItem('username', res.data.data.username)
+                            window.localStorage.setItem('identity', 'coach')
                             }else{
                             window.localStorage.setItem('username', res.data.data.parent.username)
                             this.$store.dispatch('setLoginflag', { identity: 'athlete',text:'coach' })
-
+                            window.localStorage.setItem('childCode', res.data.data.userCode)
+                            window.localStorage.setItem('identity', 'athlete')
                             }
                             window.localStorage.setItem('userCode', res.data.data.userCode)
                             this.$store.dispatch('setLoginflag', { loginName: res.data.data.username,loginflag: false, login: true,index:1 })

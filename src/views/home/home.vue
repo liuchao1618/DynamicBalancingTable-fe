@@ -47,7 +47,7 @@
                         v-if='identity == "coach"'>
                         我的运动员</div>
                 </div>
-                <div class="tabRight">
+                <div class="tabRight" @click.stop="setup = !setup">
                     <div class="name" v-if='identity == "coach"'>教练：{{loginName}}</div>
                     <div class="name" v-else>运动员：{{loginName}}</div>
                     <div class="setup">
@@ -64,25 +64,33 @@
             </div>
             <div style="height:50px" v-else></div>
             <!-- 训练 -->
-            <div v-show='tab === 0' class="menu">
-                <div class="menuLeft">
-                    <div class="menuItem" v-for='(item,index) in menuList' @click.stop='leftgoDetail(item.text,index)'
-                        :key='index'>
-                        <img :src="item.img" />
-                        <div class="menuText">{{ item.text }}</div>
+            <div v-show='tab === 0'>
+                <div class="model" v-if='login'>
+                    <div class="model" v-if='checkModel =="DEMO"'>DEMO模式</div>
+                    <div class="model" v-if='checkModel =="PT"'>手动模式</div>
+                </div>
+                <div class="model" v-else>DEMO模式</div>
+                <div class="menu">
+                    <div class="menuLeft">
+                        <div class="menuItem" v-for='(item,index) in menuList'
+                            @click.stop='leftgoDetail(item.text,index)' :key='index'>
+                            <img :src="item.img" />
+                            <div class="menuText">{{ item.text }}</div>
+                        </div>
                     </div>
+                    <div class="menuRight" v-if='login'>
+                        <div class='rightItem' v-for='(item,index) in list' :key='index' v-html='item.text'
+                            :style='{"background-color": item.color}' @click.stop='godetail(index,item.text)'><img
+                                :src="item.img" /></div>
+                    </div>
+                    <div class="menuRight" v-else>
+                        <div class='rightItem' v-for='(item,index) in touristList' :key='index' v-html='item.text'
+                            :style='{"background-color": item.color}' @click.stop='godetails(index,item.text)'></div>
+                    </div>
+                    <button class="aliginBtn" v-if='statusContent == 3' @click.stop='alignBtn'>重置</button>
+                    <div class="refreSearchbox" v-if='statusContent == 2' @click.stop='refreEvent'>重新搜索设备</div>
+
                 </div>
-                <div class="menuRight" v-if='login'>
-                    <div class='rightItem' v-for='(item,index) in list' :key='index' v-html='item.text'
-                        :style='{"background-color": item.color}' @click.stop='godetail(index,item.text)'><img
-                            :src="item.img" /></div>
-                </div>
-                <div class="menuRight" v-else>
-                    <div class='rightItem' v-for='(item,index) in touristList' :key='index' v-html='item.text'
-                        :style='{"background-color": item.color}' @click.stop='godetails(index,item.text)'></div>
-                </div>
-                <button class="aliginBtn" v-if='statusContent == 3' @click.stop='alignBtn'>重置</button>
-                <div class="refreSearchbox" v-if='statusContent == 2' @click.stop='refreEvent'>重新搜索设备</div>
             </div>
             <!-- 记录 -->
             <div v-show='tab === 1' class='list'>
@@ -362,8 +370,8 @@
             </div>
             <!-- 我的运动员 -->
             <div v-show='tab === 3' class='myAthletes'>
-                <div class="addSport">
-                    <span class="img" @click.stop='addSport'><img src="../../assets/image/add.png" alt=""></span>
+                <div class="addSport" @click.stop='addSport'>
+                    <span class="img"><img src="../../assets/image/add.png" alt=""></span>
                     <span>添加运动员</span>
                 </div>
                 <van-row class='myHead'>
@@ -432,7 +440,7 @@
         },
         data() {
             return {
-                checkModel: '',
+                checkModel: 'PT',
                 itemdata: {},
                 dialogFlag: false,
                 dialogFlags: false,
@@ -599,23 +607,21 @@
         },
         mounted() {
             if (window.localStorage.getItem('AuthorizationStr')) {
+                console.log(window.localStorage.getItem('identity'))
                 this.$store.dispatch('setLoginflag', { login: true, index: 3 })
-                loginMsg().then((res) => {
-                    if (res.data.data.parent == null) {
-                        this.$store.dispatch('setLoginflag', { identity: 'coach', text: 'coach' })
-                        window.localStorage.setItem('username', res.data.data.username)
-                    } else {
-                        window.localStorage.setItem('username', res.data.data.parent.username)
-                        this.$store.dispatch('setLoginflag', { identity: 'athlete', text: 'coach' })
-
-                    }
-                    window.localStorage.setItem('userCode', res.data.data.userCode)
-                    this.$store.dispatch('setLoginflag', { loginName: res.data.data.username, loginflag: false, login: true, index: 1 })
-                })
+                if (window.localStorage.getItem('identity') == 'coach') {
+                    this.$store.dispatch('setLoginflag', { identity: 'coach', text: 'coach' })
+                } else if (window.localStorage.getItem('identity') == 'athlete') {
+                    this.$store.dispatch('setLoginflag', { identity: 'athlete', text: 'coach' })
+                }
+                this.$store.dispatch('setLoginflag', { loginName: window.localStorage.getItem('username') })
             }
-            this.checkModel = window.localStorage.getItem('checkModel')
-
-            console.log(this.checkModel + 'this.checkModel')
+            console.log(window.localStorage.getItem('checkModel'), window)
+            if (window.localStorage.getItem('checkModel') == null) {
+                this.checkModel = 'PT'
+            } else {
+                this.checkModel = window.localStorage.getItem('checkModel')
+            }
             // 在其他页面监听蓝牙与设备的连接状态
             let urlContent = this.$route.query.urlContent
             if (urlContent) {
@@ -630,12 +636,11 @@
             this.getmemberMsg(); //我的运动员
             this.tab = this.$route.query.index * 1 || 0;
             if (this.login) {
-                window.localStorage.setItem('modle', 'PT')
-                if (this.checkModel == 'DEMO') {
+                if (this.checkModel == 'PT') {
+                    window.localStorage.setItem('modle', 'PT')
+                } else {
                     this.list = this.touristList
                     window.localStorage.setItem('modle', 'DEMO')
-                } else {
-                    window.localStorage.setItem('modle', 'PT')
                 }
             } else {
                 window.localStorage.setItem('modle', 'DEMO')
@@ -661,11 +666,9 @@
                 if (now == 1) {
                     this.getExercise();
                 } else if (now == 2) {
-                    console.log('收藏', this.collectList)
                     // await this.getExercise();
                     this.collectList.forEach((x, y) => {
                         if (x.model == 'LIVE') {
-                            console.log(x.model)
                             var c = document.getElementById('a' + y);
                             var ctx = c.getContext("2d");
                             ctx.strokeStyle = '#D1D5E6'
@@ -694,10 +697,27 @@
             },
             login() {
                 if (this.login) {
-                    window.localStorage.setItem('modle', 'PT')
+                    if (window.localStorage.getItem('checkModel') == 'PT') {
+                        this.checkModel = 'PT'
+                        this.list.forEach((item, i) => {
+                                    if (i == 10) {
+                                        item.text = '轨迹模式'
+                                    } else if (i == 11) {
+                                        item.text = 'DEMO TEST'
+                                    }
+                                })
+                    }
+                    if (this.checkModel == 'PT') {
+                        window.localStorage.setItem('modle', 'PT')
+                    } else {
+                        this.list = this.touristList
+                        window.localStorage.setItem('modle', 'DEMO')
+                    }
                 } else {
                     window.localStorage.setItem('modle', 'DEMO')
                 }
+                    console.log(this.checkModel,this.modle,window.localStorage.getItem('checkModel'),window.localStorage.getItem('modle'))
+                // console.log(this.checkModel+'this.checkModel')
             }
         },
         methods: {
@@ -706,6 +726,10 @@
                 this.show = false
             },
             alignBtn() {
+                this.$toast({
+                    message: '设备正在重置中，请稍后',
+                    position: 'bottom'
+                });
                 this.$store.dispatch('setLoginflag', { resetType: 'reset' })
                 this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'RESET', 0, 0, 0, 0] })
             },
@@ -831,6 +855,15 @@
                     this.setup = false
                     window.localStorage.removeItem('AuthorizationStr')
                 })
+                console.log(this.touristList)
+                this.touristList.forEach((item, i) => {
+                    if (i == 10) {
+                        item.text = '功能 3<br/>L4'
+                    } else if (i == 11) {
+                        item.text = '手动模式'
+                    }
+                })
+
             },
             loginflagCan() {
                 this.setup = false
@@ -888,7 +921,6 @@
                     this.itemdata.leftPower = 95
                     this.itemdata.rightPower = 100
                 }
-                console.log(this.itemdata)
                 this.$router.push({ name: 'train', query: { model: this.itemdata.model, fullPlayTime: this.itemdata.fullPlayTime, realPlayTime: this.itemdata.realPlayTime, leftPower: this.itemdata.leftPower, rightPower: this.itemdata.rightPower, avgPower: this.itemdata.avgPower, level: this.itemdata.level } })
             },
             detail(item) {
@@ -1029,6 +1061,8 @@
                         } else {
                             let modle = window.localStorage.getItem('modle')
                             if (modle == 'DEMO') {
+                                window.localStorage.setItem('left', this.leftValue)
+                                window.localStorage.setItem('right', this.rightValue)
                                 window.localStorage.setItem('level', item)
                             } else if (modle == 'PT') {
                                 window.localStorage.setItem('level', item)
@@ -1105,6 +1139,7 @@
                                 this.$router.push({ name: 'live' });
                             }
                             else if (index == 11 && text == 'DEMO TEST') {
+                                this.checkModel = 'DEMO'
                                 window.localStorage.setItem('modle', 'DEMO')
                                 this.list.forEach((item, i) => {
                                     if (i == 10) {
@@ -1115,6 +1150,7 @@
                                 })
                             }
                             else if (index == 11 && text == '手动模式') {
+                                this.checkModel = 'PT'
                                 window.localStorage.setItem('modle', 'PT')
                                 this.list.forEach((item, i) => {
                                     if (i == 10) {
@@ -1151,6 +1187,7 @@
                         if (this.$parent.$options.parent.$options.components.App.methods.readThreadFlag() == false) {
                         // if (!this) {
                             if (index == 11 && text == '手动模式') {
+                                this.checkModel = 'PT'
                                 window.localStorage.setItem('modle', 'PT')
                                 this.$store.dispatch('setLoginflag', { loginflag: true, index: 2 })
                             }
@@ -1238,29 +1275,9 @@
                         }
                     }
                 }
-                // Dialog.confirm({
-                //     message: '确定使用本次设置进行训练？'
-                // }).then(() => {
-
-                // console.log(item,'item')
             },
             editPWD() {
                 this.$router.push({ name: 'editPass' })
-            },
-            // 获取到的蓝牙地址
-            getDeviceInfo() {
-                // deviceInfo().then((res) => {
-                //     if (res.data.code == 200) {
-                //         let list = res.data.data
-                //         for (let i = 0; i < list.length; i++) {
-                //             this.deviceList.push(list[i].unionCode)
-                //             console.log(this.deviceList, '11111')
-                //         }
-                //     }
-                // })
-                // .catch((err) => {
-                //     console.log(err)
-                // })
             },
             // 点击进入页面改变store里面的值
             changeStoreStatus() {
@@ -1274,6 +1291,16 @@
 </script>
 
 <style scoped lang="less">
+    .model {
+        height: 35px;
+        font-size: 25px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: rgba(185, 189, 204, 1);
+        line-height: 35px;
+        margin: -15px auto;
+    }
+
     .aliginBtn {
         line-height: 30px;
         padding: 10px 20px;
@@ -1799,8 +1826,8 @@
                             align-items: flex-end;
 
                             img {
-                                width: 35px;
-                                height: 35px;
+                                width: 50px;
+                                height: 50px;
                             }
 
                             .conTrain {
