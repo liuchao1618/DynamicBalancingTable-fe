@@ -1,7 +1,7 @@
 <template>
     <div class='addAthletes'>
-        <div class='backHeader'>
-            <div class='left' @click="back">
+        <div class='backHeader' @click="back">
+            <div class='left'>
                 <img src="../../assets/image/components/back.png" alt="">
                 运动员信息
             </div>
