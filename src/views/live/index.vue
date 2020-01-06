@@ -11,11 +11,11 @@
       <img src="../../assets/image/base@2x.png" alt="">
     </div>
     <div class="live_operation">
-      <div class="operation_bcak" @click='back'>返回</div>
       <div class="operation_time">{{currentTime}}</div>
       <div class="operation_blue operation_but" :style="{ opacity : startFlag  }" @click='start'>开始</div>
       <div class="operation_red operation_but" @click='stop'>停止</div>
     </div>
+    <div class="bottomDiv">请先点击开始再拖动操控点，第一次拖动会稍许延时。</div>
   </div>
 </template>
 <script>
@@ -171,8 +171,8 @@
     watch: {
       transmitType() {
         if (this.transmitType == 'stopping') {
-          console.log('急停啦')
           clearInterval(this.timers)
+          clearInterval(this.timer)
           this.$toast({
             message: '设备已急停',
             position: 'bottom'
@@ -206,6 +206,12 @@
   }
 </script>
 <style scoped lang="less">
+  .bottomDiv{
+    font-size: 24px;
+    color: #9499A8;
+    margin: 0 auto;
+    margin-top:30px;
+  }
   .yellow {
     width: 50px;
     height: 50px;
@@ -238,9 +244,9 @@
 
     .live_operation {
       display: flex;
-      padding-left: 133px;
+      padding-left: 270px;
       align-items: flex-end;
-
+      margin: 0 auto;
       .operation_bcak {
         width: 174px;
         height: 75px;

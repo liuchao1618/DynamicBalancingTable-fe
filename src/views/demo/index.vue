@@ -39,8 +39,8 @@
       return {
         currentTime: '00:00',
         pause: '暂停',
-        left: window.localStorage.getItem('left'),
-        right: window.localStorage.getItem('right'),
+        left: '',
+        right: '',
         freeze: '冻结',
         align: '复位',
         setTime: 0,
@@ -52,12 +52,17 @@
 
       }
     },
+    created() {
+      this.left = window.localStorage.getItem('left')
+      this.right = window.localStorage.getItem('right')
+    },
     mounted() {
-          if (window.localStorage.getItem('leftbox') == 1) {
-          var level = window.localStorage.getItem('level')
-        } else {
-          var level = window.localStorage.getItem('level').split('<br/>').join(' ')
-        }
+      console.log(this.left + '' + this.right)
+      if (window.localStorage.getItem('leftbox') == 1) {
+        var level = window.localStorage.getItem('level')
+      } else {
+        var level = window.localStorage.getItem('level').split('<br/>').join(' ')
+      }
       this.setTime = window.localStorage.getItem('setTime');
       /**
        * 将秒转换为 分:秒
@@ -86,7 +91,13 @@
             if (res.data.code == 200) {
               window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
               this.$router.push({ name: 'finish', query: { fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, level: level, id: res.data.data.id, model: 'DEMO' } });
+              this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
+            } else if (res.data.code == 401) {
+              this.$router.push({ name: 'Home', query: { index: 0 } })
+              this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
+
             }
+
           })
         }
       }, 1000);
@@ -204,6 +215,7 @@
             this.$router.push({ name: 'finish', query: { fullPlayTime: window.localStorage.getItem('setTime') * 1, realPlayTime: window.localStorage.getItem('setTime') * 1 - this.setTime, level: level, id: res.data.data.id, model: 'DEMO' } });
             this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
           } else if (res.data.code == 401) {
+            this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
             this.$router.push({ name: 'Home', query: { index: 0 } })
           }
 
@@ -241,6 +253,8 @@
                   this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
                 } else if (res.data.code == 401) {
                   this.$router.push({ name: 'Home', query: { index: 0 } })
+                  this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
+
                 }
 
               })

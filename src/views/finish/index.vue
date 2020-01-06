@@ -75,9 +75,9 @@
           <div class="check">
             <span>已选：</span>
             <div class="chekbox">
-              <div class="checkName" v-for='(item,ind) in checkName'>
+              <div class="checkName" @click.stop='del(item)' v-for='(item,ind) in checkName'>
                 <span>{{item.username}}</span>
-                <span @click.stop='del(item)'>×</span>
+                <span>×</span>
               </div>
             </div>
           </div>
@@ -252,10 +252,9 @@
         checkMember().then((res) => {
           this.trainerName = res.data.data
           res.data.data.forEach((item, i) => {
-            console.log(item,'item')
             if (item.username == this.coachName) {
               item.members.forEach((v, i) => {
-                if(v.username == this.$store.state.loginName){
+                if(v.userCode == window.localStorage.getItem('childCode')){
                   v.checked = true
                   this.checkName.push(v)
                 }else{
@@ -394,6 +393,7 @@
       nameList: { //监听的对象
         deep: true, //深度监听设置为 true
         handler: function (newV, oldV) {
+          console.log(newV, oldV,'11111')
           if (newV !== oldV) {
             newV.forEach((v, i) => {
               if (this.clickName.indexOf(v.username) !== -1) {
@@ -488,7 +488,7 @@
   }
 
   .conCollect {
-    width: 50px;
+    width: 60px;
   }
 
   .conCollect img {
@@ -623,6 +623,9 @@
           background: rgba(1, 9, 21, 0.2);
           border-radius: 4px;
           border: 1px solid rgba(146, 150, 174, 1);
+          span:first-child{
+            margin-right:15px;
+          }
         }
       }
 
@@ -756,7 +759,7 @@
           border-radius: 2px;
           border: 1px solid rgba(117, 121, 137, 1);
           align-items: center;
-
+          margin-top: 10px;
           dl {
             display: flex;
             flex-direction: column;

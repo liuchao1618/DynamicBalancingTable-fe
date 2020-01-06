@@ -539,7 +539,7 @@ function BluetoothTool() {
     function sendData(dataStr) {
         // console.log(dataStr)
         // console.log(typeof dataStr)
-        console.log('发送：'+dataStr.map(v => v.toString(16)) + "-----------------------------------------")
+        // console.log('发送：'+dataStr.map(v => v.toString(16)) + "-----------------------------------------")
 
         // shortToast(dataStr)
         // shortToast(typeof dataStr)
