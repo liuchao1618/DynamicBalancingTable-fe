@@ -457,7 +457,7 @@
                 setup: false,
                 status: 'fail',
                 // status: 'success',
-                statusContent: 2,
+                statusContent: 6,
                 loginSwitch: false,
                 deviceList: [], // 蓝牙地址(adress)
                 recordList: [],//记录 
