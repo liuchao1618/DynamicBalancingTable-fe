@@ -430,7 +430,6 @@
     import { Dialog } from 'vant'
     import { mapState } from 'vuex'
     import { memberExercise, memberMessage, loginMsg, addCollect, delCollect, delMember, trainDetail, exitLogin, runnersName } from '@/api/index'
-    import { deviceInfo } from '../../api/api'
     import pluginFub from '../../utils/sendData.js'
 
     let vm = {
@@ -607,7 +606,6 @@
         },
         mounted() {
             if (window.localStorage.getItem('AuthorizationStr')) {
-                console.log(window.localStorage.getItem('identity'))
                 this.$store.dispatch('setLoginflag', { login: true, index: 3 })
                 if (window.localStorage.getItem('identity') == 'coach') {
                     this.$store.dispatch('setLoginflag', { identity: 'coach', text: 'coach' })
@@ -616,7 +614,6 @@
                 }
                 this.$store.dispatch('setLoginflag', { loginName: window.localStorage.getItem('username') })
             }
-            console.log(window.localStorage.getItem('checkModel'), window)
             if (window.localStorage.getItem('checkModel') == null) {
                 this.checkModel = 'PT'
             } else {
@@ -716,8 +713,6 @@
                 } else {
                     window.localStorage.setItem('modle', 'DEMO')
                 }
-                    console.log(this.checkModel,this.modle,window.localStorage.getItem('checkModel'),window.localStorage.getItem('modle'))
-                // console.log(this.checkModel+'this.checkModel')
             }
         },
         methods: {
@@ -855,7 +850,6 @@
                     this.setup = false
                     window.localStorage.removeItem('AuthorizationStr')
                 })
-                console.log(this.touristList)
                 this.touristList.forEach((item, i) => {
                     if (i == 10) {
                         item.text = '功能 3<br/>L4'

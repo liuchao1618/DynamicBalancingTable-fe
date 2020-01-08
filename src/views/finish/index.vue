@@ -187,7 +187,6 @@
       this.rightValue = this.$route.query.right
       this.fullPlayTime = this.formatSeconds(this.$route.query.fullPlayTime)
       this.realPlayTime = this.formatSeconds(this.$route.query.realPlayTime)
-      console.log(this.realPlayTime)
       this.currentId = this.$route.query.id
       this.level = this.$route.query.level
       this.model = this.$route.query.model
@@ -217,7 +216,6 @@
         window.localStorage.removeItem('locus')
       },
       checkNames(item) {
-        console.log(item,'item')
         item.checked = true
         this.checkName.push(item)
         this.shows = false
@@ -377,7 +375,6 @@
         // })
       },
       selectAll(val) {
-        console.log(val, 'val')
         if (!val.checked && this.checkName.length < 4) {
           this.checkName.unshift(val)
         } else {
@@ -393,7 +390,6 @@
       nameList: { //监听的对象
         deep: true, //深度监听设置为 true
         handler: function (newV, oldV) {
-          console.log(newV, oldV,'11111')
           if (newV !== oldV) {
             newV.forEach((v, i) => {
               if (this.clickName.indexOf(v.username) !== -1) {
@@ -401,7 +397,6 @@
               }
             })
           } else {
-            console.log(newV == oldV)
           }
         }
       }
@@ -419,7 +414,7 @@
     top: 45px;
     left: 67px;
     width: 145px;
-    height: 100px;
+    height: 180px;
     background: rgba(41, 43, 49, 1);
     box-shadow: 0px -1px 0px 0px rgba(88, 86, 93, 1);
     border-radius: 5px;

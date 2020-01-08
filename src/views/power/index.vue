@@ -147,6 +147,9 @@
                   model: 'PT'
                 }
               });
+            } else if (res.data.code == 401) {
+              this.$router.push({ name: 'Home', query: { index: 0 } })
+              this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
             }
           })
         }
@@ -224,6 +227,9 @@
                 model: 'PT'
               }
             });
+          } else if (res.data.code == 401) {
+            this.$router.push({ name: 'Home', query: { index: 0 } })
+            this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
           }
         })
       },
@@ -245,7 +251,6 @@
 
       changepause() {
         if (this.pause == '继续') {
-          console.log(1111)
           this.pause = '暂停'
 
           function s_to_hs(s) {
@@ -300,6 +305,9 @@
                       model: 'PT'
                     }
                   });
+                } else if (res.data.code == 401) {
+                  this.$router.push({ name: 'Home', query: { index: 0 } })
+                  this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', 'STOP', 0, 0, 0, 0] })
                 }
               })
             }

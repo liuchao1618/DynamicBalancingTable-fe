@@ -184,8 +184,6 @@
 
                 }
                 }
-                
-                console.log(this.form)
             },
             cancleBtn() {
                 this.$router.push({ name: 'Home', query: { index: 3 } })

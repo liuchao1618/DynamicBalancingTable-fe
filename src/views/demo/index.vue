@@ -57,11 +57,10 @@
       this.right = window.localStorage.getItem('right')
     },
     mounted() {
-      console.log(this.left + '' + this.right)
       if (window.localStorage.getItem('leftbox') == 1) {
         var level = window.localStorage.getItem('level')
       } else {
-        var level = window.localStorage.getItem('level').split('<br/>').join(' ')
+        window.localStorage.getItem('level').replace(/<br\/>/g, " ");
       }
       this.setTime = window.localStorage.getItem('setTime');
       /**
@@ -196,11 +195,10 @@
         if (window.localStorage.getItem('leftbox') == 1) {
           var level = window.localStorage.getItem('level')
         } else {
-          var level = window.localStorage.getItem('level').split('<br/>').join(' ')
+          var level = window.localStorage.getItem('level').replace(/<br\/>/g, " ");
         }
         window.localStorage.removeItem('leftbox')
         this.$store.dispatch('setLoginflag', { resetType: 'reset' })
-        console.log(level, '等级')
         let data = {
           userCode: window.localStorage.getItem('userCode'),
           model: 'DEMO',
@@ -233,11 +231,10 @@
               if (window.localStorage.getItem('leftbox') == 1) {
                 var level = window.localStorage.getItem('level')
               } else {
-                var level = window.localStorage.getItem('level').split('<br/>').join(' ')
+                var level = window.localStorage.getItem('level').replace(/<br\/>/g, " ");
               }
               window.localStorage.removeItem('leftbox')
               this.$store.dispatch('setLoginflag', { resetType: 'reset' })
-              console.log(level, '等级')
               let data = {
                 userCode: window.localStorage.getItem('userCode'),
                 model: 'DEMO',

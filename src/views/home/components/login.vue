@@ -33,8 +33,8 @@
         name: 'login',
         data() {
             return {
-                tel: '13100000002',
-                pwd: '123456',
+                tel: '',
+                pwd: '',
                 flag: true,
                 telFlag: false,
                 oldTel: []
@@ -185,7 +185,6 @@
                 let that = this
                 setTimeout(function () {
                     that.telFlag = false
-                    console.log('1111111111')
                 }, 10)
                 // console.log('1111111111')
             },

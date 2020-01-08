@@ -62,7 +62,6 @@
                         newPassword: this.form.newpass
                     }
                     editPass(data).then(res => {
-                        console.log(res)
                         if (res.data.code == 200) {
                             this.$toast({
                                 message: '修改成功',
@@ -77,7 +76,6 @@
                         }
                     })
                 }
-                console.log(this.form, 'form')
             }
         }
     }

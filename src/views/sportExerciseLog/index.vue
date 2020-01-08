@@ -136,7 +136,6 @@
       }
     },
     updated() {
-      console.log(this.recordList)
       this.recordList.forEach((item, index) => {
         var c = document.getElementById(index);
         var ctx = c.getContext("2d");

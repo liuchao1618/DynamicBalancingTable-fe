@@ -123,7 +123,6 @@
       }
     },
     mounted() {
-      console.log(this.$route.query)
       this.expand = JSON.parse(localStorage.getItem('expand'))
       this.expands = JSON.parse(localStorage.getItem('expands'))
       function s_to_hs(s) {
@@ -190,7 +189,6 @@
           return;
         }
         let future = this.randomFuture(this.leftPower, this.rightPower);
-        console.log(future);
         this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['DEMO', this.intervalCount, future[0], future[1], 0, 0] })
 
         this.interva = setTimeout(() => {
@@ -218,7 +216,6 @@
               }
               window.localStorage.setItem('locus', JSON.stringify(this.expand))
               saveRecord(data).then((res) => {
-                console.log(res, '保存记录')
                 if (res.data.code == 200) {
                   this.$store.dispatch('setLoginflag', { BluetoothDataArr: ['null', '', 0, 0, 0, 0] })
                   window.localStorage.setItem('devices', JSON.stringify([{ "deviceId": "1", "deviceAlias": "设备1" }]));
@@ -296,7 +293,6 @@
         }, temp <= 0 ? array[temp].t : array[temp].t - array[temp - 1].t);
       },
       stop() {
-        console.log(this.currentTimeNum)
         clearInterval(this.timer)
         clearTimeout(this.interva)
         this.$store.dispatch('setLoginflag', { resetType: 'reset' })
